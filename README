@@ -1,0 +1,88 @@
+OVERVIEW
+--------
+
+The database is built by a number of scripts within the scripts/ directory, and is stored as a series of XML files in the database/ directory.
+
+The main build procedure entails running a number of gather-*.py scripts, which *stage* data to database-stage.xml. This data is subsequently *committed* to database.xml.
+
+The first step in the build process is to run gather-uniprot.py. This searches UniProt with a given search term. The returned data comprises a set of UniProt entries, each of which corresponds to a single protein. These entries are added to the database (with some filtering to remove exceptions) and make up the second-level data nodes (belonging to the singleton root node). The database is initially stored as database-stage.xml.
+
+Other scripts (e.g. gather-pdb.py) use the data returned from UniProt to query various other external resources, and add the returned data to database-stage.xml.
+
+Unless the database is being built for the first time, database-stage.xml will already exist. Each gather-* script will retrieve the latest data from the external resource, compare it with the data in database-stage.xml, and overwrite if there have been modifications. Most scripts write data to separate nodes within each entry node, and thus can be run in any order without interfering with the data produced by other scripts. The major exception is gather-uniprot.py, which will overwrite all of database-stage.xml if there were modifications. Each gather-*.py script also sets two attribs at the root node of database-stage.xml, e.g. for gather-uniprot.py:
+    - UniProt_date_run: updated each time gather-uniprot.py is run
+    - UniProt_date_modified: updated only if there have been changes to the data gathered by gather-uniprot.py
+
+The final stage of the build process is to run commit.py. If the database is being built for the first time, then this script simply copies across the data in database-stage.xml to database.xml, including the top-level datestamp attribs. It also adds three further top-level attribs: date_run, date_modified and versionID (described below).
+
+If database.xml already exists, then commit.py compares it with database-stage.xml - if there have been modifications to the contained data, then database.xml is overwritten.
+
+The top-level attribs in database.xml are set as follows:
+    - versionID: initially set to 0. Iterated if there have been changes to the contained data.
+    - date_run: updated each time commit.py is run
+    - date_modified: updated only if there have been changes to the contained data.
+    - UniProt_date_run: copied from database-stage.xml
+    - UniProt_date_modified: copied from database-stage.xml
+    - PDB_date_run: copied from database-stage.xml
+    - etc.
+
+Since the protein entry nodes are essentially the highest-level data nodes, and are retrieved by gather-uniprot.py, it is important that this script is run before every other gather-*.py script. commit.py thus uses the various datestamps to check that UniProt_date_modified is earlier than any of the other *_date_run datestamps, and raises an exception if this is not the case. This also ensures that each of the gather-*.py scripts has been run during the staging process.
+
+MAIN BUILD PROCEDURE
+--------------------
+
+1. "gather-uniprot.py -stage" creates database-stage.xml (if necessary) and populates with UniProt data - the returned UniProt entries make up the top-level entries in this database
+2. Run the other "gather-*.py" scripts with "-stage" flag - this will add or update data in database-stage.xml. Scripts can be run in any order.
+3. commit.py
+    - role is to read in data from database-stage.xml and update database.xml if there have been any updates.
+    - only writes to database.xml if the "-write" flag is set
+    - database.xml top-level Element contains the following attribs:
+        - versionID: iterated only if there have been updates to the contained data
+        - date_modified: set if there have been updates to the contained data
+        - date_run: set each time "commit.py -write" is run
+        - UniProt_date_modified: read from database-stage.xml - this will have been set if there have been updates to the data gathered by gather-uniprot.py
+        - UniProt_date_run: read from database-stage.xml - set to the last time gather-uniprot.py was run
+        - PDB_date_modified: as above for gather-pdb.py
+        - etc.
+    - if any data has been updated, the versionID
+4. commit.py -write overwrites data in database.xml with the data in database-staged.xml, and also updates versionIDs and datestamps
+    - datestamps are updated each time commit.py -write is run
+    - versionIDs are iterated only if changes to the database are made
+
+DEVELOPMENT PROCEDURE
+---------------------
+
+* Run "gather-*.py scripts with "-dev" flag to write to database-dev.xml (instead of database-stage.xml)
+* Run "gather-*.py" scripts without flags to avoid writing altogether
+
+
+SCRIPTS
+--------
+
+scripts/gather-uniprot.py   - the first script in the database build pipeline
+                            - uses a given search term to retrieve data from UniProt, which is then added to an XML object
+                            - each returned protein is given an <entry> tag
+                            - each <entry> is populated with various data
+                            - if "-stage" flag is set, the database is written to database/database-stage.xml
+                            - database-stage.xml is created if it does not already exist.
+                            - if database-stage.xml already exists, the script prints a summary of the modifications to be made (whether or not "-stage" is set)
+
+
+SCRIPTS - FURTHER INFO
+----------------------
+
+= scripts/gather-uniprot.py - fields populated =
+
+<entry>
+    <UniProt>
+        [all]
+    <HGNC>
+        [all]
+    <Ensembl>
+        [all]
+    <NCBI_Gene>
+        @ID
+    <PDB>
+        <structure>
+            <chain>
+

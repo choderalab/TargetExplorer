@@ -1,0 +1,76 @@
+<database versionID= datestamp= UniProt_versionID UniProt_datestamp= HGNC_versionID= HGNC_datestamp= >
+    @date_modified is each time the database is modified
+    @versionID gets updated each time the database is modified
+    @UniProt_date_run is updated each time the gather-UniProt.py script is run
+    @UniProt_date_modified gets updated each time any UniProt data is modified during the staging process
+    @PDB_date_run etc.
+
+    <entry>
+        <UniProt AC= entry_name= family= > (one)
+            <recommended_name>
+            <isoforms>
+                <canonical_isoform AC= > (one) Use this as reference protein seq for all work in this database
+                    <sequence>
+                <alt_isoform AC= > (multiple)
+                    <sequence>
+            <functions>
+                <function> (multiple)
+            <disease_associations>
+                <disease_association> (multiple)
+            <domains>
+                <domain domainID= targetID= begin= end= length= target_score= > (multiple)
+                    @targetID of the form ${UniProt_entry_name}_D${domainID}
+                    <sequence>
+
+        <HGNC>
+            <entry ID= Approved_Symbol= >
+                <Approved_Name>
+
+        <Ensembl>
+            <gene_entry ID= > (multiple)
+                @ID e.g. ENSG00000197122
+            <transcript_entry ID= > (multiple)
+            <protein_entry ID= > (multiple)
+
+        <NCBI_Gene>
+            <entry ID= > (one)
+                <publications>
+                    <publication PMID= > (multiple)
+
+        <RefSeq>
+            <transcript_entry AC= > (multiple)
+            <protein_entry AC= > (multiple)
+                @AC e.g. NP_001945.3
+
+        <PDB>
+            <structure ID= > (multiple)
+                <chain ID= domain_ID= begin= end= > (multiple)
+                    <experimental_sequence>
+                        <sequence>
+                        <sequence_aln>
+                    <observed_sequence>
+                        <sequence_aln_exp>
+                        <sequence_aln>
+                        <ss_aln>
+                <expression_data expression_system= >
+
+        <SCOP>
+
+        <mutants>
+            <mutant mutantID= domainID= targetID= source= study= case= percent_in_cohort_this_mut= percent_in_cohort_any_mut= num_in_cohort= > (multiple)
+                @source e.g. 'cBioPortal'
+                @study e.g. 'gbm_tcga'
+                @case e.g. 'TCGA-D1-A16X'
+                <mutation mutation_type= (mutation_origin=) (aa_change=) (dna_change=) (rna_change=) > (multiple)
+                    @mutation_type ['missense', 'nonsense', 'ins', 'del', 'frameshift_ins', 'frameshift_del', 'nonstop']
+                    @aa_change e.g. ['R123E', 'R123*']
+                    @mutation_origin ['Somatic', 'Germline']
+
+        <bioassays>
+            <bioassay source= (BindingDB_source=) > (multiple)
+                @source e.g. 'BindingDB'
+                @BindingDB_source e.g. 'Curated from the literature by BindingDB'
+
+        <warnings>
+            <warning> (multiple)
+

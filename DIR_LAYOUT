@@ -1,0 +1,22 @@
+TargetExplorerDB/
+    database/
+        database.xml
+        archive/
+        scripts/ - for generating the database
+    external-data/ - local storage of data from external resources
+    analysis/
+        scripts/
+            parseDB.py
+        MSA/ - MSA scripts and results
+            run-MSA.py
+            MSA.fasta
+            MSA.html
+    TargetExplorer/ - Python Library
+        UniProt.py
+        PDB.py
+        core.py
+
+# Scripts should be run from this directory
+# Scripts and libraries should use relative paths, assuming the working directory is the correct location
+# Scripts should start with a quick sanity check to make sure they are being run in the correct location, and raise an exception if not
+
