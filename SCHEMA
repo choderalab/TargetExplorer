@@ -52,7 +52,7 @@
                         <sequence_aln_exp>
                         <sequence_aln>
                         <ss_aln>
-                <expression_data expression_system= >
+                <expression_data EXPRESSION_SYSTEM= >
 
         <SCOP>
 

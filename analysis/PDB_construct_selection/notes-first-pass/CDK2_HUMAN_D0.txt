@@ -1,0 +1,2 @@
+2JGZ_A: shorter than all the rest. Paper references 1QMZ, which is full length. Authors probably just put the observed residues in the SEQRES records.
+4I3Z_A: stops 2 residues from C-term of full protein. Lots of seqs this length. Paper references 3QHW, which says it is "full length" without giving seq, in which case the true construct probably is the full protein, and the authors probably just put the observed residues in the SEQRES records.

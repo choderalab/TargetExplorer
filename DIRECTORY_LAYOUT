@@ -7,8 +7,8 @@ TargetExplorerDB/
     analysis/
         scripts/
             parseDB.py
-        MSA/ - MSA scripts and results
             run-MSA.py
+        MSA/ - MSA results
             MSA.fasta
             MSA.html
     TargetExplorer/ - Python Library

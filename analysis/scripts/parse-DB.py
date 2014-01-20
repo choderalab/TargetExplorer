@@ -401,6 +401,6 @@ def print_pdbs_by_UniProt_entry_name(entry_name):
 #print_bioassays_kinase('ABL1_HUMAN')
 #print_bioassay_types()
 #print_bioassay_seqs(['SRC_HUMAN'])
-print_kinases_expressed_in('ESCHERICHIA')
-#print_pdbs_by_UniProt_entry_name('ABL1_HUMAN')
+#print_kinases_expressed_in('ESCHERICHIA')
+print_pdbs_by_UniProt_entry_name('ABL1_HUMAN')
 
