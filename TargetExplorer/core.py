@@ -3,12 +3,34 @@ import os, textwrap
 from lxml.builder import E
 
 # Look for the kinome root directory, which should be two below the pylib/choderalab directory
-# XXX DEPRECATED, since we will eventually move to a setuptools-based installation, in which case the Python libraries will be separated from the database directories
+# XXX kinome_rootdir is DEPRECATED, since we will eventually move to a setuptools-based installation, in which case the Python libraries will be separated from the database directories
 #two_dirs_below_choderalab = os.path.join(choderalab.__path__[0], '..', '..')
 #if os.path.exists(two_dirs_below_choderalab):
 #    kinome_rootdir = os.path.abspath( two_dirs_below_choderalab )
 #else:
 #    kinome_rootdir = None
+
+def parse_nested_dicts(nested_dict, parse_keys):
+    '''
+    Pass a nested dict structure and a list of keys to parse hierarchically.
+    '''
+    if not isinstance(nested_dict, dict):
+        raise Exception, 'parse_nested_dicts expected to be passed a dict.'
+
+    child = nested_dict
+
+    for parse_key in parse_keys:
+        #current_dict = get_from_dict(current_dict, parse_key)
+        child = child.get(parse_key)
+        if child == None:
+            return None
+        elif parse_key == parse_keys[-1]:
+            return child
+        elif not isinstance(child, dict):
+            return None
+
+    #def get_from_dict(input_dict, parse_key):
+    #    return result
 
 def check_correct_working_dir():
     if not os.path.exists('database') or not os.path.exists('external-data') or not os.path.exists('analysis'):

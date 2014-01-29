@@ -14,7 +14,7 @@
 import sys,os,gzip,re,datetime,copy
 from lxml import etree
 import TargetExplorer as clab
-from Bio.PDB import to_one_letter_code
+import Bio.Data.SCOPData
 from multiprocessing import Pool
 
 #==============================================================================
@@ -164,7 +164,7 @@ def gather_pdb(e):
                     raise Exception
                 try:
                     # Note that this BioPython dict converts a modified aa to the single-letter code of its unmodified parent (e.g. "TPO":"T")
-                    single_letter = to_one_letter_code[ resname ]
+                    single_letter = Bio.Data.SCOPData.protein_letters_3to1[ resname ]
                 except KeyError:
                     if resname == 'ACE': # Just ignore N-terminal ACE
                         continue

@@ -9,22 +9,36 @@ from lxml.builder import E
 import TargetExplorer as clab
 import Bio.Seq
 import Bio.Alphabet
+from openpyxl import Workbook
+
+# ===========
+# parameters
+# ===========
 
 try:
     override_target = sys.argv[ sys.argv.index('-target') + 1 ]
     targets = [override_target]
+    ndesired_targets = 1
 except ValueError:
     targets = 'All'
+    ndesired_targets = 96
 
-output_selections_filepath = os.path.join('analysis', 'PDB_construct_selection', 'PDB_construct_selections.txt')
+results_dir = os.path.join('analysis', 'PDB_construct_selection')
+
+output_Excel_filename = 'PDB_constructs.xlsx'
+output_selections_filename = 'PDB_constructs-data.txt'
+manual_exceptions_filename = 'manual_exceptions.yaml'
+output_Excel_filepath = os.path.join(results_dir, output_Excel_filename)
+output_selections_filepath = os.path.join(results_dir, output_selections_filename)
+manual_exceptions_filepath = os.path.join(results_dir, manual_exceptions_filename)
 
 # ===========
-# Function definitions
+# function definitions
 # ===========
 
 def generate_html_from_alignment(title, alignment, alignment_IDs, additional_data_fields=None, aa_css_class_list=None):
     '''
-    additional_data_fields structure: [ { [PDB_ID]_[PDB_CHAIN_ID] : data }, { [PDB_ID]_[PDB_CHAIN_ID] : data }, ... ]
+    additional_data_fields structure: [ { [PDB_ID]_[PDB_CHAIN_ID] : data }, { [PDB_ID]_[PDB_CHAIN_ID] : data }, ... ] with a separate dict for each data type, and where data is of len(alignment)
     aa_css_class_list can be used to override the CSS classes assigned to each residue. Should be given as a list of lists, with shape: (len(alignment), len(alignment[0])).
     '''
     html_body = E.body()
@@ -45,6 +59,8 @@ def generate_html_from_alignment(title, alignment, alignment_IDs, additional_dat
             data = additional_data_fields[d][alignment_IDs[i]]
             if data != None:
                 row.append( E.td( E.div(data, CLASS='ali'), nowrap='') )
+            else:
+                row.append( E.td( E.div('', CLASS='ali'), nowrap='') )
 
         # format sequence with css classes. Returned as a list of span objects
         if aa_css_class_list != None:
@@ -85,95 +101,11 @@ def write_output(ofilename, html_tree):
     ofile.write( etree.tostring(html_tree, pretty_print=True) )
     ofile.close()
 
-# ===========
-# Parse DB
-# ===========
+def process_target(t):
 
-DB_path = os.path.join('database', 'database-stage.xml')
-DB_root = etree.parse(DB_path).getroot()
-nentries = len(DB_root)
-
-# ===========
-# Target selection
-# ===========
-
-if targets == 'All':
-    targets = [ domain_node.get('target_id') for domain_node in DB_root.findall('entry/UniProt/domains/domain[@target_id]') ]
-
-desired_expression_system_regex = 'E.* COLI'
-
-# ===========
-# Sort targets based on number of PDB structures with matching expression systems
-# ===========
-
-targets_nmatching_PDB_structures = []
-
-for target in targets:
-    # get DB entry
-    DB_domain = DB_root.find('entry/UniProt/domains/domain[@target_id="%s"]' % target)
-    DB_entry = DB_domain.getparent().getparent().getparent()
-
-    # get PDB structures
-    matching_PDB_structures = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]' % desired_expression_system_regex, extensions = { (None, 'match_regex'): match_regex } )
-    targets_nmatching_PDB_structures.append( { target : [ len(matching_PDB_structures) ] } )
-
-# targets_data structure:[ { targetID : data } , ... ] where data will be constructed as [nmatching_PDB_structures, TODO ]
-targets_data = sorted( targets_nmatching_PDB_structures, key = lambda x:x.values()[0][0], reverse=True )
-
-# Print the sorted targets and the number of PDB structures with matching expression system
-print ''
-print '= Targets sorted by number of PDB structures with matching expression system tag =\n'
-print '%18s %24s' % ('target', 'nmatching_PDB_structures')
-print '%18s %24s' % ('______', '________________________')
-for target_dict in targets_data:
-    target = target_dict.keys()[0]
-    nmatching_PDB_structures = target_dict.values()[0][0]
-    if nmatching_PDB_structures == 0:
-        continue
-    print '%18s %24d' % (target, nmatching_PDB_structures)
-
-print ''
-print 'Total targets with > 0 matching PDB structures:', sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 0])
-print 'Total targets with > 1 matching PDB structures', sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 1])
-
-# ===========
-# Get Harvard plasmid library sequences
-# ===========
-
-plasmid_library_dir = os.path.join('external-data', 'Harvard-DFHCC-HIP_human_kinase_collection-pJP1520')
-Harvard_plasmid_library_filepath = os.path.join(plasmid_library_dir, 'Mehle_Kinase_VS1_pJP1520_new_plates.xlsx')
-
-wb = openpyxl.load_workbook(Harvard_plasmid_library_filepath)
-sheet_ranges = wb.get_sheet_by_name(name = 'Kinase_VS1_pJP1520_new_plates')
-nrows = sheet_ranges.get_highest_row()
-plasmid_aa_seqs = {}
-for row in range(2,nrows):
-    NCBI_GeneID = sheet_ranges.cell('H%d' % row).value    # type(int)
-    Symbol = sheet_ranges.cell('I%d' % row).value
-    DNA_seq = sheet_ranges.cell('L%d' % row).value 
-    # Translate to DNA sequence (don't include stop codon)
-    aa_seq = Bio.Seq.Seq(DNA_seq, Bio.Alphabet.generic_dna).translate(to_stop=True)
-    plasmid_aa_seqs[NCBI_GeneID] = aa_seq
-
-plasmid_NCBI_GeneIDs = plasmid_aa_seqs.keys()
-
-# ===========
-# Iterate through targets
-# ===========
-
-print ''
-print '= Carrying out sequence alignments ='
-
-analysis_dir = 'analysis'
-output_toplevel_dir = os.path.join(analysis_dir, 'PDB_construct_selection')
-html_alignments_dir = os.path.join(output_toplevel_dir, 'alignments')
-if not os.path.exists(output_toplevel_dir):
-    os.mkdir(output_toplevel_dir)
-if not os.path.exists(html_alignments_dir):
-    os.mkdir(html_alignments_dir)
-
-for t in range(len(targets_data)):
     target = targets_data[t].keys()[0]
+    target_results = {target : []} # results will be returned in this dict
+    nmatching_PDB_structures = targets_data[t][target][0]
     print 'Working on target:', target
     # ===========
     # Generate html header
@@ -192,8 +124,17 @@ for t in range(len(targets_data)):
     css_link.set('href',css_path)
     css_link.set('rel','stylesheet')
 
+    # ===========
+    # Get target info from DB
+    # ===========
+
     # get DB entry
     DB_domain = DB_root.find('entry/UniProt/domains/domain[@target_id="%s"]' % target)
+    target_domain_len = int(DB_domain.get('length'))
+    if target_domain_len > 350 or target_domain_len < 191:
+        print 'Target domain length %d. Skipping...' % target_domain_len
+        target_results[target] = [0, None, [None, None, None, 0]]
+        return target_results
     DB_entry = DB_domain.getparent().getparent().getparent()
 
     # get IDs
@@ -201,38 +142,50 @@ for t in range(len(targets_data)):
     target_NCBI_Gene_node = DB_entry.find('NCBI_Gene/entry[@ID]')
     if target_NCBI_Gene_node == None:
         print 'Gene ID not found for target %s' % target_UniProt_entry_name
-        continue
+        target_results[target] = [0, None, [None, None, None, 0]]
+        return target_results
     target_NCBI_GeneID = int(target_NCBI_Gene_node.get('ID'))
 
     if target_NCBI_GeneID not in plasmid_NCBI_GeneIDs:
         print 'Gene ID %s (%s) not found in Harvard plasmid library.' % (target_NCBI_GeneID, target_UniProt_entry_name)
-        continue
+        target_results[target] = [0, None, [None, None, None, 0]]
+        return target_results
 
     # get UniProt canonical isoform sequence
     UniProt_canonseq = clab.core.sequnwrap( DB_entry.findtext('UniProt/isoforms/canonical_isoform/sequence') )
 
+    # ===========
+    # Get PDB info from DB
+    # ===========
+
     # get PDB sequences (only those which have the desired expression_system tag) and store in dict e.g. { '3GKZ_B' : 'MGYL...' }
     PDB_matching_seq_nodes = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]/../chain/experimental_sequence/sequence' % desired_expression_system_regex, extensions = { (None, 'match_regex'): match_regex } )
     if len(PDB_matching_seq_nodes) == 0:
-        continue # Skip targets with no PDB sequences with matching expression data
+        target_results[target] = [0, None, [None, None, None, 0]] # Skip targets with no PDB sequences with matching expression data
+        return target_results
     # PDB_seqs structure: { [PDB_ID]_[PDB_CHAIN_ID] : sequence }
-    PDB_seqs = { seq_node.getparent().getparent().getparent().get('ID') + '_' + seq_node.getparent().getparent().get('ID') : clab.core.sequnwrap(seq_node.text) for seq_node in PDB_matching_seq_nodes }
+    # remove 'X' residues
+    PDB_seqs = { seq_node.getparent().getparent().getparent().get('ID') + '_' + seq_node.getparent().getparent().get('ID') : clab.core.sequnwrap(seq_node.text.replace('X', '')) for seq_node in PDB_matching_seq_nodes }
 
-    # additional_data structure: [ { [PDB_ID]_[PDB_CHAIN_ID] : data }, { [PDB_ID]_[PDB_CHAIN_ID] : data }, ... ]
+    # PDB_seqs_aln_vs_UniProt_conflicts has same structure and contains the PDB construct seq "aligned" against the UniProt sequence, with conflicts in lower-case (derived using SIFTS info).
+    # replace 'x' residues with '-'
+    PDB_seqs_aln_vs_UniProt_conflicts = { seq_node.getparent().getparent().getparent().get('ID') + '_' + seq_node.getparent().getparent().get('ID') : clab.core.sequnwrap(seq_node.getparent().find('sequence_aln_conflicts').text.replace('x','-')) for seq_node in PDB_matching_seq_nodes }
+
+    # html_additional_data structure: [ { [PDB_ID]_[PDB_CHAIN_ID] : data }, { [PDB_ID]_[PDB_CHAIN_ID] : data }, ... ] with a separate dict for each data type, and where data is of len(alignment)
     expression_system_data = { seq_node.getparent().getparent().getparent().get('ID') + '_' + seq_node.getparent().getparent().get('ID') : seq_node.getparent().getparent().getparent().find('expression_data').get('EXPRESSION_SYSTEM') for seq_node in PDB_matching_seq_nodes }
-    additional_data = [{'UniProt': '', 'plasmid_seq': ''}] # No expression_system data to show for UniProt and plasmid sequences
+    html_additional_data = [{'UniProt': '', 'plasmid_seq': ''}] # No expression_system data to show for UniProt and plasmid sequences
     for key in expression_system_data.keys():
-        additional_data[0][key] = expression_system_data[key]
+        html_additional_data[0][key] = expression_system_data[key]
 
     # ===========
     # run MSA (using ClustalO)
     # ===========
     alignment_IDs = ['UniProt', 'plasmid_seq']
-    alignment_seqs = [UniProt_canonseq, plasmid_aa_seqs[target_NCBI_GeneID]]
-    for PDB_ID in PDB_seqs.keys():
-        alignment_IDs.append(PDB_ID)
-        alignment_seqs.append(PDB_seqs[PDB_ID])
-    aligned_seqs = clab.align.run_clustalo(alignment_IDs, alignment_seqs)
+    pre_alignment_seqs = [UniProt_canonseq, plasmid_aa_seqs[target_NCBI_GeneID]]
+    for PDB_chain_ID in PDB_seqs.keys():
+        alignment_IDs.append(PDB_chain_ID)
+        pre_alignment_seqs.append(PDB_seqs[PDB_chain_ID])
+    aligned_seqs = clab.align.run_clustalo(alignment_IDs, pre_alignment_seqs)
     alignment = [ [alignment_IDs[i], seq] for i, seq in enumerate(aligned_seqs) ] # convert aligned_seqs to this list of 2-element lists
     UniProt_canon_seq_aligned = alignment[0]
 
@@ -259,42 +212,114 @@ for t in range(len(targets_data)):
     # set up data structures in preparation for sorting
     # ===========
     sorted_alignment = alignment[0:2] # the UniProt seq and plasmid seq stay at the beginning
-    # PDB_construct_seqs_aligned structure: [ ['PDB_ID', 'sequence'], ... ]
+    # PDB_construct_seqs_aligned structure: [ ['PDB_chain_ID', 'sequence'], ... ]
     PDB_construct_seqs_aligned = alignment[2:]
 
     # ===========
-    # Calculate construct sequence "authenticity score" - attempt to downrank misannotated sequences
+    # Detect extraneous expression tags - then calculate an "authenticity score", in an attempt to downrank misannotated construct sequences
     # ===========
-    # Highest score for 'ghm' within non-matching sequence (Abl1 E coli constructs use this at the N-term - comes after a His tag with TEV cleavage site)
+    # Highest score for 'gh' within non-matching sequence (Abl1 E coli constructs use this at the N-term - comes after a His tag with TEV cleavage site)
     # Next search for His tag
     # Then look for non-matching sequence at the N- or C-term, of >3 aas.
-    ghm_regex = '.*ghm[A-Z]+|.*[A-Z]+mhg'
-    histag_regex = '.*(h|H){6,999}'
-    nonmatching_seq_regex = '.*[a-z]{3,9999}[A-Z]+|.*[A-Z]+[a-z]{3,9999}'
+    # Favor N-terminal tags, since QB3 MacroLab plasmids with His tags and TEV cleavage sites perform best in this configuration
 
-    # more negative scores rank higher
+    # TODO ?go through and change re.match to re.search and alter regex strings appropriately
+
+    TEV_cleaved_Nterm_regex = '^g[has]m{0,1}g{0,1}s{0,1}[A-Z]+[A-Z]{30}'
+    TEV_uncleaved_Nterm_regex = '.*[eE][nNvV][lL][yY]{0,1}[fF][qQ].*[A-Z]{30}'
+    TEV_Cterm_regex = '.*[A-Z]{30}.*[eE][nN][lL][yY][fF][qQ]'
+    histag_Nterm_regex = '.*[hH]{6}.*[A-Z]+'
+    histag_Cterm_regex = '.*[A-Z]+.*[hH]{6}'
+    other_extra_seq_Nterm_regex = '.*[a-z]{3}.*[A-Z]{30}'
+    other_extra_seq_Cterm_regex = '.*[A-Z]{30}.*[a-z]{3}'
+
     authenticity_scores = [0] * len(PDB_construct_seqs_aligned)
+    # construct_data structure: {alignment_ID : [expression_system, tag_type, terminus, authenticity_score], ...} where terminus can be 'Nterm' or 'Cterm'
+    construct_data = { x[0] : None for x in alignment }
+    expr_tag_strings = { x[0] : None for x in alignment }
     for i in range(len(PDB_construct_seqs_aligned)):
-        seq = PDB_construct_seqs_aligned[i][1]
-        if re.match(ghm_regex, seq):
+        ID = PDB_construct_seqs_aligned[i][0]
+        PDB_entry_ID = ID.split('_')[0]
+        seq = PDB_construct_seqs_aligned[i][1].replace('-', '') # remove '-' from sequence for regex searches
+        construct_data[ID] = [ expression_system_data[ID] ]
+
+        # first check for manual exceptions
+        manual_exception_behavior = clab.core.parse_nested_dicts(manual_exceptions, [target, PDB_entry_ID, 'authenticity_score', 'behavior'])
+        if manual_exception_behavior == 'deprioritize authenticity_score':
             authenticity_scores[i] = -10
+            expr_tag_strings[ID] = 'manually deprioritized'
+            construct_data[ID] += [None, None, authenticity_scores[i]]
             continue
-        elif re.match(histag_regex, seq):
-            authenticity_scores[i] = -8
+
+        #if manual_exceptions.get(target):
+        #    if manual_exceptions.get(target).get(PDB_entry_ID):
+        #        if manual_exceptions.get(target).get(PDB_entry_ID).get('authenticity_score'):
+        #            manual_exception_behavior = manual_exceptions.get(target).get(PDB_entry_ID).get('authenticity_score').get('behavior')
+        #            if manual_exception_behavior == 'deprioritize authenticity_score':
+        #                authenticity_scores[i] = 10
+        #                expr_tag_strings[ID] = 'TEV_cleaved_Nterm'
+        #                construct_data[ID] += ['TEV_cleaved', 'Nterm', authenticity_scores[i]]
+        #                continue
+
+        elif re.match(TEV_cleaved_Nterm_regex, seq):
+            authenticity_scores[i] = 10
+            expr_tag_strings[ID] = 'TEV_cleaved_Nterm'
+            construct_data[ID] += ['TEV_cleaved', 'Nterm', authenticity_scores[i]]
             continue
-        elif re.match(nonmatching_seq_regex, seq):
-            authenticity_scores[i] = -4
+        elif re.match(TEV_uncleaved_Nterm_regex, seq):
+            authenticity_scores[i] = 9
+            expr_tag_strings[ID] = 'TEV_uncleaved_Nterm'
+            construct_data[ID] += ['TEV_uncleaved', 'Nterm', authenticity_scores[i]]
             continue
+        elif re.match(TEV_Cterm_regex, seq):
+            authenticity_scores[i] = 8
+            expr_tag_strings[ID] = 'TEV_Cterm'
+            construct_data[ID] += ['TEV', 'Cterm', authenticity_scores[i]]
+            continue
+        elif re.match(histag_Nterm_regex, seq):
+            authenticity_scores[i] = 7
+            expr_tag_strings[ID] = 'Histag_Nterm'
+            construct_data[ID] += ['Histag', 'Nterm', authenticity_scores[i]]
+            continue
+        elif re.match(histag_Cterm_regex, seq):
+            authenticity_scores[i] = 6
+            expr_tag_strings[ID] = 'Histag_Cterm'
+            construct_data[ID] += ['Histag', 'Cterm', authenticity_scores[i]]
+            continue
+        elif re.match(other_extra_seq_Nterm_regex, seq):
+            authenticity_scores[i] = 4
+            expr_tag_strings[ID] = 'other_extra_seq_Nterm'
+            construct_data[ID] += ['other_extra_seq', 'Nterm', authenticity_scores[i]]
+            continue
+        elif re.match(other_extra_seq_Cterm_regex, seq):
+            authenticity_scores[i] = 3
+            expr_tag_strings[ID] = 'other_extra_seq_Cterm'
+            construct_data[ID] += ['other_extra_seq', 'Cterm', authenticity_scores[i]]
+            continue
+        else:
+            authenticity_scores[i] = 0
+            expr_tag_strings[ID] = None
+            construct_data[ID] += [None, None, authenticity_scores[i]]
+            continue
+
+    html_additional_data.append( expr_tag_strings )
+
+    print authenticity_scores
 
     # ===========
     # calculate the number of aas outside the target domain sequence
     # ===========
+
     num_aas_outside_target_domain = [0] * len(PDB_construct_seqs_aligned)
     for i in range(len(PDB_construct_seqs_aligned)):
-        # calculate number of aas present outside the target domain
-        for aa_iter in range(len(PDB_construct_seqs_aligned[i][1])):
-            if PDB_construct_seqs_aligned[i][1][aa_iter] != '-' and ( aa_iter < aligned_UniProt_seq_target_domain_match.start() or aa_iter > aligned_UniProt_seq_target_domain_match.end() ):
-                num_aas_outside_target_domain[i] += 1
+        PDB_chain_ID = PDB_construct_seqs_aligned[i][0]
+        # to get the total number of aas in the PDB construct, we take the mapping of that sequence against the UniProt sequence (derived from SIFTS data, not an alignment)
+        # get this from the PDB construct sequence mapped (using SIFTS data - not an alignment) against the UniProt seq coords
+        PDB_construct_start_UniProt_coords = re.search('[A-Za-z]', PDB_seqs_aln_vs_UniProt_conflicts[PDB_chain_ID]).start()
+        PDB_construct_end_UniProt_coords = len(PDB_seqs_aln_vs_UniProt_conflicts[PDB_chain_ID]) - re.search('[A-Z]', PDB_seqs_aln_vs_UniProt_conflicts[PDB_chain_ID][::-1]).start()
+        # this calculation will include '-' and 'x' chars within the span
+        PDB_construct_len = PDB_construct_end_UniProt_coords - PDB_construct_start_UniProt_coords + 1
+        num_aas_outside_target_domain[i] = PDB_construct_len - target_domain_len
 
     # ===========
     # score the alignment quality for the target domain sequence
@@ -308,14 +333,35 @@ for t in range(len(targets_data)):
         aln_scores[i] = 0 - clab.align.score_aln(UniProt_canon_seq_target_domain_seq, PDB_seq_target_domain_seq) # subtract from 0 to reverse ordering
 
     # ===========
-    # rank the PDB constructs based firstly on the authenticity likelihood, then the alignment score, and finally on the number of aas outside the target domain sequence
+    # make any modifications to the various scores based on manually defined exceptions
     # ===========
-    # dict_for_sorting structure: { 'sequence' : (authenticity_score, alignment_score, num_aas_outside_target_domain), ... }
-    dict_for_sorting = { x[1] : (authenticity_scores[i], aln_scores[i], num_aas_outside_target_domain[i]) for i, x in enumerate(PDB_construct_seqs_aligned) }
-    # PDB_construct_seqs_aligned structure: [ ['PDB_ID', 'sequence'], ... ]
-    PDB_construct_seqs_aligned = sorted( PDB_construct_seqs_aligned, key = lambda x: dict_for_sorting[x[1]])
+    #target_manual_exceptions = manual_exceptions.get(target)
+    #if target_manual_exceptions != None:
+    #    for PDB_entry_ID in target_manual_exceptions.keys():
+    #        authenticity_scores
+
+    #    for i in range(len(PDB_construct_seqs_aligned)):
+    #        ID = PDB_construct_seqs_aligned[i][0]
+    #        PDB_entry_ID = PDB_chain_ID.split('_')[0]
+    #        PDB_manual_exceptions = target_manual_exceptions.get(PDB_entry_ID)
+    #        if PDB_manual_exceptions != None:
+    #            manual_exception_behavior = PDB_manual_exceptions.get('behavior')
+    #            if manual_exception_behavior == 'deprioritize authenticity_scores':
+    #                authenticity_scores[i] = -10
+
+    #raise Exception
+
+    # ===========
+    # sort the PDB constructs based firstly on the authenticity_score (construct authenticity likelihood), then the alignment score, and finally on the number of aas outside the target domain sequence
+    # ===========
+    # dict_for_sorting structure: { sequence : (authenticity_score, alignment_score, num_aas_outside_target_domain), ... }
+    # negate values for reverse sorting
+    dict_for_sorting = { x[0] : (-authenticity_scores[i], aln_scores[i], num_aas_outside_target_domain[i]) for i, x in enumerate(PDB_construct_seqs_aligned) }
+    print dict_for_sorting
+    # PDB_construct_seqs_aligned structure: [ ['PDB_chain_ID', 'sequence'], ... ]
+    PDB_construct_seqs_aligned = sorted( PDB_construct_seqs_aligned, key = lambda x: dict_for_sorting[x[0]])
     sorted_alignment += PDB_construct_seqs_aligned
-    top_PDB_ID = PDB_construct_seqs_aligned[0][0]
+    top_PDB_chain_ID = PDB_construct_seqs_aligned[0][0]
 
     # ===========
     # generate custom set of css classes which will be used to highlight target domain of UniProt sequence in red ('c4')
@@ -329,7 +375,7 @@ for t in range(len(targets_data)):
     # ===========
     sorted_alignment_seqs = [ x[1] for x in sorted_alignment ]
     sorted_alignment_IDs = [ x[0] for x in sorted_alignment ]
-    alignment_html = generate_html_from_alignment(target, sorted_alignment_seqs, sorted_alignment_IDs, additional_data_fields=additional_data, aa_css_class_list=aa_css_class_list_UniProt_seq)
+    alignment_html = generate_html_from_alignment(target, sorted_alignment_seqs, sorted_alignment_IDs, additional_data_fields=html_additional_data, aa_css_class_list=aa_css_class_list_UniProt_seq)
 
     # add the alignment html to the main html tree
     for child in alignment_html.getchildren():
@@ -341,33 +387,347 @@ for t in range(len(targets_data)):
     ofilename = os.path.join(html_alignments_dir, target + '.html')
     write_output(ofilename, output_html_tree)
 
-    # Add top PDB ID to targets_data dicts
-    targets_data[t][target].append(top_PDB_ID)
+    # ===========
+    # find the "construct target region" (the central portion of the construct with sequence matching the target protein sequence, i.e. excluding expression tags etc.)
+    # ===========
+
+    # get this from the PDB construct sequence mapped (using SIFTS data - not an alignment) against the UniProt seq coords
+    # desired span is from the first upper-case character to the last
+
+    top_PDB_seq_aln_vs_UniProt_conflicts = PDB_seqs_aln_vs_UniProt_conflicts[top_PDB_chain_ID]
+    regex_match_forward = re.search('[A-Z]', top_PDB_seq_aln_vs_UniProt_conflicts)
+    top_PDB_seq_aln_vs_UniProt_conflicts_reverse = top_PDB_seq_aln_vs_UniProt_conflicts[::-1]
+    regex_match_backward = re.search('[A-Z]', top_PDB_seq_aln_vs_UniProt_conflicts_reverse)
+    construct_target_region_start_UniProt_coords = regex_match_forward.start()
+    construct_target_region_end_UniProt_coords = len(top_PDB_seq_aln_vs_UniProt_conflicts) - regex_match_backward.end()
+    construct_target_region_seq = top_PDB_seq_aln_vs_UniProt_conflicts[ construct_target_region_start_UniProt_coords : construct_target_region_end_UniProt_coords + 1]
+
+    #print construct_target_region_seq
+    #print sorted_alignment_seqs[0]
+    #print sorted_alignment_seqs[2]
+
+    # now get the construct target region span in the coordinates of the alignment
+    # do this by constructing a regex which accounts for the presence of '-' chars, and searching it against the aligned construct sequence
+    # ignore '-' chars existing within construct_target_region_seq (which shouldn't be there according to the PDB standard, but frequently are, as SEQRES records often contain the observed sequence rather than the experimental sequence)
+
+    construct_target_region_regex = ''.join([ aa + '-*' for aa in construct_target_region_seq if aa != '-' ])[:-2] # ignore last '-*'
+    regex_match = re.search(construct_target_region_regex, sorted_alignment_seqs[2])
+    try:
+        construct_target_region_start_aln_coords = regex_match.start()
+    except Exception as e:
+        print UniProt_canon_seq_target_domain_seq
+        print construct_target_region_seq
+        print sorted_alignment_seqs[2]
+        print sorted_alignment_seqs[2].replace('-', '')
+        raise e
+    construct_target_region_end_aln_coords = regex_match.end() - 1
+
+    # now get the aligned plasmid sequence for the same span
+    construct_target_region_aln_plasmid_seq = sorted_alignment_seqs[1][ construct_target_region_start_aln_coords : construct_target_region_end_aln_coords + 1 ]
+    # now get the (non-aligned) plasmid sequence; just need to remove '-' chars and convert conflicts back to upper case
+    construct_target_region_plasmid_seq = construct_target_region_aln_plasmid_seq.replace('-', '').upper()
+    # now get the start and end for the construct target region in the coords of the original plasmid seq
+    regex_match = re.search(construct_target_region_plasmid_seq, str(plasmid_aa_seqs[target_NCBI_GeneID]))
+    construct_target_region_start_plasmid_coords = regex_match.start()
+    construct_target_region_end_plasmid_coords = regex_match.end() - 1
+
+    # ===========
+    # add data to targets_results
+    # ===========
+
+    # And the top PDB ID to targets_data
+    target_results[target].append(nmatching_PDB_structures)
+    target_results[target].append(top_PDB_chain_ID)
+    # And the construct_data for the top_PDB_chain_ID
+    target_results[target].append(construct_data[top_PDB_chain_ID])
+    # And the Gene ID
+    target_results[target].append(target_NCBI_GeneID)
+    # Add the plasmid sequence corresponding to the construct target region, and the start and end aa coordinates
+    target_results[target].append(construct_target_region_start_plasmid_coords)
+    target_results[target].append(construct_target_region_end_plasmid_coords)
+    target_results[target].append(construct_target_region_plasmid_seq)
+
+    return target_results
+
+
+
+
+
+
 
 # ===========
-# print and write file containing sorted targets with details on PDB structure selection
+# Main
 # ===========
 
-print ''
+if __name__ == '__main__':
 
-PDB_selections_text = ''
-PDB_selections_text += '= Targets sorted by number of PDB structures with matching expression system tag =\n\n'
-PDB_selections_text += '%18s  %24s  %16s\n' % ('target', 'nmatching_PDB_structures', 'top_PDB_chain_ID')
-PDB_selections_text += '%18s  %24s  %16s\n' % ('______', '________________________', '________________')
+    # ===========
+    # Set up directories
+    # ===========
 
-for target_dict in targets_data:
-    target = target_dict.keys()[0]
-    # For some reason, target_dict.values()[0][0] (nmatching_PDB_structures) needs to be referenced directly - assigning to a variable beforehand results in a value of 0. No idea why.
-    if target_dict.values()[0][0] == 0 or len(target_dict.values()[0]) < 2:
-        continue
-    top_PDB_ID = target_dict.values()[0][1]
-    PDB_selections_text += '%18s  %24d  %16s\n' % (target, target_dict.values()[0][0], top_PDB_ID)
+    analysis_dir = 'analysis'
+    output_toplevel_dir = os.path.join(analysis_dir, 'PDB_construct_selection')
+    html_alignments_dir = os.path.join(output_toplevel_dir, 'alignments')
+    if not os.path.exists(output_toplevel_dir):
+        os.mkdir(output_toplevel_dir)
+    if not os.path.exists(html_alignments_dir):
+        os.mkdir(html_alignments_dir)
 
-PDB_selections_text += '\nTotal targets with > 0 matching PDB structures: %d\n' % sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 0])
-PDB_selections_text += 'Total targets with > 1 matching PDB structures: %d\n' % sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 1])
+    # ===========
+    # Parse DB
+    # ===========
 
-print PDB_selections_text
+    DB_path = os.path.join('database', 'database-stage.xml')
+    DB_root = etree.parse(DB_path).getroot()
+    nentries = len(DB_root)
 
-with open(output_selections_filepath, 'w') as output_selections_file:
-    output_selections_file.write(PDB_selections_text)
+    # ===========
+    # Target selection
+    # ===========
+
+    if targets == 'All':
+        targets = [ domain_node.get('target_id') for domain_node in DB_root.findall('entry/UniProt/domains/domain[@target_id]') ]
+
+    desired_expression_system_regex = 'E.* COLI'
+
+    # ===========
+    # Parse manual exceptions file
+    # ===========
+    import yaml
+    manual_exceptions = yaml.load( open(manual_exceptions_filepath, 'r').read() )
+
+    # ===========
+    # Sort targets based on number of PDB structures with matching expression systems
+    # ===========
+
+    # targets_data and targets_results structure:[ { targetID : data } , ... ] where data will be constructed as [nmatching_PDB_structures, top_PDB_chain_ID, construct_data ]
+    targets_data = []
+
+    for target in targets:
+        # get DB entry
+        DB_domain = DB_root.find('entry/UniProt/domains/domain[@target_id="%s"]' % target)
+        DB_entry = DB_domain.getparent().getparent().getparent()
+
+        # get PDB structures
+        matching_PDB_structures = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]' % desired_expression_system_regex, extensions = { (None, 'match_regex'): match_regex } )
+        targets_data.append( { target : [ len(matching_PDB_structures) ] } )
+
+    #targets_data = sorted( targets_nmatching_PDB_structures, key = lambda x:x.values()[0][0], reverse=True )
+
+    # Print the sorted targets and the number of PDB structures with matching expression system
+    print ''
+    print '= Targets sorted by number of PDB structures with matching expression system tag =\n'
+    print '%18s %24s' % ('target', 'nmatching_PDB_structures')
+    print '%18s %24s' % ('______', '________________________')
+    for target_dict in targets_data:
+        target = target_dict.keys()[0]
+        nmatching_PDB_structures = target_dict.values()[0][0]
+        if nmatching_PDB_structures == 0:
+            continue
+        print '%18s %24d' % (target, nmatching_PDB_structures)
+
+    print ''
+    print 'Total targets with > 0 matching PDB structures:', sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 0])
+    print 'Total targets with > 1 matching PDB structures', sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 1])
+
+    # ===========
+    # Get Harvard plasmid library sequences
+    # ===========
+
+    plasmid_library_dir = os.path.join('external-data', 'Harvard-DFHCC-HIP_human_kinase_collection-pJP1520')
+    Harvard_plasmid_library_filepath = os.path.join(plasmid_library_dir, 'Mehle_Kinase_VS1_pJP1520_new_plates.xlsx')
+
+    wb = openpyxl.load_workbook(Harvard_plasmid_library_filepath)
+    sheet_ranges = wb.get_sheet_by_name(name = 'Kinase_VS1_pJP1520_new_plates')
+    nrows = sheet_ranges.get_highest_row()
+    plasmid_aa_seqs = {}
+    plasmid_dna_seqs = {}
+    for row in range(2,nrows):
+        NCBI_GeneID = sheet_ranges.cell('H%d' % row).value    # type(int)
+        Symbol = sheet_ranges.cell('I%d' % row).value
+        dna_seq = sheet_ranges.cell('L%d' % row).value 
+        if len(dna_seq) % 3 != 0:
+            print 'WARNING: length of DNA sequence not divisible by 3, for plasmid with Gene Symbol %s and NCBI Gene ID %s' % (Symbol, NCBI_GeneID)
+        # Translate to DNA sequence (don't include stop codon)
+        aa_seq = Bio.Seq.Seq(dna_seq, Bio.Alphabet.generic_dna).translate(to_stop=True)
+        #if len(dna_seq) % 3 != 0:
+        #    print aa_seq
+        plasmid_aa_seqs[NCBI_GeneID] = aa_seq
+        plasmid_dna_seqs[NCBI_GeneID] = dna_seq
+
+    plasmid_NCBI_GeneIDs = plasmid_aa_seqs.keys()
+
+    print ''
+
+    # ===========
+    # iterate through targets
+    # ===========
+
+    from multiprocessing import Pool
+    pool = Pool()
+    targets_results = pool.map(process_target, range(len(targets_data)))
+    print targets_results[0]
+
+    # ===========
+    # sort targets based firstly on the PDB construct authenticity score, and secondly on the number of PDB constructs with the desired expression system
+    # ===========
+    # targets_results structure:[ { targetID : data } , ... ] where data is constructed as [nmatching_PDB_structures, top_PDB_chain_ID, construct_data ], where construct_data is constructed as [expression_system, tag_type, tag_loc, authenticity_score]
+    # negate values for reverse sorting
+    dict_for_sorting = { target_dict.keys()[0] : [ -target_dict.values()[0][2][3], -target_dict.values()[0][0] ] for target_dict in targets_results }
+    # PDB_construct_seqs_aligned structure: [ ['PDB_chain_ID', 'sequence'], ... ]
+    targets_results = sorted( targets_results, key = lambda x: dict_for_sorting[x.keys()[0]] )
+    print targets_results[0]
+
+    # ===========
+    # print and write file containing sorted targets with details on PDB structure selection
+    # ===========
+
+    print ''
+
+    PDB_selections_text = ''
+    PDB_selections_text += '= Targets sorted by number of PDB structures with matching expression system tag =\n\n'
+    PDB_selections_text += '%18s  %24s  %16s  %23s  %14s  %30s\n' % ('target', 'nmatching_PDB_structures', 'top_PDB_chain_ID', 'detected_expression_tag', 'authenticity_score', 'expression_system')
+    PDB_selections_text += '%18s  %24s  %16s  %23s  %14s  %30s\n' % ('______', '________________________', '________________', '_______________________', '__________________', '_________________')
+
+    ntargets_zero_or_more_PDB = 0
+    ntargets_one_or_more_PDB = 0
+    ntargets_zero_or_more_PDB_expr_tag = 0
+    ntargets_one_or_more_PDB_expr_tag = 0
+    for t, target_dict in enumerate(targets_results):
+        # Add a line after the 96th target
+        if t == 96:
+            PDB_selections_text += ('=' * len(PDB_selections_text.split('\n')[2])) + '\n'
+
+        # ignore targets with no matching PDB structures or plasmid sequence, or authenticity_score of 0
+        if target_dict == None:
+            continue
+        # (Note: ror some reason, target_dict.values()[0][0] (nmatching_PDB_structures) needs to be referenced directly - assigning to a variable beforehand results in a value of 0. No idea why.)
+        if target_dict.values()[0][0] == 0 or len(target_dict.values()[0]) < 2:
+            continue
+
+        target = target_dict.keys()[0]
+        top_PDB_chain_ID = target_dict.values()[0][1]
+        construct_data = target_dict.values()[0][2]
+        if construct_data[1] == None:
+            expr_tag_string = 'None'
+        else:
+            expr_tag_string = construct_data[1] + '_' + construct_data[2]
+        PDB_selections_text += '%18s  %24d  %16s  %23s  %14d  %30s\n' % (target, target_dict.values()[0][0], top_PDB_chain_ID, expr_tag_string, construct_data[3], construct_data[0])
+        if target_dict.values()[0][0] > 0:
+            ntargets_zero_or_more_PDB += 1
+            if construct_data[1] != None:
+                ntargets_zero_or_more_PDB_expr_tag += 1
+        if target_dict.values()[0][0] > 1:
+            ntargets_one_or_more_PDB += 1
+            if construct_data[1] != None:
+                ntargets_one_or_more_PDB_expr_tag += 1
+
+    PDB_selections_text += '\nTotal targets with plasmid and > 0 matching PDB structures: %d\n' % ntargets_zero_or_more_PDB
+    PDB_selections_text += 'Total targets with plasmid and > 1 matching PDB structures: %d\n' % ntargets_one_or_more_PDB
+    PDB_selections_text += 'Total targets with plasmid and > 0 matching PDB structures and a detected expr_tag: %d\n' % ntargets_zero_or_more_PDB_expr_tag
+    PDB_selections_text += 'Total targets with plasmid and > 1 matching PDB structures and a detected expr_tag: %d\n' % ntargets_one_or_more_PDB_expr_tag
+
+    print PDB_selections_text
+
+    with open(output_selections_filepath, 'w') as output_selections_file:
+        output_selections_file.write(PDB_selections_text)
+
+    # ===========
+    # write .xlsx spreadsheet containing the top 96 targets and necessary details for expression testing
+    # ===========
+
+    wb = Workbook()
+    ws = wb.get_active_sheet()
+    ws.title = output_Excel_filename[0 : output_Excel_filename.find('.xlsx')]
+
+    # Also print data to a csv file
+    #csv_filepath = output_Excel_filepath[0 : output_Excel_filepath.find('.xlsx')] + '.txt'
+    #with open(csv_filepath, 'w') as csv_file:
+    #csv_file.write('Construct index, construct start residue (1-based aa), construct end residue, construct aa sequence, construct DNA sequence (from Harvard DF/HCC library of pJP1520 kinase plasmids)\n')
+
+    headings = ['targetID', 'GeneID', 'expression tag location', 'aa_start', 'aa_end', 'aa_seq', 'dna_seq']
+    for h in range(len(headings)):
+        heading_cell = ws.cell(row=0, column=h)
+        heading_cell.value = headings[h]
+
+    t_iter = 0
+    ntargets_selected = 0
+    while True:
+
+        targetID = targets_results[t_iter].keys()[0]
+
+        #print t_iter, ndesired_targets
+        #print targets_results[t_iter]
+
+        if targets_results[t_iter][targetID][0] == 0:
+            t_iter += 1
+            if t_iter + 1 > ndesired_targets:
+                break
+            continue
+
+        top_PDB_chain_ID = targets_results[t_iter][targetID][1]
+
+        top_exp_tag_type = targets_results[t_iter][targetID][2]
+
+        target_NCBI_GeneID = targets_results[t_iter][targetID][3]
+        plasmid_aa_seq = plasmid_aa_seqs[target_NCBI_GeneID]
+        plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
+
+        construct_aa_start = targets_results[t_iter][targetID][4]
+        construct_aa_end = targets_results[t_iter][targetID][5]
+        construct_aa_seq = targets_results[t_iter][targetID][6]
+
+        # Build spreadsheeet
+
+        ID = targetID + '_' + top_PDB_chain_ID
+        ID_cell = ws.cell(row=ntargets_selected+1, column=0)
+        ID_cell.value = ID
+
+        GeneID_cell = ws.cell(row=ntargets_selected+1, column=1)
+        GeneID_cell.value = target_NCBI_GeneID
+        
+        exp_tag_loc = targets_results[t_iter][targetID][2][1]
+        exp_tag_loc_cell = ws.cell(row=ntargets_selected+1, column=2)
+        exp_tag_loc_cell.value = exp_tag_loc
+
+        # residue span: 1-based aa coordinates
+        construct_aa_start_cell = ws.cell(row=ntargets_selected+1, column=3)
+        construct_aa_end_cell = ws.cell(row=ntargets_selected+1, column=4)
+        construct_aa_start_cell.value = construct_aa_start + 1
+        construct_aa_end_cell.value = construct_aa_end + 1
+        
+        # aa_seq
+        construct_aa_seq_cell = ws.cell(row=ntargets_selected+1, column=5)
+        construct_aa_seq_cell.value = construct_aa_seq
+
+        # dna_seq
+        plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
+        construct_dna_seq = plasmid_dna_seq[ construct_aa_start * 3 : (construct_aa_end + 1) * 3 ]
+        construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=6)
+        construct_dna_seq_cell.value = construct_dna_seq
+
+        if len(construct_dna_seq) % 3 != 0:
+            raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was', len(construct_dna_seq) % 3
+
+        t_iter += 1
+        ntargets_selected += 1
+        if t_iter + 1 > ndesired_targets:
+            break
+
+        # XXX old
+        
+        #title_cell.value = '%d-%d' % (plate_seq_starts_flat[i], plate_seq_ends_flat[i])
+        #seq_cell = ws.cell(row=i, column=1)
+        #construct_aa_seq = uniprot_seq[ plate_seq_starts_flat[i] - 1 : plate_seq_ends_flat[i] ] # DEBUG
+        #construct_dna_seq = macrolab_dna_seq[ ( plate_seq_starts_flat[i] - 1 ) * 3 : plate_seq_ends_flat[i] * 3 ]
+        #translated_construct_dna_seq = Seq(construct_dna_seq, IUPAC.unambiguous_dna).translate() # DEBUG
+        ##print clab.align.seq_comparator(construct_aa_seq, translated_construct_dna_seq) # DEBUG
+        ##print plate_seq_ends_flat[i] - plate_seq_starts_flat[i] + 1, len(construct_dna_seq)/3, len(construct_dna_seq) % 3 # DEBUG
+        #seq_cell.value = construct_dna_seq
+        #top_construct_span = targets_data[t][targetID][4]
+
+        #csv_file.write('%d,%d,%d,%s,%s\n' % (i, plate_seq_starts_flat[i], plate_seq_ends_flat[i], construct_aa_seq, construct_dna_seq))
+
+    # Save spreadsheet
+    wb.save(output_Excel_filepath)
 
