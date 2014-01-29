@@ -304,8 +304,6 @@ def process_target(t):
 
     html_additional_data.append( expr_tag_strings )
 
-    print authenticity_scores
-
     # ===========
     # calculate the number of aas outside the target domain sequence
     # ===========
@@ -357,7 +355,6 @@ def process_target(t):
     # dict_for_sorting structure: { sequence : (authenticity_score, alignment_score, num_aas_outside_target_domain), ... }
     # negate values for reverse sorting
     dict_for_sorting = { x[0] : (-authenticity_scores[i], aln_scores[i], num_aas_outside_target_domain[i]) for i, x in enumerate(PDB_construct_seqs_aligned) }
-    print dict_for_sorting
     # PDB_construct_seqs_aligned structure: [ ['PDB_chain_ID', 'sequence'], ... ]
     PDB_construct_seqs_aligned = sorted( PDB_construct_seqs_aligned, key = lambda x: dict_for_sorting[x[0]])
     sorted_alignment += PDB_construct_seqs_aligned
@@ -434,6 +431,8 @@ def process_target(t):
     # ===========
     # add data to targets_results
     # ===========
+
+    # targets_results structure:[ { targetID : data } , ... ] where data is constructed as [nmatching_PDB_structures, top_PDB_chain_ID, construct_data ], where construct_data is constructed as [expression_system, tag_type, tag_loc, authenticity_score]
 
     # And the top PDB ID to targets_data
     target_results[target].append(nmatching_PDB_structures)
@@ -512,24 +511,6 @@ if __name__ == '__main__':
         matching_PDB_structures = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]' % desired_expression_system_regex, extensions = { (None, 'match_regex'): match_regex } )
         targets_data.append( { target : [ len(matching_PDB_structures) ] } )
 
-    #targets_data = sorted( targets_nmatching_PDB_structures, key = lambda x:x.values()[0][0], reverse=True )
-
-    # Print the sorted targets and the number of PDB structures with matching expression system
-    print ''
-    print '= Targets sorted by number of PDB structures with matching expression system tag =\n'
-    print '%18s %24s' % ('target', 'nmatching_PDB_structures')
-    print '%18s %24s' % ('______', '________________________')
-    for target_dict in targets_data:
-        target = target_dict.keys()[0]
-        nmatching_PDB_structures = target_dict.values()[0][0]
-        if nmatching_PDB_structures == 0:
-            continue
-        print '%18s %24d' % (target, nmatching_PDB_structures)
-
-    print ''
-    print 'Total targets with > 0 matching PDB structures:', sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 0])
-    print 'Total targets with > 1 matching PDB structures', sum([1 for target_dict in targets_data if target_dict.values()[0][0] > 1])
-
     # ===========
     # Get Harvard plasmid library sequences
     # ===========
@@ -566,7 +547,6 @@ if __name__ == '__main__':
     from multiprocessing import Pool
     pool = Pool()
     targets_results = pool.map(process_target, range(len(targets_data)))
-    print targets_results[0]
 
     # ===========
     # sort targets based firstly on the PDB construct authenticity score, and secondly on the number of PDB constructs with the desired expression system
@@ -576,7 +556,6 @@ if __name__ == '__main__':
     dict_for_sorting = { target_dict.keys()[0] : [ -target_dict.values()[0][2][3], -target_dict.values()[0][0] ] for target_dict in targets_results }
     # PDB_construct_seqs_aligned structure: [ ['PDB_chain_ID', 'sequence'], ... ]
     targets_results = sorted( targets_results, key = lambda x: dict_for_sorting[x.keys()[0]] )
-    print targets_results[0]
 
     # ===========
     # print and write file containing sorted targets with details on PDB structure selection
@@ -645,7 +624,7 @@ if __name__ == '__main__':
     #with open(csv_filepath, 'w') as csv_file:
     #csv_file.write('Construct index, construct start residue (1-based aa), construct end residue, construct aa sequence, construct DNA sequence (from Harvard DF/HCC library of pJP1520 kinase plasmids)\n')
 
-    headings = ['targetID', 'GeneID', 'expression tag location', 'aa_start', 'aa_end', 'aa_seq', 'dna_seq']
+    headings = ['targetID', 'GeneID', 'expression tag location', 'aa_start', 'aa_end', 'aa_seq', 'dna_start', 'dna_end', 'dna_seq']
     for h in range(len(headings)):
         heading_cell = ws.cell(row=0, column=h)
         heading_cell.value = headings[h]
@@ -670,12 +649,12 @@ if __name__ == '__main__':
         top_exp_tag_type = targets_results[t_iter][targetID][2]
 
         target_NCBI_GeneID = targets_results[t_iter][targetID][3]
-        plasmid_aa_seq = plasmid_aa_seqs[target_NCBI_GeneID]
-        plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
-
         construct_aa_start = targets_results[t_iter][targetID][4]
-        construct_aa_end = targets_results[t_iter][targetID][5]
+        construct_aa_end = targets_results[t_iter][targetID][5] # this refers to the last aa in 0-based aa coordinates
         construct_aa_seq = targets_results[t_iter][targetID][6]
+
+        construct_dna_start = (construct_aa_start * 3)
+        construct_dna_end = (construct_aa_end * 3) + 2 # this refers to the last nucleotide in 0-based nucleotide coordinates
 
         # Build spreadsheeet
 
@@ -686,11 +665,11 @@ if __name__ == '__main__':
         GeneID_cell = ws.cell(row=ntargets_selected+1, column=1)
         GeneID_cell.value = target_NCBI_GeneID
         
-        exp_tag_loc = targets_results[t_iter][targetID][2][1]
+        exp_tag_loc = targets_results[t_iter][targetID][2][2]
         exp_tag_loc_cell = ws.cell(row=ntargets_selected+1, column=2)
         exp_tag_loc_cell.value = exp_tag_loc
 
-        # residue span: 1-based aa coordinates
+        # residue span: 1-based inclusive aa coordinates
         construct_aa_start_cell = ws.cell(row=ntargets_selected+1, column=3)
         construct_aa_end_cell = ws.cell(row=ntargets_selected+1, column=4)
         construct_aa_start_cell.value = construct_aa_start + 1
@@ -700,10 +679,16 @@ if __name__ == '__main__':
         construct_aa_seq_cell = ws.cell(row=ntargets_selected+1, column=5)
         construct_aa_seq_cell.value = construct_aa_seq
 
+        # DNA span: 1-based inclusive dna nucleotide coordinates
+        construct_dna_start_cell = ws.cell(row=ntargets_selected+1, column=6)
+        construct_dna_end_cell = ws.cell(row=ntargets_selected+1, column=7)
+        construct_dna_start_cell.value = construct_dna_start + 1
+        construct_dna_end_cell.value = construct_dna_end + 1
+        
         # dna_seq
-        plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
-        construct_dna_seq = plasmid_dna_seq[ construct_aa_start * 3 : (construct_aa_end + 1) * 3 ]
-        construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=6)
+        orig_plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
+        construct_dna_seq = orig_plasmid_dna_seq[ construct_dna_start : construct_dna_end + 1 ]
+        construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=8)
         construct_dna_seq_cell.value = construct_dna_seq
 
         if len(construct_dna_seq) % 3 != 0:
