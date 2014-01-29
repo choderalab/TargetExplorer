@@ -1,0 +1,25 @@
+--- #Manual exceptions
+CDK2_HUMAN_D0:
+    4BCP:
+        comment: >
+            Confirmed E coli expression and construct sequence. They used a
+            GST-tag with TEV protease cleavage site.
+
+    3QHW:
+        authenticity_score:
+            behavior: deprioritize authenticity_score
+            comment: >
+                TEV_cleaved_Nterm ('gh' sequence); one-domain protein; full-length
+                construct except two residues at C-term; most other PDB constructs are
+                full-length; paper indicates "full-length"; 3QHW authors seem to have input the
+                observed sequence in the SEQRES records (including the expression tag)
+
+    3QHR:
+        authenticity_score:
+            behavior: deprioritize authenticity_score
+            comment: >
+                As for 3QHW
+
+MK14_HUMAN_D0:
+    3K3I:
+
