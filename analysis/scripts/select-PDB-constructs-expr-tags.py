@@ -32,6 +32,11 @@ output_Excel_filepath = os.path.join(results_dir, output_Excel_filename)
 output_selections_filepath = os.path.join(results_dir, output_selections_filename)
 manual_exceptions_filepath = os.path.join(results_dir, manual_exceptions_filename)
 
+html_alignments_dir = os.path.join(results_dir, 'alignments')
+
+css_filename = 'seqlib.cs'
+css_filepath = os.path.join(html_alignments_dir, css_filename)
+
 # ===========
 # function definitions
 # ===========
@@ -120,7 +125,8 @@ def process_target(t):
     output_html_body = output_html_tree.find('body')
     css_link = output_html_tree.find('head/link')
     css_link.set('type','text/css')
-    css_path = os.path.join('..', '..', '..', 'TargetExplorer', 'seqlib.cs')
+    #css_path = os.path.join('..', '..', '..', 'TargetExplorer', 'seqlib.cs')
+    css_path = os.path.join(css_filename)
     css_link.set('href',css_path)
     css_link.set('rel','stylesheet')
 
@@ -437,10 +443,8 @@ if __name__ == '__main__':
     # ===========
 
     analysis_dir = 'analysis'
-    output_toplevel_dir = os.path.join(analysis_dir, 'PDB_construct_selection')
-    html_alignments_dir = os.path.join(output_toplevel_dir, 'alignments')
-    if not os.path.exists(output_toplevel_dir):
-        os.mkdir(output_toplevel_dir)
+    if not os.path.exists(results_dir):
+        os.mkdir(results_dir)
     if not os.path.exists(html_alignments_dir):
         os.mkdir(html_alignments_dir)
 
@@ -466,6 +470,11 @@ if __name__ == '__main__':
     # ===========
     import yaml
     manual_exceptions = yaml.load( open(manual_exceptions_filepath, 'r').read() )
+
+    # ===========
+    # Parse manual exceptions file
+    # ===========
+    clab.core.write_css_stylesheet(css_filepath)
 
     # ===========
     # Sort targets based on number of PDB structures with matching expression systems
