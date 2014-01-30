@@ -120,7 +120,7 @@ def process_target(t):
     output_html_body = output_html_tree.find('body')
     css_link = output_html_tree.find('head/link')
     css_link.set('type','text/css')
-    css_path = os.path.abspath( os.path.join('TargetExplorer', 'seqlib.cs') )
+    css_path = os.path.join('..', '..', '..', 'TargetExplorer', 'seqlib.cs')
     css_link.set('href',css_path)
     css_link.set('rel','stylesheet')
 
@@ -251,16 +251,7 @@ def process_target(t):
             construct_data[ID] += [None, None, authenticity_scores[i]]
             continue
 
-        #if manual_exceptions.get(target):
-        #    if manual_exceptions.get(target).get(PDB_entry_ID):
-        #        if manual_exceptions.get(target).get(PDB_entry_ID).get('authenticity_score'):
-        #            manual_exception_behavior = manual_exceptions.get(target).get(PDB_entry_ID).get('authenticity_score').get('behavior')
-        #            if manual_exception_behavior == 'deprioritize authenticity_score':
-        #                authenticity_scores[i] = 10
-        #                expr_tag_strings[ID] = 'TEV_cleaved_Nterm'
-        #                construct_data[ID] += ['TEV_cleaved', 'Nterm', authenticity_scores[i]]
-        #                continue
-
+        # now use regexes to check for the presence of expression tags, and use this information to set the authenticity_scores
         elif re.match(TEV_cleaved_Nterm_regex, seq):
             authenticity_scores[i] = 10
             expr_tag_strings[ID] = 'TEV_cleaved_Nterm'
@@ -329,25 +320,6 @@ def process_target(t):
         PDB_seq_target_domain_seq = PDB_construct_seqs_aligned[i][1][ aligned_UniProt_seq_target_domain_match.start() : aligned_UniProt_seq_target_domain_match.end() ]
         # compare using PAM matrix
         aln_scores[i] = 0 - clab.align.score_aln(UniProt_canon_seq_target_domain_seq, PDB_seq_target_domain_seq) # subtract from 0 to reverse ordering
-
-    # ===========
-    # make any modifications to the various scores based on manually defined exceptions
-    # ===========
-    #target_manual_exceptions = manual_exceptions.get(target)
-    #if target_manual_exceptions != None:
-    #    for PDB_entry_ID in target_manual_exceptions.keys():
-    #        authenticity_scores
-
-    #    for i in range(len(PDB_construct_seqs_aligned)):
-    #        ID = PDB_construct_seqs_aligned[i][0]
-    #        PDB_entry_ID = PDB_chain_ID.split('_')[0]
-    #        PDB_manual_exceptions = target_manual_exceptions.get(PDB_entry_ID)
-    #        if PDB_manual_exceptions != None:
-    #            manual_exception_behavior = PDB_manual_exceptions.get('behavior')
-    #            if manual_exception_behavior == 'deprioritize authenticity_scores':
-    #                authenticity_scores[i] = -10
-
-    #raise Exception
 
     # ===========
     # sort the PDB constructs based firstly on the authenticity_score (construct authenticity likelihood), then the alignment score, and finally on the number of aas outside the target domain sequence
@@ -692,26 +664,12 @@ if __name__ == '__main__':
         construct_dna_seq_cell.value = construct_dna_seq
 
         if len(construct_dna_seq) % 3 != 0:
-            raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was', len(construct_dna_seq) % 3
+            raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
 
         t_iter += 1
         ntargets_selected += 1
         if t_iter + 1 > ndesired_targets:
             break
-
-        # XXX old
-        
-        #title_cell.value = '%d-%d' % (plate_seq_starts_flat[i], plate_seq_ends_flat[i])
-        #seq_cell = ws.cell(row=i, column=1)
-        #construct_aa_seq = uniprot_seq[ plate_seq_starts_flat[i] - 1 : plate_seq_ends_flat[i] ] # DEBUG
-        #construct_dna_seq = macrolab_dna_seq[ ( plate_seq_starts_flat[i] - 1 ) * 3 : plate_seq_ends_flat[i] * 3 ]
-        #translated_construct_dna_seq = Seq(construct_dna_seq, IUPAC.unambiguous_dna).translate() # DEBUG
-        ##print clab.align.seq_comparator(construct_aa_seq, translated_construct_dna_seq) # DEBUG
-        ##print plate_seq_ends_flat[i] - plate_seq_starts_flat[i] + 1, len(construct_dna_seq)/3, len(construct_dna_seq) % 3 # DEBUG
-        #seq_cell.value = construct_dna_seq
-        #top_construct_span = targets_data[t][targetID][4]
-
-        #csv_file.write('%d,%d,%d,%s,%s\n' % (i, plate_seq_starts_flat[i], plate_seq_ends_flat[i], construct_aa_seq, construct_dna_seq))
 
     # Save spreadsheet
     wb.save(output_Excel_filepath)
