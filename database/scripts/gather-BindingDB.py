@@ -94,7 +94,7 @@ bindingdb_matches_filepath = os.path.join(bindingdb_data_dir, 'tmp-bindingdb-mat
 
 #if not os.path.exists(bindingdb_matches_filepath): # XXX DEBUG
 if True:
-    print 'First pass through BindingDB data with grep... - extracting all lines which match UniProt ACs in the DB (takes a while - approx. 1 hr on a 2012 MBP.'
+    print 'First pass through BindingDB data with grep... - extracting all lines which match UniProt ACs in the DB (performance can be variable - testing has indicated approx. 1 hr on a 2012 MBP, but only 2 mins or so on a Linux machine; probably due to different GNU grep versions)'
     with open(bindingdb_all_data_filepath, 'r') as bindingdb_all_data_file:
         subprocess.call('%(grep_path)s -E "%(regex_search)s" %(bindingdb_all_data_filepath)s > %(bindingdb_matches_filepath)s' % vars(), shell=True)
 
@@ -163,10 +163,10 @@ if run_mode == 'stage':
         diff_output = clab.DB.diff_DB_comparison_strings(DBold_comparison_string, DB_comparison_string)
 
         if len(diff_output) > 0:
-            print 'Comparison of latest NCBI Gene data with data in %s indicates changes. File will be overwritten. Lines in diff comparison: %s' % (DBstage_filepath, len(diff_output))
+            print 'Comparison of latest BindingDB data with data in %s indicates changes. File will be overwritten. Lines in diff comparison: %s' % (DBstage_filepath, len(diff_output))
             data_modified = True
         else:
-            print 'Comparison of latest NCBI Gene data with data in %s indicates no changes. File will be rewritten with updated gather_bindingdb_late_run attrib, but other data will not be modified.' % DB_out_filepath
+            print 'Comparison of latest BindingDB data with data in %s indicates no changes. File will be rewritten with updated gather_bindingdb_late_run attrib, but other data will not be modified.' % DB_out_filepath
             data_modified = False
 
 #==============================================================================
