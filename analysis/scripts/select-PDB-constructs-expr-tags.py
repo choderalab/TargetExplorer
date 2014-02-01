@@ -251,7 +251,7 @@ def process_target(t):
 
         # first check for manual exceptions
         manual_exception_behavior = clab.core.parse_nested_dicts(manual_exceptions, [target, PDB_entry_ID, 'authenticity_score', 'behavior'])
-        if manual_exception_behavior == 'deprioritize authenticity_score':
+        if manual_exception_behavior == 'downweight':
             authenticity_scores[i] = -10
             expr_tag_strings[ID] = 'manually deprioritized'
             construct_data[ID] += [None, None, authenticity_scores[i]]

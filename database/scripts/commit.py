@@ -6,7 +6,7 @@
 #
 
 #==============================================================================
-# IMPORTS
+# Imports
 #==============================================================================
 
 import sys, datetime, os, re
@@ -14,7 +14,7 @@ import choderalab as clab
 from lxml import etree
 
 #==============================================================================
-# PARAMETERS
+# Parameters
 #==============================================================================
 
 if '-write' in sys.argv:
@@ -35,7 +35,7 @@ now = datetime.datetime.utcnow()
 now_datestamp = now.strftime(clab.DB.datestamp_format_string)
 
 #==============================================================================
-# READ MAIN AND STAGED VERSIONS OF DATABASE
+# Read main and staged versions of database
 #==============================================================================
 
 parser = etree.XMLParser(remove_blank_text=True)
@@ -46,7 +46,7 @@ if not os.path.exists(DBstage_filepath):
 DBstage_root = etree.parse(DBstage_filepath, parser).getroot()
 
 #==============================================================================
-# CHECK WHETHER THE STAGED DATABASE IS READY TO BE COMMITTED
+# Check whether the staged database is ready to be committed
 #==============================================================================
 
 DBstage_datestamps_dict = { key : datetime.datetime.strptime(DBstage_root.attrib[key], clab.DB.datestamp_format_string) for key in DBstage_root.keys() if re.match('.*_last_.*', key) }
@@ -136,7 +136,7 @@ else:
         data_modified = False
 
 #==============================================================================
-# UPDATE VERSIONIDS AND DATESTAMPS
+# Update versionids and datestamps
 #==============================================================================
 
 DBstage_root.set('commit_last_run', now_datestamp)
@@ -150,7 +150,7 @@ else:
 DBstage_root.set('versionID', str(versionID))
 
 #==============================================================================
-# WRITE DATABASE TO FILE
+# Write database to file
 #==============================================================================
 
 if run_mode == 'write':
