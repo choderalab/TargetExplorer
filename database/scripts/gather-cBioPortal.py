@@ -2,7 +2,7 @@
 #
 # Daniel L. Parton <partond@mskcc.org> - 29 Aug 2013
 #
-# TODO: Write metadata
+# TODO: Write external-data metadata
 # TODO: Implement a scheme for assigning IDs to mutants.
 # TODO: Map mutation sequence positions to UniProt canonical sequence.
 

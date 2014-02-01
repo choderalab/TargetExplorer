@@ -11,7 +11,7 @@
 
 import sys, os, datetime
 from lxml import etree
-import choderalab as clab
+import TargetExplorer as clab
 
 # =================
 # Parameters
@@ -27,7 +27,7 @@ else:
 print 'Running in mode: %s' % run_mode
 
 database_dir = 'database'
-external_data_dir = os.path.join(clab.kinome_rootdir, 'database', 'external-data')
+external_data_dir = 'external-data'
 ncbi_gene_data_dir = os.path.join(external_data_dir, 'NCBI_Gene')
 gene2pubmed_filepath = os.path.join(ncbi_gene_data_dir, 'gene2pubmed.gz')
 
@@ -78,30 +78,36 @@ else:
 
 # Check when the Gene2PubMed file was retrieved and download a new one if time elapsed is more than days_elapsed_for_force_download
 external_data_metadata_root = etree.parse(clab.DB.external_data_metadata_filepath, parser).getroot()
-gene2pubmed_datestamp = external_data_metadata_root.find('NCBI_Gene/gene2pubmed').get('datestamp')
-gene2pubmed_datestamp = datetime.datetime.strptime(gene2pubmed_datestamp, clab.DB.datestamp_format_string)
-time_elapsed = now - gene2pubmed_datestamp
-if (time_elapsed.days > days_elapsed_for_force_download) or (force_gene2pubmed_download == True):
-    if time_elapsed.days > days_elapsed_for_force_download:
-        print 'Gene2PubMed file is %d days old.' % time_elapsed.days
-    if force_gene2pubmed_download:
-        print 'Forcing retrieval of new Gene2PubMed file.'
-        download_new_gene2pubmed = True
-    else:
-        while True:
-            user_response = raw_input('Suggest retrieving new Gene2PubMed file from NCBI server. Proceed? [y] ')
-            if user_response in ['y', '']:
-                download_new_gene2pubmed = True
-                break
-            elif user_response == 'n':
-                download_new_gene2pubmed = False
-                break
-            else:
-                print 'User input not understood. Please try again.'
+gene2pubmed_node = external_data_metadata_root.find('NCBI_Gene/gene2pubmed')
+if gene2pubmed_node == None:
+    print 'Gene2PubMed node not found in external_data metadata file.'
+    print 'Retrieving new Gene2PubMed file from NCBI server...'
+    clab.NCBI_Gene.retrieve_gene2pubmed(gene2pubmed_filepath)
+else:
+    gene2pubmed_datestamp = gene2pubmed_node.get('datestamp')
+    gene2pubmed_datestamp = datetime.datetime.strptime(gene2pubmed_datestamp, clab.DB.datestamp_format_string)
+    time_elapsed = now - gene2pubmed_datestamp
+    if (time_elapsed.days > days_elapsed_for_force_download) or (force_gene2pubmed_download == True):
+        if time_elapsed.days > days_elapsed_for_force_download:
+            print 'Gene2PubMed file is %d days old.' % time_elapsed.days
+        if force_gene2pubmed_download:
+            print 'Forcing retrieval of new Gene2PubMed file.'
+            download_new_gene2pubmed = True
+        else:
+            while True:
+                user_response = raw_input('Suggest retrieving new Gene2PubMed file from NCBI server. Proceed? [y] ')
+                if user_response in ['y', '']:
+                    download_new_gene2pubmed = True
+                    break
+                elif user_response == 'n':
+                    download_new_gene2pubmed = False
+                    break
+                else:
+                    print 'User input not understood. Please try again.'
 
-    if download_new_gene2pubmed:
-        print 'Retrieving new Gene2PubMed file from NCBI server...'
-        clab.NCBI_Gene.retrieve_gene2pubmed(gene2pubmed_filepath)
+        if download_new_gene2pubmed:
+            print 'Retrieving new Gene2PubMed file from NCBI server...'
+            clab.NCBI_Gene.retrieve_gene2pubmed(gene2pubmed_filepath)
 
 print ''
 

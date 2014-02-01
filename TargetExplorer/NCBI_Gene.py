@@ -1,4 +1,5 @@
 import urllib2, re, sys, os, gzip, datetime
+import TargetExplorer
 from lxml import etree
 
 parser = etree.XMLParser(remove_blank_text=True)
@@ -15,6 +16,9 @@ def retrieve_gene2pubmed(gene2pubmed_gzfilepath):
     # Update metadata
     metadata_root = etree.parse(TargetExplorer.DB.external_data_metadata_filepath, parser).getroot()
     gene2pubmed_node = metadata_root.find('NCBI_Gene/gene2pubmed')
+    if gene2pubmed_node == None:
+        NCBI_Gene_node = etree.SubElement(metadata_root, 'NCBI_Gene')
+        gene2pubmed_node = etree.SubElement(NCBI_Gene_node, 'gene2pubmed')
     gene2pubmed_node.set('filepath', gene2pubmed_gzfilepath)
     now = datetime.datetime.utcnow()
     datestamp = now.strftime(TargetExplorer.DB.datestamp_format_string)
