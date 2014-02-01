@@ -5,4 +5,7 @@
   <NCBI_Gene>
     <gene2pubmed filepath="external-data/NCBI_Gene/gene2pubmed.gz" datestamp="2014-02-01 17:47:56 UTC"/>
   </NCBI_Gene>
+  <BindingDB>
+    <local_data_file filename="BindingDB_All.tab" filepath="external-data/BindingDB/BindingDB_All.tab" datestamp="2014-02-01 18:03:36 UTC"/>
+  </BindingDB>
 </external_data>

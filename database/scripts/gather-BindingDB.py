@@ -9,7 +9,7 @@
 
 import sys, os, subprocess, datetime
 from lxml import etree
-import choderalab as clab
+import TargetExplorer as clab
 from multiprocessing import Pool
 
 # =================
@@ -28,7 +28,7 @@ else:
 print 'Running in mode: %s' % run_mode
 
 database_dir = 'database'
-external_data_dir = os.path.join(clab.kinome_rootdir, 'database', 'external-data')
+external_data_dir = os.path.join('external-data')
 bindingdb_data_dir = os.path.join(external_data_dir, 'BindingDB')
 if not os.path.exists(bindingdb_data_dir):
     os.mkdir(bindingdb_data_dir)
