@@ -7,7 +7,8 @@ import os
 from lxml import etree
 import TargetExplorer as clab
 
-DB_version = 'database-stage.xml'
+analysis_dir = 'analysis'
+DB_version = 'database.xml'
 DB_filepath = os.path.join('database', DB_version)
 DB_root = etree.parse(DB_filepath).getroot()
 nentries = len(DB_root)
@@ -132,27 +133,30 @@ def print_attribs(query_data_node, query_attrib):
 # Print kinDB_ids in order of target_priority
 # ==========================
 
-def write_kinases_prioritized():
-    ofilepath = 'kinase-priorities.txt'
+def write_targets_prioritized():
+    ofilepath = os.path.join(analysis_dir, 'targets-prioritized.txt')
+
+    print 'Writing target priorities to %s' % ofilepath
+
     targets = []
     for k in range(nentries):
-        gene = DB_root[k]
-        pk_domains = gene.findall('uniprot/pk_domain')
-        target_score_node = gene.find('target_score')
+        DB_entry = DB_root[k]
+        target_domains = DB_entry.findall('UniProt/domains/domain[@targetID]')
+        target_score_node = DB_entry.find('target_score')
         pubs_score = int(float(target_score_node.get('publications')))
         cbioportal_mutations_score = target_score_node.get('cBioPortal_mutations')
-        disease_assocs = len(gene.findall('uniprot/disease_association'))
+        disease_assocs = len(DB_entry.findall('UniProt/disease_associations/disease_association'))
 
-        nbioassays = len(gene.findall('bioassays/bioassay'))
+        nbioassays = len(DB_entry.findall('bioassays/bioassay'))
 
-        for p in pk_domains:    
-            kinDB_id = p.get('kinDB_id')
-            pk_domain_score_node = gene.find('target_score/pk_domain[@kinDB_id="%(kinDB_id)s"]' % vars())
-            target_score = float( pk_domain_score_node.get('target_score') )
-            family = p.getparent().get('family')
-            pk_domain_length = p.get('length')
-            npk_pdbs = pk_domain_score_node.get('npk_pdbs')
-            pseudogene_score = float(pk_domain_score_node.get('pseudogene'))
+        for target_domain in target_domains:    
+            targetID = target_domain.get('targetID')
+            target_domain_score_node = DB_entry.find('target_score/domain[@targetID="%s"]' % targetID)
+            target_score = float( target_domain_score_node.get('target_score') )
+            family = DB_entry.find('UniProt').get('family')
+            target_domain_length = target_domain.get('length')
+            nPDBs = target_domain_score_node.get('nPDBs')
+            pseudogene_score = float(target_domain_score_node.get('pseudogene'))
             if pseudogene_score == 0.:
                 pseudogene = ''
             else:
@@ -160,25 +164,27 @@ def write_kinases_prioritized():
 
             # Add info the target_info dict
             target_info = {}
-            target_info['kinDB_id'] = kinDB_id
+            target_info['targetID'] = targetID
             target_info['target_score'] = target_score
             target_info['family'] = family
-            target_info['pk_domain_length'] = pk_domain_length
+            target_info['target_domain_length'] = target_domain_length
             target_info['pubs'] = pubs_score
             target_info['muts'] = cbioportal_mutations_score
             target_info['disease'] = disease_assocs
             target_info['nbioassays'] = nbioassays
-            target_info['npk_pdbs'] = npk_pdbs
+            target_info['nPDBs'] = nPDBs
             target_info['pseudogene'] = pseudogene
             targets.append(target_info)
 
     sorted_targets = sorted(targets, key=lambda x: x['target_score'], reverse=True)
     with open(ofilepath, 'w') as ofile:
-        ofile.write( '{:<25}  {:<12}    {:<10}  {:<9}  {:<6}    {:<8}  {:<8}  {:<15}  {:<10}  {:<10}\n'.format('kinDB_id', 'target_score', 'family', 'pk_length', 'npubs', '%muts', 'npk_pdbs', 'ndisease_assocs', 'nbioassays', 'pseudogene') )
+        ofile.write( '{:<25}  {:<12}    {:<10}  {:<13}  {:<6}    {:<8}  {:<8}  {:<15}  {:<10}  {:<10}\n'.format('targetID', 'target_score', 'family', 'domain_length', 'npubs', '%muts', 'nPDBs', 'ndisease_assocs', 'nbioassays', 'pseudogene') )
         for t, target in enumerate(sorted_targets):
-            ofile.write( '{0[kinDB_id]:<25}  {0[target_score]: 12.1f}    {0[family]:<10}  {0[pk_domain_length]:<9}  {0[pubs]:<6}    {0[muts]:<8}  {0[npk_pdbs]:<8}  {0[disease]:<15}  {0[nbioassays]:<10}  {0[pseudogene]:<10}\n'.format(target) )
+            ofile.write( '{0[targetID]:<25}  {0[target_score]: 12.1f}    {0[family]:<10}  {0[target_domain_length]:<13}  {0[pubs]:<6}    {0[muts]:<8}  {0[nPDBs]:<8}  {0[disease]:<15}  {0[nbioassays]:<10}  {0[pseudogene]:<10}\n'.format(target) )
             if t == 9:
                 ofile.write( '-'*130 + '\n' )
+
+    print 'Done.'
 
 # ==========================
 # Print kinases with pk_pdb entries, but no scop entries
@@ -395,12 +401,12 @@ def print_pdbs_by_UniProt_entry_name(entry_name):
 # Put function calls here
 # ==========================
 #print_attribs('kinase/pk_pdb/expression_data', 'EXPRESSION_SYSTEM')
-#write_kinases_prioritized()
+write_targets_prioritized()
 #print_GeneIDs()
 #print_pubs()
 #print_bioassays_kinase('ABL1_HUMAN')
 #print_bioassay_types()
 #print_bioassay_seqs(['SRC_HUMAN'])
 #print_kinases_expressed_in('ESCHERICHIA')
-print_pdbs_by_UniProt_entry_name('ABL1_HUMAN')
+#print_pdbs_by_UniProt_entry_name('ABL1_HUMAN')
 

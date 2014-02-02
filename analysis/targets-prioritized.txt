@@ -1,0 +1,500 @@
+targetID                   target_score    family      domain_length  npubs     %muts     nPDBs     ndisease_assocs  nbioassays  pseudogene
+EGFR_HUMAN_D0                     100.0    TK          268            3069      4.954     61        1                6377                  
+AKT1_HUMAN_D0                      82.5    AGC         259            1819      1.408     14        5                1725                  
+ERBB2_HUMAN_D0                     81.2    TK          268            1597      2.232     2         6                1733                  
+BRAF_HUMAN_D0                      75.1    TKL         261            1037      7.055     31        8                901                   
+JAK2_HUMAN_D0                      71.7    TK          276            1032      1.971     33        6                1306                  
+MET_HUMAN_D0                       68.4    TK          268            582       2.419     43        6                2319                  
+VGFR2_HUMAN_D0                     67.0    TK          329            606       3.418     34        2                5526                  
+KIT_HUMAN_D0                       66.1    TK          349            713       2.595     6         4                1677                  
+RET_HUMAN_D0                       65.7    TK          293            615       2.471     7         9                675                   
+SRC_HUMAN_D0                       65.3    TK          254            987       0.826     11        1                3610                  
+----------------------------------------------------------------------------------------------------------------------------------
+FGFR1_HUMAN_D0                     62.4    TK          290            317       1.794     15        7                1250                  
+ABL1_HUMAN_D0                      62.3    TK          252            601       1.644     21        2                2746                  
+FGFR3_HUMAN_D0                     61.9    TK          290            354       1.651     1         14               378                   
+MK14_HUMAN_D0                      61.3    CMGC        285            969       0.702     199       0                5224                  
+INSR_HUMAN_D0                      60.9    TK          276            486       2.488     16        5                829                   
+MK01_HUMAN_D0                      59.0    CMGC        289            1466      0.760     32        0                788                   
+FGFR2_HUMAN_D0                     58.5    TK          290            395       2.877     19        9                277                   
+IGF1R_HUMAN_D0                     57.1    TK          276            633       2.025     16        1                1595                  
+TGFR1_HUMAN_D0                     56.4    TKL         291            361       1.357     13        3                1074                  
+VGFR1_HUMAN_D0                     56.4    TK          332            445       3.150     1         2                1060                  
+ALK_HUMAN_D0                       55.8    TK          277            268       3.187     23        5                499                   
+FLT3_HUMAN_D0                      55.7    TK          334            446       3.682     1         1                1644                  
+LCK_HUMAN_D0                       55.4    TK          254            411       1.265     33        1                2331                  
+CHK2_HUMAN_D0                      55.2    CAMK        267            417       1.666     36        4                477                   
+GSK3B_HUMAN_D0                     54.3    CMGC        285            746       1.323     42        0                2174                  
+CDK2_HUMAN_D0                      53.7    CMGC        283            569       0.690     341       0                3509                  
+CDK4_HUMAN_D0                      52.6    CMGC        290            354       0.807     5         1                1652                  
+RAF1_HUMAN_D0                      52.3    TKL         261            422       1.281     1         2                630                   
+PLK1_HUMAN_D0                      52.2                253            404       1.648     12        1                1188                  
+CSF1R_HUMAN_D0                     51.8    TK          329            139       1.742     11        3                750                   
+FAK1_HUMAN_D0                      51.7    TK          259            569       1.826     15        1                658                   
+AKT2_HUMAN_D0                      51.6    AGC         258            209       1.311     16        3                629                   
+KPCA_HUMAN_D0                      51.5    AGC         259            664       1.733     1         0                1485                  
+CDK1_HUMAN_D0                      51.2    CMGC        284            585       0.812     0         0                1995                  
+MK08_HUMAN_D0                      50.7    CMGC        296            712       1.212     24        0                1190                  
+TGFR2_HUMAN_D0                     50.4    TKL         301            352       2.449     0         4                195                   
+TIE2_HUMAN_D0                      50.4    TK          273            183       2.230     6         2                749                   
+AURKB_HUMAN_D0                     50.0                251            260       0.752     1         1                1280                  
+VGFR3_HUMAN_D0                     49.9    TK          329            168       2.464     0         3                426                   
+CHK1_HUMAN_D0                      48.6    CAMK        257            327       1.266     104       0                2312                  
+MP2K1_HUMAN_D0                     48.4    STE         294            286       1.427     30        1                790                   
+LRRK2_HUMAN_D0                     48.0    TKL         260            524       5.617     0         1                215                   
+MK10_HUMAN_D0                      48.0    CMGC        296            86        1.366     36        1                1310                  
+AURKA_HUMAN_D0                     47.9                251            398       0.823     66        0                1709                  
+NTRK1_HUMAN_D0                     47.3    TK          272            251       2.121     3         2                331                   
+KPCD_HUMAN_D0                      47.0    AGC         255            549       1.253     0         0                883                   
+JAK3_HUMAN_D0                      46.8    TK          290            170       1.729     9         1                771                   
+IKKA_HUMAN_D0                      46.5                288            366       1.300     0         1                431                   
+MK03_HUMAN_D0                      46.0    CMGC        289            1011      0.809     1         0                202                   
+KS6A3_HUMAN_D0                     45.8    AGC         260            131       1.413     0         2                375                   
+KS6A3_HUMAN_D1                     45.8    AGC         258            131       1.413     5         2                375                   
+IKKB_HUMAN_D0                      45.7                286            354       1.496     2         0                1153                  
+ITK_HUMAN_D0                       45.7    TK          253            81        1.999     17        1                766                   
+AKT3_HUMAN_D0                      45.4    AGC         258            104       1.401     0         2                377                   
+BTK_HUMAN_D0                       45.4    TK          254            214       1.849     12        2                256                   
+HCK_HUMAN_D0                       45.3    TK          254            181       1.358     17        2                294                   
+STK11_HUMAN_D0                     45.2    CAMK        261            251       2.601     1         3                128                   
+LYN_HUMAN_D0                       45.1    TK          255            310       1.207     1         1                391                   
+TITIN_HUMAN_D0                     44.9    CAMK        255            192       33.918    1         6                0                     
+CDK5_HUMAN_D0                      44.7    CMGC        283            238       0.603     6         0                1453                  
+ZAP70_HUMAN_D0                     44.3    TK          263            264       1.578     3         1                362                   
+KAPCA_HUMAN_D0                     43.6    AGC         255            457       1.041     19        0                592                   
+CSK21_HUMAN_D0                     43.5                286            546       1.196     39        0                442                   
+EPHA2_HUMAN_D0                     43.1    TK          263            173       1.946     1         2                180                   
+TYK2_HUMAN_D0                      43.1    TK          287            139       1.815     1         1                392                   
+TYK2_HUMAN_D1                      43.1    TK          280            139       1.815     10        1                392                   
+CDK9_HUMAN_D0                      43.0    CMGC        297            322       0.694     18        1                259                   
+IRAK4_HUMAN_D0                     42.7    TKL         269            105       0.962     6         2                228                   
+KPCB_HUMAN_D0                      42.7    AGC         259            321       2.127     1         0                631                   
+KSYK_HUMAN_D0                      42.6    TK          261            356       1.370     24        0                615                   
+KPCG_HUMAN_D0                      42.5    AGC         264            155       2.318     0         1                308                   
+BMR1A_HUMAN_D0                     42.3    TKL         292            119       1.501     0         3                119                   
+JAK1_HUMAN_D0                      41.9    TK          279            261       2.167     14        0                634                   
+MAPK2_HUMAN_D0                     41.8    CAMK        262            109       1.097     22        0                1105                  
+FAK2_HUMAN_D0                      41.8    TK          259            248       1.573     10        1                227                   
+PIM1_HUMAN_D0                      41.4    CAMK        253            148       0.904     79        0                927                   
+BMPR2_HUMAN_D0                     41.2    TKL         302            168       1.949     1         2                124                   
+KPCE_HUMAN_D0                      41.2    AGC         261            275       1.506     0         0                575                   
+MK09_HUMAN_D0                      41.2    CMGC        296            185       1.187     2         0                772                   
+DYR1A_HUMAN_D0                     40.9    CMGC        321            110       1.745     5         1                270                   
+FYN_HUMAN_D0                       40.9    TK          254            464       1.483     1         0                312                   
+ROCK1_HUMAN_D0                     40.9    AGC         263            236       2.730     10        0                510                   
+KPCT_HUMAN_D0                      40.8    AGC         255            183       1.881     2         0                654                   
+UFO_HUMAN_D0                       40.5    TK          272            119       1.922     0         1                239                   
+LIMK1_HUMAN_D0                     39.9    TKL         266            92        1.269     1         1                249                   
+MYLK_HUMAN_D0                      39.9    CAMK        256            87        4.104     0         1                175                   
+MP2K2_HUMAN_D0                     39.8    STE         298            162       0.764     1         1                211                   
+TBK1_HUMAN_D0                      39.6                302            138       1.179     9         1                206                   
+EPHB2_HUMAN_D0                     39.5    TK          264            119       2.260     0         1                187                   
+NTRK2_HUMAN_D0                     39.4    TK          270            221       1.881     4         1                144                   
+M3K1_HUMAN_D0                      39.2    STE         266            132       3.431     0         1                146                   
+KC1D_HUMAN_D0                      39.1    CK1         269            79        1.303     9         1                219                   
+EPHA3_HUMAN_D0                     39.0    TK          262            53        3.952     21        1                164                   
+EPHB4_HUMAN_D0                     38.8    TK          285            87        1.630     12        0                592                   
+MERTK_HUMAN_D0                     38.5    TK          272            83        2.006     4         1                176                   
+PDPK1_HUMAN_D0                     38.5    AGC         261            165       0.654     47        0                509                   
+ROS1_HUMAN_D0                      38.5    TK          278            60        4.543     1         1                133                   
+WEE1_HUMAN_D0                      38.1                271            103       0.778     8         0                546                   
+GSK3A_HUMAN_D0                     38.0    CMGC        285            118       1.093     0         0                496                   
+ERBB3_HUMAN_D0                     37.9    TK          258            267       3.051     2         1                79                    
+AURKC_HUMAN_D0                     37.8                251            45        1.228     0         1                185                   
+FGR_HUMAN_D0                       37.7    TK          254            84        1.321     0         1                163                   
+CDKL5_HUMAN_D0                     37.6    CMGC        285            65        1.859     1         2                80                    
+BLK_HUMAN_D0                       37.5    TK          254            63        1.346     0         1                165                   
+BMR1B_HUMAN_D0                     37.4    TKL         291            81        1.156     1         2                81                    
+PIM2_HUMAN_D0                      37.4    CAMK        255            40        0.881     1         0                567                   
+CSKP_HUMAN_D0                      37.3    CAMK        265            85        1.748     8         2                72                    
+MYO3A_HUMAN_D0                     37.3    STE         267            22        4.458     0         1                119                   
+DMPK_HUMAN_D0                      37.2    AGC         269            122       1.157     1         1                134                   
+MARK1_HUMAN_D0                     37.0    CAMK        252            41        2.653     1         1                133                   
+MK12_HUMAN_D0                      36.9    CMGC        285            74        0.805     1         1                152                   
+STK4_HUMAN_D0                      36.9    STE         252            76        1.338     1         1                139                   
+ACVL1_HUMAN_D0                     36.8    TKL         291            119       1.328     1         1                121                   
+ERBB4_HUMAN_D0                     36.7    TK          268            200       5.259     4         0                174                   
+FES_HUMAN_D0                       36.7    TK          262            83        1.316     4         1                131                   
+MP2K3_HUMAN_D0                     36.7    STE         262            77        1.769     0         1                126                   
+ACVR1_HUMAN_D0                     36.6    TKL         295            92        1.309     7         1                125                   
+M4K2_HUMAN_D0                      36.6    STE         258            23        1.088     0         0                483                   
+RIPK2_HUMAN_D0                     36.6    TKL         277            105       1.132     0         0                386                   
+ACV1B_HUMAN_D0                     36.5    TKL         291            65        1.710     0         1                127                   
+KAPCB_HUMAN_D0                     36.5    AGC         255            72        1.228     0         0                405                   
+MUSK_HUMAN_D0                      36.5    TK          282            42        2.150     0         1                129                   
+M3K9_HUMAN_D0                      36.4    STE         269            17        1.758     1         1                143                   
+DDR2_HUMAN_D0                      36.3    TK          287            47        2.041     0         1                124                   
+KS6A5_HUMAN_D0                     36.3    AGC         270            80        1.410     1         0                374                   
+KS6A5_HUMAN_D1                     36.3    AGC         262            80        1.410     2         0                374                   
+STK10_HUMAN_D0                     36.3    STE         259            22        1.822     4         1                136                   
+E2AK2_HUMAN_D0                     36.2                272            271       1.492     3         0                211                   
+IRAK3_HUMAN_D0                     36.2    TKL         288            52        1.307     0         1                131                   
+KS6A1_HUMAN_D0                     36.2    AGC         260            151       1.086     3         0                309                   
+KS6A1_HUMAN_D1                     36.2    AGC         258            151       1.086     2         0                309                   
+MYLK2_HUMAN_D0                     36.0    CAMK        256            27        1.176     0         1                137                   
+PAK3_HUMAN_D0                      36.0    STE         252            48        1.607     0         1                122                   
+CDK7_HUMAN_D0                      35.9    CMGC        284            155       0.829     1         0                298                   
+AVR2B_HUMAN_D0                     35.9    TKL         291            56        1.073     1         1                126                   
+PHKG2_HUMAN_D0                     35.9    CAMK        268            22        1.059     1         1                137                   
+KS6B1_HUMAN_D0                     35.8    AGC         262            247       0.861     10        0                226                   
+MELK_HUMAN_D0                      35.8    CAMK        253            33        1.206     4         1                129                   
+NEK1_HUMAN_D0                      35.8    NEK         255            24        1.727     2         1                123                   
+KPCZ_HUMAN_D0                      35.7    AGC         267            294       1.009     0         0                188                   
+SIK1_HUMAN_D0                      35.7    CAMK        252            26        1.188     0         1                130                   
+LTK_HUMAN_D0                       35.5    TK          277            20        1.281     0         1                125                   
+STK33_HUMAN_D0                     35.5    CAMK        266            16        1.443     0         0                383                   
+KPCD1_HUMAN_D0                     35.3    CAMK        257            151       2.655     0         0                210                   
+PRKX_HUMAN_D0                      35.1    AGC         255            18        0.658     0         1                124                   
+CSK_HUMAN_D0                       35.0    TK          255            193       0.895     3         0                224                   
+KS6A2_HUMAN_D0                     34.8    AGC         260            55        1.988     0         0                277                   
+KS6A2_HUMAN_D1                     34.8    AGC         258            55        1.988     0         0                277                   
+CSK22_HUMAN_D0                     34.7                286            178       0.749     2         0                220                   
+FGFR4_HUMAN_D0                     34.7    TK          289            155       1.493     0         0                214                   
+M3K5_HUMAN_D0                      34.6    STE         259            192       2.385     8         0                170                   
+M3K8_HUMAN_D0                      34.6    STE         251            76        1.068     0         0                277                   
+RN5A_HUMAN_D0                      34.5                222            110       1.835     0         1                73                    
+PAK1_HUMAN_D0                      34.4    STE         252            309       1.021     11        0                139                   
+ACK1_HUMAN_D0                      34.3    TK          260            73        1.583     9         0                249                   
+TTK_HUMAN_D0                       34.3                267            88        2.359     16        0                213                   
+KS6A6_HUMAN_D0                     34.1    AGC         258            32        2.057     0         0                251                   
+KS6A6_HUMAN_D1                     34.1    AGC         258            32        2.057     0         0                251                   
+NEK2_HUMAN_D0                      34.1    NEK         264            81        0.967     20        0                252                   
+IKKE_HUMAN_D0                      33.9                307            106       1.292     0         0                214                   
+MK11_HUMAN_D0                      33.9    CMGC        285            72        0.772     3         0                253                   
+PAK4_HUMAN_D0                      33.9    STE         252            75        0.912     13        0                246                   
+PLK3_HUMAN_D0                      33.9                253            50        1.278     1         0                252                   
+KAPCG_HUMAN_D0                     33.8    AGC         255            41        1.204     0         0                257                   
+RK_HUMAN_D0                        33.6    AGC         266            36        1.197     0         1                81                    
+YES_HUMAN_D0                       33.6    TK          254            111       1.019     0         0                207                   
+CLK1_HUMAN_D0                      33.5    CMGC        317            36        1.214     2         0                245                   
+KCC2D_HUMAN_D0                     33.5    CAMK        259            64        0.801     2         0                237                   
+KS6A4_HUMAN_D0                     33.5    AGC         269            33        0.842     0         0                260                   
+KS6A4_HUMAN_D1                     33.5    AGC         264            33        0.842     0         0                260                   
+MAK_HUMAN_D0                       33.5    CMGC        281            24        1.472     0         1                79                    
+PTK6_HUMAN_D0                      33.5    TK          255            78        1.008     0         0                222                   
+RIPK4_HUMAN_D0                     33.5    TKL         265            19        1.611     0         1                79                    
+ROCK2_HUMAN_D0                     33.5    AGC         263            96        2.263     1         0                179                   
+ICK_HUMAN_D0                       33.4    CMGC        281            24        1.326     0         1                80                    
+PIM3_HUMAN_D0                      33.3    CAMK        254            26        0.385     0         0                268                   
+KPCL_HUMAN_D0                      33.1    AGC         260            115       1.297     1         1                58                    
+DAPK1_HUMAN_D0                     33.0    CAMK        263            162       2.642     31        0                128                   
+MP2K4_HUMAN_D0                     33.0    STE         266            148       2.519     3         0                136                   
+TYRO3_HUMAN_D0                     33.0    TK          273            45        1.334     0         0                211                   
+EPHB1_HUMAN_D0                     32.8    TK          264            54        3.413     0         0                151                   
+MK07_HUMAN_D0                      32.7    CMGC        293            119       2.059     3         0                147                   
+AAPK1_HUMAN_D0                     32.6    CAMK        253            200       1.125     0         0                128                   
+CLK4_HUMAN_D0                      32.6    CMGC        317            10        1.005     0         0                226                   
+KC1E_HUMAN_D0                      32.6    CK1         269            111       1.026     2         0                170                   
+RIPK1_HUMAN_D0                     32.6    TKL         273            210       1.073     3         0                127                   
+M3K7_HUMAN_D0                      32.5    STE         256            245       1.232     6         0                110                   
+EPHA5_HUMAN_D0                     32.5    TK          262            34        4.317     1         0                135                   
+LIMK2_HUMAN_D0                     32.5    TKL         278            50        1.421     0         0                186                   
+PLK2_HUMAN_D0                      32.5                253            50        1.548     1         0                183                   
+KC1A_HUMAN_D0                      32.4    CK1         269            109       0.872     0         0                167                   
+CTRO_HUMAN_D0                      32.3    AGC         264            37        3.865     0         0                137                   
+NTRK3_HUMAN_D0                     32.3    TK          302            109       2.814     1         0                126                   
+CLK2_HUMAN_D0                      32.2    CMGC        317            32        1.805     1         0                175                   
+AAPK2_HUMAN_D0                     32.1    CAMK        253            125       2.146     3         0                126                   
+DAPK3_HUMAN_D0                     32.1    CAMK        263            36        0.919     4         0                193                   
+EPHA4_HUMAN_D0                     32.1    TK          262            60        2.598     0         0                144                   
+EPHA7_HUMAN_D0                     32.1    TK          262            42        3.237     2         0                139                   
+PKN2_HUMAN_D0                      32.1    AGC         260            58        1.918     0         0                159                   
+TNIK_HUMAN_D0                      32.1    STE         265            28        3.117     1         0                147                   
+GAK_HUMAN_D0                       32.0                275            41        1.871     1         0                163                   
+PLK4_HUMAN_D0                      32.0                254            44        1.548     1         0                170                   
+EPHB3_HUMAN_D0                     31.9    TK          264            31        2.009     0         0                162                   
+MAPK5_HUMAN_D0                     31.9    CAMK        283            32        0.997     0         0                183                   
+SGK1_HUMAN_D0                      31.9    AGC         258            179       1.306     3         0                115                   
+BMX_HUMAN_D0                       31.8    TK          259            55        1.598     2         0                155                   
+EPHA6_HUMAN_D0                     31.8    TK          314            22        3.652     0         0                132                   
+PAK2_HUMAN_D0                      31.8    STE         251            141       1.122     0         0                130                   
+PHKG1_HUMAN_D0                     31.8    CAMK        269            26        1.384     0         0                176                   
+ABL2_HUMAN_D0                      31.7    TK          252            69        2.136     3         0                138                   
+SLK_HUMAN_D0                       31.7    STE         259            27        1.861     4         0                162                   
+TIE1_HUMAN_D0                      31.7    TK          280            42        2.970     0         0                134                   
+MKNK1_HUMAN_D0                     31.6    CAMK        326            53        0.910     1         0                165                   
+MP2K6_HUMAN_D0                     31.6    STE         262            100       0.956     3         0                142                   
+TNI3K_HUMAN_D0                     31.6    TKL         261            22        3.444     0         0                131                   
+AVR2A_HUMAN_D0                     31.5    TKL         294            93        2.281     3         0                120                   
+DYR1B_HUMAN_D0                     31.5    CMGC        321            29        1.181     0         0                166                   
+EPHA8_HUMAN_D0                     31.5    TK          262            29        2.326     1         0                144                   
+M3K11_HUMAN_D0                     31.5    STE         263            71        1.551     0         0                141                   
+PKN1_HUMAN_D0                      31.5    AGC         260            86        1.515     0         0                135                   
+STK3_HUMAN_D0                      31.5    STE         252            59        1.186     2         0                154                   
+KCC4_HUMAN_D0                      31.4    CAMK        255            68        1.522     1         0                139                   
+CDK3_HUMAN_D0                      31.4    CMGC        283            37        0.995     0         0                163                   
+CLK3_HUMAN_D0                      31.4    CMGC        317            28        1.007     5         0                167                   
+DDR1_HUMAN_D0                      31.4    TK          296            105       1.506     3         0                126                   
+FER_HUMAN_D0                       31.4    TK          254            52        2.080     0         0                137                   
+INSRR_HUMAN_D0                     31.4    TK          276            19        3.184     0         0                129                   
+KCC2G_HUMAN_D0                     31.4    CAMK        259            120       0.934     1         0                131                   
+NUAK1_HUMAN_D0                     31.4    CAMK        252            30        1.883     0         0                148                   
+RIOK1_HUMAN_D0                     31.4    RIO-type    300            19        1.421     0         0                164                   
+FRK_HUMAN_D0                       31.3    TK          258            23        1.348     0         0                161                   
+MRCKA_HUMAN_D0                     31.3    AGC         267            29        2.830     0         0                130                   
+LATS1_HUMAN_D0                     31.2    AGC         306            59        2.249     0         0                125                   
+IRAK1_HUMAN_D0                     31.1    TKL         310            203       0.914     0         0                96                    
+KC1G2_HUMAN_D0                     31.1    CK1         271            25        0.779     1         0                165                   
+TEC_HUMAN_D0                       31.1    TK          254            61        1.516     0         0                136                   
+ANKK1_HUMAN_D0                     31.0    TKL         268            85        1.335     0         0                126                   
+DCLK1_HUMAN_D0                     31.0    CAMK        258            44        2.400     0         0                124                   
+KPCD3_HUMAN_D0                     31.0    CAMK        257            46        1.659     0         0                135                   
+MARK2_HUMAN_D0                     31.0    CAMK        252            69        1.403     1         0                131                   
+MK13_HUMAN_D0                      31.0    CMGC        284            55        0.701     4         0                149                   
+EPHA1_HUMAN_D0                     30.9    TK          261            51        2.093     0         0                124                   
+KCC2B_HUMAN_D0                     30.9    CAMK        259            77        0.921     1         0                133                   
+KKCC2_HUMAN_D0                     30.9                282            43        1.049     1         0                144                   
+M4K3_HUMAN_D0                      30.9    STE         258            22        2.096     0         0                135                   
+MKNK2_HUMAN_D0                     30.9    CAMK        305            27        0.533     3         0                161                   
+PAK7_HUMAN_D0                      30.9    STE         252            29        2.406     1         0                125                   
+CDK8_HUMAN_D0                      30.8    CMGC        315            78        1.219     10        0                126                   
+DYRK2_HUMAN_D0                     30.8    CMGC        314            24        1.150     3         0                149                   
+KCC1D_HUMAN_D0                     30.8    CAMK        257            46        1.392     1         0                135                   
+M4K1_HUMAN_D0                      30.8    STE         258            45        1.519     0         0                132                   
+TXK_HUMAN_D0                       30.8    TK          257            25        1.456     0         0                141                   
+CDK16_HUMAN_D0                     30.7    CMGC        282            41        0.838     1         0                143                   
+KCC1A_HUMAN_D0                     30.7    CAMK        257            49        0.699     4         0                144                   
+MRCKB_HUMAN_D0                     30.7    AGC         267            23        2.252     2         0                125                   
+BMP2K_HUMAN_D0                     30.6                266            19        1.938     0         0                129                   
+NLK_HUMAN_D0                       30.6    CMGC        290            49        1.011     0         0                133                   
+SIK2_HUMAN_D0                      30.6    CAMK        252            31        1.642     0         0                131                   
+TESK1_HUMAN_D0                     30.6    TKL         258            16        1.028     0         0                148                   
+AAK1_HUMAN_D0                      30.5                270            30        1.453     0         0                130                   
+CD11B_HUMAN_D0                     30.5    CMGC        286            67        1.455     0         0                117                   
+KGP2_HUMAN_D0                      30.5    AGC         259            37        2.007     0         0                120                   
+LATS2_HUMAN_D0                     30.5    AGC         306            53        1.849     0         0                117                   
+M3K10_HUMAN_D0                     30.5    STE         263            35        1.340     0         0                130                   
+NEK6_HUMAN_D0                      30.5    NEK         266            40        0.615     0         0                143                   
+STK36_HUMAN_D0                     30.5                251            19        1.823     0         0                128                   
+DCLK3_HUMAN_D0                     30.4    CAMK        258            11        1.845     0         0                129                   
+M4K4_HUMAN_D0                      30.4    STE         265            43        1.795     0         0                119                   
+NEK5_HUMAN_D0                      30.4    NEK         256            4         2.387     0         0                122                   
+STK24_HUMAN_D0                     30.4    STE         251            43        1.417     8         0                125                   
+TLK1_HUMAN_D0                      30.4                279            37        1.788     0         0                120                   
+BRSK1_HUMAN_D0                     30.3    CAMK        252            17        1.816     0         0                124                   
+CDK18_HUMAN_D0                     30.3    CMGC        282            29        1.612     0         0                124                   
+KC1G1_HUMAN_D0                     30.3    CK1         272            21        1.013     1         0                138                   
+KKCC1_HUMAN_D0                     30.3                282            29        0.823     0         0                136                   
+M4K5_HUMAN_D0                      30.3    STE         258            24        1.188     0         0                134                   
+NUAK2_HUMAN_D0                     30.3    CAMK        251            28        1.314     0         0                129                   
+NEK9_HUMAN_D0                      30.2    NEK         257            34        1.646     0         0                120                   
+ST17A_HUMAN_D0                     30.2    CAMK        261            12        0.834     0         0                142                   
+ST17B_HUMAN_D0                     30.2    CAMK        261            16        0.933     2         0                138                   
+TSSK1_HUMAN_D0                     30.2    CAMK        261            10        1.582     0         0                129                   
+HIPK2_HUMAN_D0                     30.1    CMGC        329            122       1.859     0         0                88                    
+BRSK2_HUMAN_D0                     30.1    CAMK        252            23        1.296     0         0                127                   
+CDK19_HUMAN_D0                     30.1    CMGC        315            22        1.113     0         0                130                   
+MK04_HUMAN_D0                      30.1    CMGC        293            24        1.503     0         0                122                   
+PAK6_HUMAN_D0                      30.1    STE         252            31        1.107     3         0                127                   
+ADCK4_HUMAN_D0                     30.0                233            13        1.349     0         0                125                   
+CDK14_HUMAN_D0                     30.0    CMGC        285            22        1.655     0         0                117                   
+KC1G3_HUMAN_D0                     30.0    CK1         271            20        1.263     9         0                125                   
+MK06_HUMAN_D0                      30.0    CMGC        297            28        1.238     1         0                123                   
+MK15_HUMAN_D0                      30.0    CMGC        292            20        0.968     0         0                130                   
+NEK7_HUMAN_D0                      30.0    NEK         266            20        1.421     2         0                122                   
+RIOK3_HUMAN_D0                     30.0    RIO-type    269            20        1.278     0         0                124                   
+ST38L_HUMAN_D0                     30.0    AGC         294            28        0.956     0         0                127                   
+CD11A_HUMAN_D0                     29.9    CMGC        221            54        0.871     0         0                117                   
+DAPK2_HUMAN_D0                     29.9    CAMK        263            20        0.909     6         0                129                   
+MARK4_HUMAN_D0                     29.9    CAMK        252            30        1.347     0         0                118                   
+STK16_HUMAN_D0                     29.9                274            20        1.007     1         0                126                   
+STK25_HUMAN_D0                     29.9    STE         251            36        0.705     1         0                126                   
+KPCI_HUMAN_D0                      29.8    AGC         269            161       1.386     4         0                79                    
+PMYT1_HUMAN_D0                     29.8                250            30        0.700     1         0                125                   
+ST32B_HUMAN_D0                     29.8                261            14        1.198     0         0                122                   
+TLK2_HUMAN_D0                      29.8                280            25        1.348     0         0                118                   
+TNK1_HUMAN_D0                      29.8    TK          262            18        1.312     0         0                121                   
+CDK17_HUMAN_D0                     29.7    CMGC        282            25        1.196     0         0                118                   
+MST4_HUMAN_D0                      29.7    STE         251            31        No data   4         0                134                   
+MYLK4_HUMAN_D0                     29.7    CAMK        256            7         1.174     1         0                124                   
+KCC1G_HUMAN_D0                     29.6    CAMK        255            15        1.101     1         0                119                   
+SRMS_HUMAN_D0                      29.6    TK          259            6         0.798     0         0                127                   
+RIOK2_HUMAN_D0                     29.5    RIO-type    282            22        1.145     0         0                115                   
+KC1AL_HUMAN_D0                     29.4    CK1         269            9         1.475     0         0                110                   
+ST32C_HUMAN_D0                     29.3                261            9         0.970     0         0                117                   
+EPHB6_HUMAN_D0                     29.2    TK          250            45        2.885     0         0                80                    
+CDK6_HUMAN_D0                      29.1    CMGC        288            198       0.712     12        0                67                    
+TAOK1_HUMAN_D0                     28.9    STE         254            39        1.673     0         0                90                    
+ERN1_HUMAN_D0                      28.7                262            70        1.550     1         0                79                    
+HIPK1_HUMAN_D0                     28.7    CMGC        329            25        1.823     0         0                87                    
+M3K19_HUMAN_D0                     28.7    STE         264            4         2.867     0         0                82                    
+M3K2_HUMAN_D0                      28.6    STE         261            51        1.816     0         0                80                    
+SIK3_HUMAN_D0                      28.6    CAMK        252            30        2.345     0         0                79                    
+M3K3_HUMAN_D0                      28.5    STE         261            61        1.435     0         0                80                    
+MP2K7_HUMAN_D0                     28.5    STE         261            82        1.128     1         0                78                    
+GRK4_HUMAN_D0                      28.4    AGC         263            44        1.679     0         0                80                    
+HIPK3_HUMAN_D0                     28.4    CMGC        329            23        1.797     0         0                83                    
+MAST1_HUMAN_D0                     28.4    AGC         274            15        2.382     0         0                79                    
+MLTK_HUMAN_D0                      28.4    STE         262            38        No data   0         0                100                   
+STK38_HUMAN_D0                     28.4    AGC         294            50        1.582     0         0                79                    
+ULK1_HUMAN_D0                      28.3                263            46        1.433     0         0                80                    
+M3K13_HUMAN_D0                     28.2    STE         242            14        2.155     0         0                79                    
+GRK7_HUMAN_D0                      28.1    AGC         264            13        1.829     0         0                80                    
+MYLK3_HUMAN_D0                     28.1    CAMK        256            13        1.854     0         0                80                    
+STK39_HUMAN_D0                     28.1    STE         275            44        1.234     0         0                79                    
+TAOK2_HUMAN_D0                     28.1    STE         254            24        2.280     0         0                73                    
+TAOK3_HUMAN_D0                     28.1    STE         254            18        1.573     0         0                82                    
+WEE2_HUMAN_D0                      28.1                275            7         2.072     0         0                79                    
+ARBK1_HUMAN_D0                     28.0    AGC         263            169       1.196     4         0                54                    
+M3K6_HUMAN_D0                      28.0    STE         259            14        1.715     0         0                80                    
+MATK_HUMAN_D0                      28.0    TK          248            45        1.092     0         0                79                    
+MP2K5_HUMAN_D0                     28.0    STE         244            57        0.933     0         0                77                    
+M3K15_HUMAN_D0                     27.9    STE         257            8         1.784     0         0                79                    
+PRP4B_HUMAN_D0                     27.9    CMGC        320            38        1.824     4         0                72                    
+CDK13_HUMAN_D0                     27.8    CMGC        294            30        1.839     0         0                72                    
+CDKL3_HUMAN_D0                     27.8    CMGC        283            13        1.420     1         0                79                    
+M3K12_HUMAN_D0                     27.7    STE         242            33        1.574     0         0                72                    
+OXSR1_HUMAN_D0                     27.7    STE         275            32        0.948     2         0                79                    
+CDK15_HUMAN_D0                     27.6    CMGC        285            14        1.090     0         0                79                    
+CDKL2_HUMAN_D0                     27.6    CMGC        284            11        1.238     2         0                79                    
+HIPK4_HUMAN_D0                     27.6    CMGC        337            6         1.358     0         0                79                    
+NEK4_HUMAN_D0                      27.6    NEK         256            15        1.682     0         0                74                    
+SGK3_HUMAN_D0                      27.6    AGC         258            41        1.181     0         0                72                    
+ANPRA_HUMAN_D0                     27.4                278            73        1.672     0         0                59                    
+DUSTY_HUMAN_D0                     27.4                255            13        1.545     0         0                72                    
+NEK11_HUMAN_D0                     27.4    NEK         259            15        1.566     0         0                72                    
+NEK3_HUMAN_D0                      27.4    NEK         254            16        1.131     0         0                76                    
+VRK2_HUMAN_D0                      27.4    CK1         291            33        1.109     1         0                72                    
+HUNK_HUMAN_D0                      27.3    CAMK        259            17        1.346     0         0                72                    
+SNRK_HUMAN_D0                      27.3    CAMK        254            18        1.318     0         0                72                    
+STK35_HUMAN_D0                     27.3                329            12        0.631     0         0                79                    
+CDKL1_HUMAN_D0                     27.2    CMGC        284            12        1.081     1         0                73                    
+ULK3_HUMAN_D0                      27.2                257            0         0.716     0         0                80                    
+NIM1_HUMAN_D0                      27.0    CAMK        252            5         No data   0         0                83                    
+ST32A_HUMAN_D0                     27.0                259            8         1.068     1         0                72                    
+SBK1_HUMAN_D0                      26.8                266            5         0.739     0         0                72                    
+SBK3_HUMAN_D0                      26.7                267            3         No data   0         0                79                    
+MARK3_HUMAN_D0                     25.5    CAMK        252            51        1.643     2         0                43                    
+DCLK2_HUMAN_D0                     24.7    CAMK        258            12        1.740     0         0                40                    
+WNK1_HUMAN_D0                      24.2                259            104       3.220     0         2                3                     
+RON_HUMAN_D0                       22.9    TK          264            103       1.742     1         0                21                    
+TESK2_HUMAN_D0                     21.7    TKL         256            11        1.311     0         0                23                    
+HASP_HUMAN_D0                      21.5                315            20        1.130     7         0                22                    
+MAPK3_HUMAN_D0                     20.3    CAMK        261            38        0.649     4         0                17                    
+KGP1_HUMAN_D0                      20.0    AGC         260            132       1.925     0         0                10                    
+BUB1B_HUMAN_D0                     19.4                285            140       2.039     0         3                0                     
+M3K14_HUMAN_D0                     18.7    STE         256            98        1.382     4         0                9                     
+TSSK2_HUMAN_D0                     18.0    CAMK        261            15        1.334     0         0                10                    
+KCC2A_HUMAN_D0                     17.3    CAMK        259            144       0.869     2         0                6                     
+KPCD2_HUMAN_D0                     17.1    CAMK        257            53        1.608     0         0                7                     
+ROR2_HUMAN_D0                      16.4    TK          274            69        2.506     2         2                0                     
+OBSCN_HUMAN_D0                     16.3    CAMK        254            36        8.046     0         1                0                     
+OBSCN_HUMAN_D1                     16.3    CAMK        253            36        8.046     0         1                0                     
+GUC2C_HUMAN_D0                     15.9                261            37        2.411     0         2                0                     
+DYRK3_HUMAN_D0                     15.8    CMGC        314            16        1.357     0         0                6                     
+GUC2D_HUMAN_D0                     15.6                284            57        1.460     0         2                0                     
+VRK1_HUMAN_D0                      15.4    CK1         281            45        1.110     1         1                1                     
+BUB1_HUMAN_D0                      15.1                299            84        1.445     1         0                4                     
+KALRN_HUMAN_D0                     15.1    CAMK        255            50        5.864     0         1                0                     
+NEK8_HUMAN_D0                      14.9    NEK         255            18        1.302     0         2                0                     
+WNK2_HUMAN_D0                      14.9                259            27        2.309     0         0                4                     
+ILK_HUMAN_D0                       14.2    TKL         254            215       1.031     3         0                2                     
+GRK5_HUMAN_D0                      14.0    AGC         263            69        1.688     0         0                3                     
+DYRK4_HUMAN_D0                     13.3    CMGC        297            14        1.815     0         0                3                     
+GRK6_HUMAN_D0                      13.2    AGC         263            56        0.781     3         0                3                     
+M3K4_HUMAN_D0                      13.1    STE         259            33        3.346     0         0                2                     
+WNK4_HUMAN_D0                      12.8                259            62        1.982     0         1                0                     
+ANPRB_HUMAN_D0                     12.7                274            62        1.802     0         1                0                     
+CDK12_HUMAN_D0                     12.7    CMGC        294            36        2.377     0         1                0                     
+PASK_HUMAN_D0                      12.3    CAMK        253            29        2.140     1         0                2                     
+TTBK2_HUMAN_D0                     12.1    CK1         264            27        1.693     0         1                0                     
+AMHR2_HUMAN_D0                     12.0    TKL         316            41        1.199     0         1                0                     
+MINK1_HUMAN_D0                     11.8    STE         265            28        1.361     0         0                2                     
+STRAA_HUMAN_D0                     11.5    STE         311            26        0.812     2         1                0                     
+TOPK_HUMAN_D0                      11.5    STE         291            47        0.554     0         0                2                     
+WNK3_HUMAN_D0                      10.9                259            29        3.114     0         0                1                     
+PI3R4_HUMAN_D0                     10.6                299            21        2.746     0         0                1                     
+ARAF_HUMAN_D0                      10.4    TKL         261            56        1.700     0         0                1                     
+STK31_HUMAN_D0                     10.4                310            9         2.711     0         0                1                     
+ARBK2_HUMAN_D0                      9.9    AGC         263            44        1.221     0         0                1                     
+RIPK3_HUMAN_D0                      9.8    TKL         267            37        1.213     0         0                1                     
+TRIO_HUMAN_D0                       8.1    CAMK        257            40        3.817     0         0                0                     
+SPEG_HUMAN_D0                       7.9    CAMK        254            19        3.879     0         0                0                     
+SPEG_HUMAN_D1                       7.9    CAMK        253            19        3.879     0         0                0                     
+NRK_HUMAN_D0                        7.6    STE         289            9         3.668     0         0                0                     
+MAST4_HUMAN_D0                      7.4    AGC         274            10        3.326     0         0                0                     
+LRRK1_HUMAN_D0                      7.2    TKL         284            25        2.733     0         0                0                     
+MYO3B_HUMAN_D0                      7.2    STE         267            14        2.962     0         0                0                     
+GUC2F_HUMAN_D0                      7.1                281            10        2.858     0         0                0                     
+KSR2_HUMAN_D0                       7.1    TKL         266            23        2.558     1         0                0                     
+LMTK2_HUMAN_D0                      7.1    TK          271            35        2.356     0         0                0                     
+ROR1_HUMAN_D0                       7.1    TK          274            38        2.251     0         0                0                     
+KS6C1_HUMAN_D0                      7.0                263            15        2.561     0         0                0                     
+MAST2_HUMAN_D0                      7.0    AGC         274            36        2.152     0         0                0                     
+ERN2_HUMAN_D0                       6.9                262            13        2.483     0         0                0                     
+KSR1_HUMAN_D0                       6.8    TKL         271            38        1.750     0         0                0                     
+TEX14_HUMAN_D0                      6.8                292            13        2.407     0         0                0                     
+IRAK2_HUMAN_D0                      6.7    TKL         280            44        1.485     0         0                0                     
+TRIB3_HUMAN_D0                      6.7    CAMK        249            71        0.854     0         0                0                     
+ULK4_HUMAN_D0                       6.7                277            18        2.068     0         0                0                     
+EPHAA_HUMAN_D0                      6.6    TK          256            7         2.120     0         0                0                     
+CDK20_HUMAN_D0                      6.4    CMGC        285            20        1.517     0         0                0                     
+MLKL_HUMAN_D0                       6.4                276            13        1.778     0         0                0                     
+MOS_HUMAN_D0                        6.4                282            28        1.392     0         0                0                     
+NEK10_HUMAN_D0                      6.4    NEK         194            10        1.716     0         0                0                     
+PAN3_HUMAN_D0                       6.4                263            16        1.727     0         0                0                     
+SCYL2_HUMAN_D0                      6.4                296            22        1.457     0         0                0                     
+TRIB1_HUMAN_D0                      6.4    CAMK        338            53        0.793     0         0                0                     
+TRIB2_HUMAN_D0                      6.4    CAMK        248            42        1.109     0         0                0                     
+TTBK1_HUMAN_D0                      6.4    CK1         264            12        1.708     3         0                0                     
+KS6B2_HUMAN_D0                      6.3    AGC         262            44        0.884     0         0                0                     
+LMTK1_HUMAN_D0                      6.3    TK          271            18        1.498     0         0                0                     
+MAST3_HUMAN_D0                      6.3    AGC         274            9         1.639     0         0                0                     
+NTKL_HUMAN_D0                       6.3                301            30        1.186     0         0                0                     
+TBCK_HUMAN_D0                       6.3                273            12        1.660     0         0                0                     
+ULK2_HUMAN_D0                       6.3                263            19        1.508     0         0                0                     
+VRK3_HUMAN_D0                       6.3    CK1         292            10        1.586     1         0                0                     
+CAMKV_HUMAN_D0                      6.2    CAMK        263            14        1.349     0         0                0                     
+MRCKG_HUMAN_D0                      6.2    AGC         267            7         1.576     0         0                0                     
+NRBP_HUMAN_D0                       6.2                260            28        1.013     0         0                0                     
+PACE1_HUMAN_D0                      6.2                244            18        1.332     0         0                0                     
+PKN3_HUMAN_D0                       6.2    AGC         260            17        1.271     0         0                0                     
+STYK1_HUMAN_D0                      6.2    TK          271            20        1.203     0         0                0                     
+ACV1C_HUMAN_D0                      6.1    TKL         291            19        1.115     0         0                0                     
+ADCK1_HUMAN_D0                      6.1                313            8         1.325     0         0                0                     
+CDK10_HUMAN_D0                      6.1    CMGC        285            30        0.937     0         0                0                     
+SGK2_HUMAN_D0                       6.1    AGC         258            19        1.171     0         0                0                     
+STK40_HUMAN_D0                      6.1    CAMK        297            16        1.164     0         0                0                     
+UHMK1_HUMAN_D0                      6.1                282            21        1.113     0         0                0                     
+KPSH2_HUMAN_D0                      6.0    CAMK        258            4         1.236     0         0                0                     
+LMTK3_HUMAN_D0                      6.0    TK          279            8         1.270     0         0                0                     
+MOK_HUMAN_D0                        6.0    CMGC        282            22        0.854     0         0                0                     
+SGK71_HUMAN_D0                      6.0                270            6         1.223     0         0                0                     
+STRAB_HUMAN_D0                      6.0    STE         312            17        0.965     0         0                0                     
+TSSK4_HUMAN_D0                      6.0    CAMK        269            9         1.107     0         0                0                     
+KPSH1_HUMAN_D0                      5.9    CAMK        258            14        0.972     0         0                0                     
+PRPK_HUMAN_D0                       5.9                221            22        0.727     0         0                0                     
+TSSK3_HUMAN_D0                      5.9    CAMK        256            7         1.130     0         0                0                     
+TSSK6_HUMAN_D0                      5.9    CAMK        256            8         1.113     0         0                0                     
+CDKL4_HUMAN_D0                      5.8    CMGC        283            2         1.052     0         0                0                     
+CSK23_HUMAN_D0                      5.8                286            19        0.585     0         0                0                     
+KCC1B_HUMAN_D0                      5.8    CAMK        256            9         0.813     0         0                0                     
+SBK2_HUMAN_D0                       5.8                269            3         0.932     0         0                0                     
+ADCK5_HUMAN_D0                      5.7                241            8         0.755     0         0                0                     
+PDK1L_HUMAN_D0                      5.7                327            12        0.681     0         0                0                     
+NRBP2_HUMAN_D0                      5.6                269            5         0.645     0         0                0                     
+RYK_HUMAN_D0                        5.4    TK          274            21        No data   0         0                0                     
+M3KL4_HUMAN_D0                      5.3    STE         278            10        No data   0         0                0                     
+SG223_HUMAN_D0                      5.3                350            11        No data   0         0                0                     
+PGFRB_HUMAN_D0                  -4247.1    TK          363            298       1.997     0         6                2094                  
+PGFRA_HUMAN_D0                  -4258.4    TK          362            333       3.192     0         2                633                   
+E2AK3_HUMAN_D0                  -4269.5                485            86        1.973     2         1                304                   
+ADCK3_HUMAN_D0                  -4275.2                190            19        1.402     0         1                125                   
+CDC7_HUMAN_D0                   -4275.6                517            66        1.179     4         0                316                   
+SRPK1_HUMAN_D0                  -4279.6    CMGC        574            72        1.712     3         0                128                   
+SRPK2_HUMAN_D0                  -4280.8    CMGC        604            38        1.358     1         0                117                   
+E2AK1_HUMAN_D0                  -4281.3                417            33        1.329     0         0                106                   
+SRPK3_HUMAN_D0                  -4283.3    CMGC        487            9         1.056     0         0                79                    
+TAF1_HUMAN_D0                   -4295.6                414            149       3.787     0         1                0                     
+TAF1_HUMAN_D1                   -4295.6                448            149       3.787     0         1                0                     
+PINK1_HUMAN_D0                  -4296.6                356            211       0.848     0         1                0                     
+GWL_HUMAN_D0                    -4298.8    AGC         801            24        1.572     0         1                0                     
+PRKY_HUMAN_D0                   -4299.8    AGC         229            0         0.546     0         1                0           pseudo    
+E2AK4_HUMAN_D0                  -4304.0                412            28        1.988     0         0                0                     
+PXK_HUMAN_D0                    -4304.5                394            20        1.322     0         0                0                     
+PKDCC_HUMAN_D0                  -4304.7                356            11        1.172     0         0                0                     
+ADCK2_HUMAN_D0                  -4305.0                419            9         0.787     0         0                0                     
+RPKL1_HUMAN_D0                  -4305.0                395            6         0.868     0         0                0                     
+PEAK1_HUMAN_D0                  -4305.4                363            18        No data   0         0                0                     
+PDPK2_HUMAN_D0                  -4305.6    AGC         261            0         No data   0         0                0           pseudo    
+SG494_HUMAN_D0                  -4305.6                168            0         No data   0         0                0                     
