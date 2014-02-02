@@ -16,7 +16,7 @@ from multiprocessing import Pool
 # Parameters
 # =================
 
-gather_script_ID = 'BindingDB'
+DB_script_ID = 'BindingDB'
 
 if '-stage' in sys.argv:
     run_mode = 'stage'
@@ -63,7 +63,7 @@ debug = False
 # Download new BindingDB data if necessary
 # =================
 
-clab.DB.retrieve_external_data(gather_script_ID, forcedl=force_bindingdb_all_download)
+clab.DB.retrieve_external_data(DB_script_ID, forcedl=force_bindingdb_all_download)
 
 # =================
 # Read in the existing DB
