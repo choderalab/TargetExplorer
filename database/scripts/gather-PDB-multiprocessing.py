@@ -215,13 +215,13 @@ def gather_pdb(e):
                     n_crossref_uniprot_matches += 1
                     index = int(crossref_uniprot.attrib['dbResNum']) - 1
                     experimental_sequence_aln[index] = single_letter
-                    if 'Conflict' in residue_detail_texts:
+                    if 'Conflict' in residue_detail_texts or 'Engineered mutation' in residue_detail_texts:
                         experimental_sequence_aln_conflicts[index] = single_letter.lower()
                     else:
                         experimental_sequence_aln_conflicts[index] = single_letter
                     experimental_sequence_uniprot_res_indices.append(index)
                     # Add residue to observed_sequence_aln if it is observed and is not a conflict
-                    if 'Not_Observed' not in residue_detail_texts and 'Conflict' not in residue_detail_texts:
+                    if 'Not_Observed' not in residue_detail_texts and ('Conflict' not in residue_detail_texts or 'Engineered mutation' in residue_detail_texts):
                         observed_sequence_aln[index] = single_letter
                         if ss != None:
                             ss_aln[index] = ss
