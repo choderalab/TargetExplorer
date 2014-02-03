@@ -75,5 +75,6 @@
             <warning> (multiple)
 
         <target_score publications= cBioPortal_mutations disease_association= bioassays= >
-            <domain domainID= targetID= PDBs= nPDBs= pseudogene= target_domain_length= target_score= >
+            <domain domainID= targetID= PDBs= nPDBs= pseudogene= target_domain_length= target_score= target_rank= >
+                @target_rank where 1 is the highest-ranked (most important)
 

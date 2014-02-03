@@ -135,7 +135,7 @@ def process_target(t):
     # ===========
 
     # get DB entry
-    DB_domain = DB_root.find('entry/UniProt/domains/domain[@target_id="%s"]' % target)
+    DB_domain = DB_root.find('entry/UniProt/domains/domain[@targetID="%s"]' % target)
     target_domain_len = int(DB_domain.get('length'))
     if target_domain_len > 350 or target_domain_len < 191:
         print 'Target domain length %d. Skipping...' % target_domain_len
@@ -452,7 +452,7 @@ if __name__ == '__main__':
     # Parse DB
     # ===========
 
-    DB_path = os.path.join('database', 'database-stage.xml')
+    DB_path = os.path.join('database', 'database.xml')
     DB_root = etree.parse(DB_path).getroot()
     nentries = len(DB_root)
 
@@ -461,7 +461,7 @@ if __name__ == '__main__':
     # ===========
 
     if targets == 'All':
-        targets = [ domain_node.get('target_id') for domain_node in DB_root.findall('entry/UniProt/domains/domain[@target_id]') ]
+        targets = [ domain_node.get('targetID') for domain_node in DB_root.findall('entry/UniProt/domains/domain[@targetID]') ]
 
     desired_expression_system_regex = 'E.* COLI'
 
@@ -485,7 +485,7 @@ if __name__ == '__main__':
 
     for target in targets:
         # get DB entry
-        DB_domain = DB_root.find('entry/UniProt/domains/domain[@target_id="%s"]' % target)
+        DB_domain = DB_root.find('entry/UniProt/domains/domain[@targetID="%s"]' % target)
         DB_entry = DB_domain.getparent().getparent().getparent()
 
         # get PDB structures
@@ -546,8 +546,8 @@ if __name__ == '__main__':
 
     PDB_selections_text = ''
     PDB_selections_text += '= Targets sorted by number of PDB structures with matching expression system tag =\n\n'
-    PDB_selections_text += '%18s  %24s  %16s  %23s  %14s  %30s\n' % ('target', 'nmatching_PDB_structures', 'top_PDB_chain_ID', 'detected_expression_tag', 'authenticity_score', 'expression_system')
-    PDB_selections_text += '%18s  %24s  %16s  %23s  %14s  %30s\n' % ('______', '________________________', '________________', '_______________________', '__________________', '_________________')
+    PDB_selections_text += '%18s  %24s  %16s  %23s  %18s  %30s  %11s  %12s\n' % ('target', 'nmatching_PDB_structures', 'top_PDB_chain_ID', 'detected_expression_tag', 'authenticity_score', 'expression_system', 'target_rank', 'target_score')
+    PDB_selections_text += '%18s  %24s  %16s  %23s  %18s  %30s  %11s  %12s\n' % ('______', '________________________', '________________', '_______________________', '__________________', '_________________', '___________', '______________')
 
     ntargets_zero_or_more_PDB = 0
     ntargets_one_or_more_PDB = 0
@@ -572,7 +572,12 @@ if __name__ == '__main__':
             expr_tag_string = 'None'
         else:
             expr_tag_string = construct_data[1] + '_' + construct_data[2]
-        PDB_selections_text += '%18s  %24d  %16s  %23s  %14d  %30s\n' % (target, target_dict.values()[0][0], top_PDB_chain_ID, expr_tag_string, construct_data[3], construct_data[0])
+
+        target_domain_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % target)
+        target_score = target_domain_score_node.get('target_score')
+        target_rank = target_domain_score_node.get('target_rank')
+
+        PDB_selections_text += '%18s  %24d  %16s  %23s  %18d  %30s  %11s  %12s\n' % (target, target_dict.values()[0][0], top_PDB_chain_ID, expr_tag_string, construct_data[3], construct_data[0], target_rank, target_score)
         if target_dict.values()[0][0] > 0:
             ntargets_zero_or_more_PDB += 1
             if construct_data[1] != None:
