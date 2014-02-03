@@ -91,8 +91,14 @@ def gather_pdb(e):
         else:
             print 'Downloading PDB file and saving as:', local_pdb_file_path
             page = clab.PDB.retrieve_pdb(pdbid, compressed='yes')
-            with gzip.open(local_pdb_file_path, 'wb') as local_pdb_file:
-                local_pdb_file.write(page + '\n')
+            # download and write compressed file, read in and decompress with gzip package, write decompressed file, delete compressed file.
+            with open(local_pdb_file_path + '.gz', 'wb') as local_pdb_file:
+                local_pdb_file.write(page)
+            with gzip.open(local_pdb_file_path + '.gz', 'rb') as local_pdb_gz_file:
+                local_pdb_gz_contents = local_pdb_gz_file.read()
+                with open(local_pdb_file_path, 'w') as local_pdb_file:
+                    local_pdb_file.write(local_pdb_gz_contents)
+            os.remove(local_pdb_file_path + '.gz')
 
         # Download SIFTS file if necessary, and parse the XML
         local_sifts_file_path = os.path.join(local_sifts_dir, pdbid+'.xml.gz')
