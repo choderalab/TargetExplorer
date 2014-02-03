@@ -6,15 +6,15 @@
 #
 
 #==============================================================================
-# IMPORTS
+# Imports
 #==============================================================================
 
 import sys, datetime, os, re
-import choderalab as clab
+import TargetExplorer as clab
 from lxml import etree
 
 #==============================================================================
-# PARAMETERS
+# Parameters
 #==============================================================================
 
 if '-write' in sys.argv:
@@ -35,7 +35,7 @@ now = datetime.datetime.utcnow()
 now_datestamp = now.strftime(clab.DB.datestamp_format_string)
 
 #==============================================================================
-# READ MAIN AND STAGED VERSIONS OF DATABASE
+# Read main and staged versions of database
 #==============================================================================
 
 parser = etree.XMLParser(remove_blank_text=True)
@@ -46,25 +46,25 @@ if not os.path.exists(DBstage_filepath):
 DBstage_root = etree.parse(DBstage_filepath, parser).getroot()
 
 #==============================================================================
-# CHECK WHETHER THE STAGED DATABASE IS READY TO BE COMMITTED
+# Check whether the staged database is ready to be committed
 #==============================================================================
 
 DBstage_datestamps_dict = { key : datetime.datetime.strptime(DBstage_root.attrib[key], clab.DB.datestamp_format_string) for key in DBstage_root.keys() if re.match('.*_last_.*', key) }
 
 # make sure that all scripts have been run since the last time the DB was modified
-for gather_script_ID in clab.DB.gather_script_IDs:
-    if clab.DB.gather_script_last_run_key_dict[gather_script_ID] not in DBstage_root.keys():
-        print 'Script %s has not been run yet.' % gather_script_ID
+for DB_script_ID in clab.DB.DB_script_IDs:
+    if clab.DB.DB_script_last_run_attribs[DB_script_ID] not in DBstage_root.keys():
+        print 'Script %s has not been run yet.' % DB_script_ID
         print 'Exiting.'
         sys.exit()
 
 DBstage_gather_uniprot_last_run = DBstage_datestamps_dict['gather_uniprot_last_run']
 
 # compare each of the *_last_run attribs within DBstage against gather_uniprot_last_run, to make sure that gather-uniprot was run before all others
-for gather_script_ID in clab.DB.gather_script_IDs:
-    gather_script_last_run_key = clab.DB.gather_script_last_run_key_dict[gather_script_ID]
-    if DBstage_datestamps_dict[gather_script_last_run_key] < DBstage_gather_uniprot_last_run:
-        print '"%s" is dated "%s", while "gather_uniprot_last_run" is dated "%s". gather-uniprot.py must be the earliest script staged, so please run and stage the other script before committing.' % (gather_script_last_run_key, DBstage_datestamps_dict[gather_script_last_run_key], DBstage_gather_uniprot_last_run)
+for DB_script_ID in clab.DB.DB_script_IDs:
+    DB_script_last_run_attrib = clab.DB.DB_script_last_run_attribs[DB_script_ID]
+    if DBstage_datestamps_dict[DB_script_last_run_attrib] < DBstage_gather_uniprot_last_run:
+        print '"%s" is dated "%s", while "gather_uniprot_last_run" is dated "%s". gather-uniprot.py must be the earliest script staged, so please run and stage the other script before committing.' % (DB_script_last_run_attrib, DBstage_datestamps_dict[DB_script_last_run_attrib], DBstage_gather_uniprot_last_run)
         print 'Exiting.'
         sys.exit()
 
@@ -95,12 +95,12 @@ else:
 
 DB_datestamps_dict = { key : datetime.datetime.strptime(DB_root.attrib[key], clab.DB.datestamp_format_string) for key in DB_root.keys() if re.match('.*_last_.*', key) }
 
-for gather_script_ID in clab.DB.gather_script_IDs:
-    gather_script_last_run_key = clab.DB.gather_script_last_run_key_dict[gather_script_ID]
-    if gather_script_last_run_key not in DB_datestamps_dict.keys():
+for DB_script_ID in clab.DB.DB_script_IDs:
+    DB_script_last_run_attrib = clab.DB.DB_script_last_run_attribs[DB_script_ID]
+    if DB_script_last_run_attrib not in DB_datestamps_dict.keys():
         continue
-    if DBstage_datestamps_dict[gather_script_last_run_key] < DB_datestamps_dict[gather_script_last_run_key]:
-        print 'DBstage "%s" is dated "%s", while DB "%s" is dated "%s". All scripts must have been run at least once since the last commit.' % (gather_script_last_run_key, DBstage_datestamps_dict[gather_script_last_run_key], gather_script_last_run_key, DB_datestamps_dict[gather_script_last_run_key])
+    if DBstage_datestamps_dict[DB_script_last_run_attrib] < DB_datestamps_dict[DB_script_last_run_attrib]:
+        print 'DBstage "%s" is dated "%s", while DB "%s" is dated "%s". All scripts must have been run at least once since the last commit.' % (DB_script_last_run_attrib, DBstage_datestamps_dict[DB_script_last_run_attrib], DB_script_last_run_attrib, DB_datestamps_dict[DB_script_last_run_attrib])
         print 'Exiting.'
         sys.exit()
 
@@ -132,11 +132,11 @@ else:
         print 'Comparison of data in database and database-stage indicates changes. Lines in diff comparison: %s' % len(diff_output)
         data_modified = True
     else:
-        print 'Comparison of data in database and database-stage indicates no changes. Will update gather_uniprot_last_run attrib, but other data will not be modified.'
+        print 'Comparison of data in database and database-stage indicates no changes. Will update commit_last_run attrib, but other data will not be modified.'
         data_modified = False
 
 #==============================================================================
-# UPDATE VERSIONIDS AND DATESTAMPS
+# Update versionids and datestamps
 #==============================================================================
 
 DBstage_root.set('commit_last_run', now_datestamp)
@@ -150,7 +150,7 @@ else:
 DBstage_root.set('versionID', str(versionID))
 
 #==============================================================================
-# WRITE DATABASE TO FILE
+# Write database to file
 #==============================================================================
 
 if run_mode == 'write':

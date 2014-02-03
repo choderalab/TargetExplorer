@@ -9,14 +9,14 @@
 
 import sys, os, subprocess, datetime
 from lxml import etree
-import choderalab as clab
+import TargetExplorer as clab
 from multiprocessing import Pool
 
 # =================
 # Parameters
 # =================
 
-gather_script_ID = 'BindingDB'
+DB_script_ID = 'BindingDB'
 
 if '-stage' in sys.argv:
     run_mode = 'stage'
@@ -28,7 +28,7 @@ else:
 print 'Running in mode: %s' % run_mode
 
 database_dir = 'database'
-external_data_dir = os.path.join(clab.kinome_rootdir, 'database', 'external-data')
+external_data_dir = os.path.join('external-data')
 bindingdb_data_dir = os.path.join(external_data_dir, 'BindingDB')
 if not os.path.exists(bindingdb_data_dir):
     os.mkdir(bindingdb_data_dir)
@@ -63,7 +63,7 @@ debug = False
 # Download new BindingDB data if necessary
 # =================
 
-clab.DB.retrieve_external_data(gather_script_ID, forcedl=force_bindingdb_all_download)
+clab.DB.retrieve_external_data(DB_script_ID, forcedl=force_bindingdb_all_download)
 
 # =================
 # Read in the existing DB
@@ -94,7 +94,7 @@ bindingdb_matches_filepath = os.path.join(bindingdb_data_dir, 'tmp-bindingdb-mat
 
 #if not os.path.exists(bindingdb_matches_filepath): # XXX DEBUG
 if True:
-    print 'First pass through BindingDB data with grep... - extracting all lines which match UniProt ACs in the DB (takes a while - approx. 1 hr on a 2012 MBP.'
+    print 'First pass through BindingDB data with grep... - extracting all lines which match UniProt ACs in the DB (performance can be variable - testing has indicated approx. 1 hr on a 2012 MBP, but only 2 mins or so on a Linux machine; probably due to different GNU grep versions)'
     with open(bindingdb_all_data_filepath, 'r') as bindingdb_all_data_file:
         subprocess.call('%(grep_path)s -E "%(regex_search)s" %(bindingdb_all_data_filepath)s > %(bindingdb_matches_filepath)s' % vars(), shell=True)
 
@@ -163,10 +163,10 @@ if run_mode == 'stage':
         diff_output = clab.DB.diff_DB_comparison_strings(DBold_comparison_string, DB_comparison_string)
 
         if len(diff_output) > 0:
-            print 'Comparison of latest NCBI Gene data with data in %s indicates changes. File will be overwritten. Lines in diff comparison: %s' % (DBstage_filepath, len(diff_output))
+            print 'Comparison of latest BindingDB data with data in %s indicates changes. File will be overwritten. Lines in diff comparison: %s' % (DBstage_filepath, len(diff_output))
             data_modified = True
         else:
-            print 'Comparison of latest NCBI Gene data with data in %s indicates no changes. File will be rewritten with updated gather_bindingdb_late_run attrib, but other data will not be modified.' % DB_out_filepath
+            print 'Comparison of latest BindingDB data with data in %s indicates no changes. File will be rewritten with updated gather_bindingdb_late_run attrib, but other data will not be modified.' % DB_out_filepath
             data_modified = False
 
 #==============================================================================

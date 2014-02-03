@@ -4,10 +4,24 @@ import TargetExplorer
 
 datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 
-gather_script_IDs = ['UniProt', 'PDB', 'NCBI_Gene', 'BindingDB']
+DB_script_IDs = ['UniProt', 'PDB', 'NCBI_Gene', 'BindingDB', 'cBioPortal', 'prioritization']
 
-gather_script_last_run_key_dict = { s : 'gather_' + s.lower().replace('-','_') + '_last_run' for s in gather_script_IDs }
-gather_script_last_modif_key_dict = { s : 'gather_' + s.lower().replace('-','_') + '_last_modif' for s in gather_script_IDs }
+DB_script_last_run_attribs = {
+'UniProt' : 'gather_uniprot_last_run',
+'PDB' : 'gather_pdb_last_run',
+'NCBI_Gene' : 'gather_ncbi_gene_last_run',
+'BindingDB' : 'gather_bindingdb_last_run',
+'cBioPortal' : 'gather_cbioportal_last_run',
+'prioritization' : 'prioritization_last_run'
+}
+DB_script_last_modif_attribs = {
+'UniProt' : 'gather_uniprot_last_run',
+'PDB' : 'gather_pdb_last_run',
+'NCBI_Gene' : 'gather_ncbi_gene_last_run',
+'BindingDB' : 'gather_bindingdb_last_run',
+'cBioPortal' : 'gather_cbioportal_last_run',
+'prioritization' : 'prioritization_last_run'
+}
 
 external_data_dir = os.path.join('external-data')
 external_data_metadata_filepath = os.path.join(external_data_dir, 'metadata.xml')
@@ -19,7 +33,7 @@ local_data_filenames = {
 'cBioPortal' : 'cbioportal-mutations.xml'
 }
 
-local_data_filepaths = { gather_script_ID : os.path.join(external_data_dir, gather_script_ID, local_data_filenames[gather_script_ID])  for gather_script_ID in local_data_filenames.keys() }
+local_data_filepaths = { DB_script_ID : os.path.join(external_data_dir, DB_script_ID, local_data_filenames[DB_script_ID])  for DB_script_ID in local_data_filenames.keys() }
 
 retrieve_methods = {
 'BindingDB' : TargetExplorer.BindingDB.retrieve_all_BindingDB_data
@@ -33,19 +47,19 @@ days_elapsed_for_suggestdl_dict = {
 }
 
 
-def update_external_data_metadata(gather_script_ID, datestamp, filename, filepath):
+def update_external_data_metadata(DB_script_ID, datestamp, filename, filepath):
     '''
     To be called by method retrieve_external_data
     '''
     parser = etree.XMLParser(remove_blank_text=True)
     metadata_root = etree.parse(external_data_metadata_filepath, parser).getroot()
-    gather_script_type_node = metadata_root.find(gather_script_ID)
-    if gather_script_type_node == None:
-        gather_script_type_node = etree.SubElement(metadata_root, gather_script_ID)
+    DB_script_type_node = metadata_root.find(DB_script_ID)
+    if DB_script_type_node == None:
+        DB_script_type_node = etree.SubElement(metadata_root, DB_script_ID)
     xml_query = 'local_data_file[@filename="%s"]' % filename
-    local_data_file_node = gather_script_type_node.find(xml_query)
+    local_data_file_node = DB_script_type_node.find(xml_query)
     if local_data_file_node == None:
-        local_data_file_node = etree.SubElement(gather_script_type_node, 'local_data_file')
+        local_data_file_node = etree.SubElement(DB_script_type_node, 'local_data_file')
     local_data_file_node.set('filename', filename)
     local_data_file_node.set('filepath', filepath)
     local_data_file_node.set('datestamp', datestamp)
@@ -54,17 +68,17 @@ def update_external_data_metadata(gather_script_ID, datestamp, filename, filepat
         metadata_file.write(etree.tostring(metadata_root, pretty_print=True))
 
 
-def retrieve_external_data(gather_script_ID, forcedl=False, uniprot_search_string=None):
+def retrieve_external_data(DB_script_ID, forcedl=False, uniprot_search_string=None):
     # TODO currently only works with gather-BindingDB
     parser = etree.XMLParser(remove_blank_text=True)
     now = datetime.datetime.utcnow()
     now_datestamp = now.strftime(datestamp_format_string)
 
-    local_data_filename = local_data_filenames[gather_script_ID]
-    local_data_filepath = local_data_filepaths[gather_script_ID]
-    # TODO decorate this (with a decorator selected from a dict of decorators keyed by gather_script_ID) to add any additional required args (e.g. uniprot_search_string)
-    retrieve_new_data_file = retrieve_methods[gather_script_ID]
-    days_elapsed_for_suggestdl = days_elapsed_for_suggestdl_dict[gather_script_ID]
+    local_data_filename = local_data_filenames[DB_script_ID]
+    local_data_filepath = local_data_filepaths[DB_script_ID]
+    # TODO decorate this (with a decorator selected from a dict of decorators keyed by DB_script_ID) to add any additional required args (e.g. uniprot_search_string)
+    retrieve_new_data_file = retrieve_methods[DB_script_ID]
+    days_elapsed_for_suggestdl = days_elapsed_for_suggestdl_dict[DB_script_ID]
 
     # First check if local data file already exists
     if os.path.exists(local_data_filepath):
@@ -74,11 +88,11 @@ def retrieve_external_data(gather_script_ID, forcedl=False, uniprot_search_strin
         print 'Local data file not found.'
         print 'Retrieving new data file from external server...'
         retrieve_new_data_file(local_data_filepath)
-        update_external_data_metadata(gather_script_ID, now_datestamp, local_data_filename, local_data_filepath)
+        update_external_data_metadata(DB_script_ID, now_datestamp, local_data_filename, local_data_filepath)
 
     # Check when the local data file was retrieved and download a new one if it is older than days_elapsed_for_suggestdl
     external_data_metadata_root = etree.parse(TargetExplorer.DB.external_data_metadata_filepath, parser).getroot()
-    xml_query = '%s/local_data_file[@filename="%s"]' % (gather_script_ID, local_data_filename)
+    xml_query = '%s/local_data_file[@filename="%s"]' % (DB_script_ID, local_data_filename)
     local_datafile_datestamp = external_data_metadata_root.find(xml_query).get('datestamp')
     local_datafile_datestamp = datetime.datetime.strptime(local_datafile_datestamp, TargetExplorer.DB.datestamp_format_string)
     time_elapsed = now - local_datafile_datestamp
@@ -103,7 +117,7 @@ def retrieve_external_data(gather_script_ID, forcedl=False, uniprot_search_strin
         if download_new_local_data_file:
             print 'Retrieving new data file from external server...'
             retrieve_new_data_file(local_data_filepath)
-            update_external_data_metadata(gather_script_ID, now_datestamp, local_data_filename, local_data_filepath)
+            update_external_data_metadata(DB_script_ID, now_datestamp, local_data_filename, local_data_filepath)
 
     print ''
 

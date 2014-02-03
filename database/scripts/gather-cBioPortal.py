@@ -2,12 +2,12 @@
 #
 # Daniel L. Parton <partond@mskcc.org> - 29 Aug 2013
 #
-# TODO: Write metadata
+# TODO: Write external-data metadata
 # TODO: Implement a scheme for assigning IDs to mutants.
 # TODO: Map mutation sequence positions to UniProt canonical sequence.
 
 # =================
-# IMPORTS
+# Imports
 # =================
 
 import sys, os, datetime, copy
@@ -15,7 +15,7 @@ from lxml import etree
 import TargetExplorer as clab
 
 # =================
-# PARAMETERS
+# Parameters
 # =================
 
 if '-stage' in sys.argv:
@@ -187,7 +187,7 @@ if run_mode == 'stage':
                 print DBold_comparison_string.split('\n')[0:20]
 
         else:
-            print 'Comparison of latest cBioPortal-derived data with data in %s indicates no changes. File will be rewritten with updated gather_pdb_last_run attrib, but other data will not be modified.' % DB_out_filepath
+            print 'Comparison of latest cBioPortal-derived data with data in %s indicates no changes. File will be rewritten with updated gather_cbioportal_last_run attrib, but other data will not be modified.' % DB_out_filepath
             data_modified = False
 
 

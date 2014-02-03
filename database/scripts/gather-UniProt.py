@@ -306,8 +306,8 @@ for k in range(nuniprot_entries):
         domain.set('begin', str(pk_begin))
         domain.set('end', str(pk_end))
         domain.set('length', str(pk_length))
-        domain.set('id', str(x_iter))
-        domain.set('target_id', (entry_name + '_D' + str(x_iter)))
+        domain.set('domainID', str(x_iter))
+        domain.set('targetID', (entry_name + '_D' + str(x_iter)))
 
         #location = domain.find('./location')
         #etree.SubElement(location, 'length').text = str(pk_length)
@@ -395,7 +395,7 @@ for k in range(nuniprot_entries):
                     pk_begin = int(x.get('begin'))
                     pk_end = int(x.get('end'))
                     if (pdb_begin < pk_begin+30) & (pdb_end > pk_end-30):
-                        chains.set('domain_ID', str(x_iter))
+                        chains.set('domainID', str(x_iter))
                         chains.set('begin', str(pdb_begin))
                         chains.set('end', str(pdb_end))
                         pdb_structure_node.append(chains)
@@ -470,7 +470,7 @@ if run_mode == 'stage':
                 # For the PDB node, we need to remove everything apart from:
                 # <PDB>
                 #   <structure ID= resolution= >
-                #     <chain ID= domain_ID= begin= end= >
+                #     <chain ID= domainID= begin= end= >
                 if DBold_entry_PDB_node != None:
                     structure_nodes = DBold_entry_PDB_node.findall('structure')
                     for structure_node in structure_nodes:
@@ -487,7 +487,7 @@ if run_mode == 'stage':
                                 chain_node.remove(child)
 
                             for attrib_key in chain_node.keys():
-                                if attrib_key not in ['ID', 'domain_ID', 'begin', 'end']:
+                                if attrib_key not in ['ID', 'domainID', 'begin', 'end']:
                                     chain_node.attrib.pop(attrib_key)
 
                 # deepcopy these nodes to a new entry node
