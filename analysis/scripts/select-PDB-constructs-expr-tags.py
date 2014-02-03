@@ -18,10 +18,13 @@ from openpyxl import Workbook
 try:
     override_target = sys.argv[ sys.argv.index('-target') + 1 ]
     targets = [override_target]
-    ndesired_targets = 1
+    plate_size = 1
+    ndesired_unique_targets = 1
 except ValueError:
     targets = 'All'
-    ndesired_targets = 96
+    # an Excel spreadsheet containing [plate_size] constructs will be created. The following value adjusts the number of unique targets. Any remaining well positions will be used for replicates, selected from the top-ranked DB entries (according to the DB target_score).
+    plate_size = 96
+    ndesired_unique_targets = 74
 
 results_dir = os.path.join('analysis', 'PDB_construct_selection')
 
@@ -109,7 +112,7 @@ def process_target(t):
     # top PDB construct expression data will be added to a dict of this format (the variable is set here so that targets which are to be skipped can have data returned with the required structure)
     null_construct_data = {'expression_system' : None, 'tag_type' : None, 'tag_loc' : None, 'authenticity_score' : 0}
     # results for each target will be returned in this dict
-    null_target_results = {'targetID' : target, 'nmatching_PDB_structures' : 0, 'top_PDB_chain_ID' : None, 'top_construct_data' : null_construct_data, 'target_NCBI_GeneID' : None, 'construct_target_region_start_plasmid_coords' : None, 'construct_target_region_end_plasmid_coords' : None, 'construct_target_region_plasmid_seq' : None}
+    null_target_results = {'targetID' : target, 'nmatching_PDB_structures' : 0, 'top_PDB_chain_ID' : None, 'top_construct_data' : null_construct_data, 'target_NCBI_GeneID' : None, 'construct_target_region_start_plasmid_coords' : None, 'construct_target_region_end_plasmid_coords' : None, 'construct_target_region_plasmid_seq' : None, 'DB_target_score' : None, 'DB_target_rank' : None}
 
     nmatching_PDB_structures = targets_data[t][target][0]
     print 'Working on target:', target
@@ -418,6 +421,14 @@ def process_target(t):
     construct_target_region_end_plasmid_coords = regex_match.end() - 1
 
     # ===========
+    # get the target_score and target_rank from the DB
+    # ===========
+
+    DB_target_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % target)
+    DB_target_score = DB_target_score_node.get('target_score')
+    DB_target_rank = DB_target_score_node.get('target_rank')
+
+    # ===========
     # add data to targets_results
     # ===========
 
@@ -435,6 +446,9 @@ def process_target(t):
     target_results['construct_target_region_start_plasmid_coords'] = construct_target_region_start_plasmid_coords
     target_results['construct_target_region_end_plasmid_coords'] = construct_target_region_end_plasmid_coords
     target_results['construct_target_region_plasmid_seq'] = construct_target_region_plasmid_seq
+    # And the DB target_score and target_rank
+    target_results['DB_target_score'] = DB_target_score
+    target_results['DB_target_rank'] = DB_target_rank
 
     return target_results
 
@@ -547,8 +561,6 @@ if __name__ == '__main__':
     # negate values for reverse sorting
     targets_results = sorted( targets_results, key = lambda x: (-x['top_construct_data']['authenticity_score'], -x['nmatching_PDB_structures']) )
 
-    print targets_results
-
     # ===========
     # print and write file containing sorted targets with details on PDB structure selection
     # ===========
@@ -581,9 +593,11 @@ if __name__ == '__main__':
         else:
             expr_tag_string = top_construct_data['tag_type'] + '_' + top_construct_data['tag_loc']
 
-        target_domain_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % targetID)
-        target_score = target_domain_score_node.get('target_score')
-        target_rank = target_domain_score_node.get('target_rank')
+        #target_domain_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % targetID)
+        #target_score = target_domain_score_node.get('target_score')
+        #target_rank = target_domain_score_node.get('target_rank')
+        target_score = target_dict['DB_target_score']
+        target_rank = target_dict['DB_target_rank']
 
         PDB_selections_text += '%18s  %24d  %16s  %23s  %18d  %30s  %11s  %12s\n' % (targetID, target_dict['nmatching_PDB_structures'], top_PDB_chain_ID, expr_tag_string, top_construct_data['authenticity_score'], top_construct_data['expression_system'], target_rank, target_score)
         if target_dict['nmatching_PDB_structures'] > 0:
@@ -620,21 +634,24 @@ if __name__ == '__main__':
 
     t_iter = 0
     ntargets_selected = 0
-    while True:
 
-        target_dict = targets_results[t_iter]
+    # create new list of target results, removing targets with no matching PDB structures, and then keeping only the top [ndesired_unique_targets]
+    xl_output_targets_results = [t for t in targets_results if t['nmatching_PDB_structures'] > 0][0:ndesired_unique_targets]
+
+    # and a list of the same target results, sorted by DB rank
+    xl_output_targets_results_sorted_by_target_rank = sorted( xl_output_targets_results, key = lambda x: int(x['DB_target_rank']) )
+
+    for well_index in range(plate_size):
+        if well_index < ndesired_unique_targets:
+            target_index = well_index
+            target_dict = xl_output_targets_results[target_index]
+        else:
+            target_index = well_index - ndesired_unique_targets
+            target_dict = xl_output_targets_results_sorted_by_target_rank[target_index]
+
         targetID = target_dict['targetID']
 
-        # Ignore targets without matching PDB structures
-        if target_dict['nmatching_PDB_structures'] == 0:
-            t_iter += 1
-            if t_iter + 1 > ndesired_targets:
-                break
-            continue
-
         top_PDB_chain_ID = target_dict['top_PDB_chain_ID']
-
-        #top_exp_tag_type = target_dict['top_construct_data']['tag_type']
 
         target_NCBI_GeneID = target_dict['target_NCBI_GeneID']
         construct_aa_start = target_dict['construct_target_region_start_plasmid_coords']
@@ -647,45 +664,109 @@ if __name__ == '__main__':
         # Build spreadsheeet
 
         ID = targetID + '_' + top_PDB_chain_ID
-        ID_cell = ws.cell(row=ntargets_selected+1, column=0)
+        ID_cell = ws.cell(row=well_index+1, column=0)
         ID_cell.value = ID
 
-        GeneID_cell = ws.cell(row=ntargets_selected+1, column=1)
+        GeneID_cell = ws.cell(row=well_index+1, column=1)
         GeneID_cell.value = target_NCBI_GeneID
         
         exp_tag_loc = target_dict['top_construct_data']['tag_loc']
-        exp_tag_loc_cell = ws.cell(row=ntargets_selected+1, column=2)
+        exp_tag_loc_cell = ws.cell(row=well_index+1, column=2)
         exp_tag_loc_cell.value = exp_tag_loc
 
         # residue span: 1-based inclusive aa coordinates
-        construct_aa_start_cell = ws.cell(row=ntargets_selected+1, column=3)
-        construct_aa_end_cell = ws.cell(row=ntargets_selected+1, column=4)
+        construct_aa_start_cell = ws.cell(row=well_index+1, column=3)
+        construct_aa_end_cell = ws.cell(row=well_index+1, column=4)
         construct_aa_start_cell.value = construct_aa_start + 1
         construct_aa_end_cell.value = construct_aa_end + 1
         
         # aa_seq
-        construct_aa_seq_cell = ws.cell(row=ntargets_selected+1, column=5)
+        construct_aa_seq_cell = ws.cell(row=well_index+1, column=5)
         construct_aa_seq_cell.value = construct_aa_seq
 
         # DNA span: 1-based inclusive dna nucleotide coordinates
-        construct_dna_start_cell = ws.cell(row=ntargets_selected+1, column=6)
-        construct_dna_end_cell = ws.cell(row=ntargets_selected+1, column=7)
+        construct_dna_start_cell = ws.cell(row=well_index+1, column=6)
+        construct_dna_end_cell = ws.cell(row=well_index+1, column=7)
         construct_dna_start_cell.value = construct_dna_start + 1
         construct_dna_end_cell.value = construct_dna_end + 1
         
         # dna_seq
         orig_plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
         construct_dna_seq = orig_plasmid_dna_seq[ construct_dna_start : construct_dna_end + 1 ]
-        construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=8)
+        construct_dna_seq_cell = ws.cell(row=well_index+1, column=8)
         construct_dna_seq_cell.value = construct_dna_seq
 
         if len(construct_dna_seq) % 3 != 0:
             raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
 
-        t_iter += 1
-        ntargets_selected += 1
-        if t_iter + 1 > ndesired_targets:
-            break
+
+
+    #while True:
+
+    #    target_dict = targets_results[t_iter]
+    #    targetID = target_dict['targetID']
+
+    #    # Ignore targets without matching PDB structures
+    #    if target_dict['nmatching_PDB_structures'] == 0:
+    #        t_iter += 1
+    #        if t_iter + 1 > plate_size:
+    #            break
+    #        continue
+
+    #    top_PDB_chain_ID = target_dict['top_PDB_chain_ID']
+
+    #    #top_exp_tag_type = target_dict['top_construct_data']['tag_type']
+
+    #    target_NCBI_GeneID = target_dict['target_NCBI_GeneID']
+    #    construct_aa_start = target_dict['construct_target_region_start_plasmid_coords']
+    #    construct_aa_end = target_dict['construct_target_region_end_plasmid_coords'] # this refers to the last aa in 0-based aa coordinates
+    #    construct_aa_seq = target_dict['construct_target_region_plasmid_seq']
+
+    #    construct_dna_start = (construct_aa_start * 3)
+    #    construct_dna_end = (construct_aa_end * 3) + 2 # this refers to the last nucleotide in 0-based nucleotide coordinates
+
+    #    # Build spreadsheeet
+
+    #    ID = targetID + '_' + top_PDB_chain_ID
+    #    ID_cell = ws.cell(row=ntargets_selected+1, column=0)
+    #    ID_cell.value = ID
+
+    #    GeneID_cell = ws.cell(row=ntargets_selected+1, column=1)
+    #    GeneID_cell.value = target_NCBI_GeneID
+    #    
+    #    exp_tag_loc = target_dict['top_construct_data']['tag_loc']
+    #    exp_tag_loc_cell = ws.cell(row=ntargets_selected+1, column=2)
+    #    exp_tag_loc_cell.value = exp_tag_loc
+
+    #    # residue span: 1-based inclusive aa coordinates
+    #    construct_aa_start_cell = ws.cell(row=ntargets_selected+1, column=3)
+    #    construct_aa_end_cell = ws.cell(row=ntargets_selected+1, column=4)
+    #    construct_aa_start_cell.value = construct_aa_start + 1
+    #    construct_aa_end_cell.value = construct_aa_end + 1
+    #    
+    #    # aa_seq
+    #    construct_aa_seq_cell = ws.cell(row=ntargets_selected+1, column=5)
+    #    construct_aa_seq_cell.value = construct_aa_seq
+
+    #    # DNA span: 1-based inclusive dna nucleotide coordinates
+    #    construct_dna_start_cell = ws.cell(row=ntargets_selected+1, column=6)
+    #    construct_dna_end_cell = ws.cell(row=ntargets_selected+1, column=7)
+    #    construct_dna_start_cell.value = construct_dna_start + 1
+    #    construct_dna_end_cell.value = construct_dna_end + 1
+    #    
+    #    # dna_seq
+    #    orig_plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
+    #    construct_dna_seq = orig_plasmid_dna_seq[ construct_dna_start : construct_dna_end + 1 ]
+    #    construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=8)
+    #    construct_dna_seq_cell.value = construct_dna_seq
+
+    #    if len(construct_dna_seq) % 3 != 0:
+    #        raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
+
+    #    t_iter += 1
+    #    ntargets_selected += 1
+    #    if t_iter + 1 > plate_size:
+    #        break
 
     # Save spreadsheet
     wb.save(output_Excel_filepath)
