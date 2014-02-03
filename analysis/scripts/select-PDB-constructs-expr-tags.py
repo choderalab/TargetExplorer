@@ -391,10 +391,6 @@ def process_target(t):
     construct_target_region_end_UniProt_coords = len(top_PDB_seq_aln_vs_UniProt_conflicts) - regex_match_backward.end()
     construct_target_region_seq = top_PDB_seq_aln_vs_UniProt_conflicts[ construct_target_region_start_UniProt_coords : construct_target_region_end_UniProt_coords + 1]
 
-    #print construct_target_region_seq
-    #print sorted_alignment_seqs[0]
-    #print sorted_alignment_seqs[2]
-
     # now get the construct target region span in the coordinates of the alignment
     # do this by constructing a regex which accounts for the presence of '-' chars, and searching it against the aligned construct sequence
     # ignore '-' chars existing within construct_target_region_seq (which shouldn't be there according to the PDB standard, but frequently are, as SEQRES records often contain the observed sequence rather than the experimental sequence)
@@ -538,8 +534,6 @@ if __name__ == '__main__':
             print 'WARNING: length of DNA sequence not divisible by 3, for plasmid with Gene Symbol %s and NCBI Gene ID %s' % (Symbol, NCBI_GeneID)
         # Translate to DNA sequence (don't include stop codon)
         aa_seq = Bio.Seq.Seq(dna_seq, Bio.Alphabet.generic_dna).translate(to_stop=True)
-        #if len(dna_seq) % 3 != 0:
-        #    print aa_seq
         plasmid_aa_seqs[NCBI_GeneID] = aa_seq
         plasmid_dna_seqs[NCBI_GeneID] = dna_seq
 
@@ -593,9 +587,6 @@ if __name__ == '__main__':
         else:
             expr_tag_string = top_construct_data['tag_type'] + '_' + top_construct_data['tag_loc']
 
-        #target_domain_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % targetID)
-        #target_score = target_domain_score_node.get('target_score')
-        #target_rank = target_domain_score_node.get('target_rank')
         target_score = target_dict['DB_target_score']
         target_rank = target_dict['DB_target_rank']
 
@@ -698,75 +689,6 @@ if __name__ == '__main__':
 
         if len(construct_dna_seq) % 3 != 0:
             raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
-
-
-
-    #while True:
-
-    #    target_dict = targets_results[t_iter]
-    #    targetID = target_dict['targetID']
-
-    #    # Ignore targets without matching PDB structures
-    #    if target_dict['nmatching_PDB_structures'] == 0:
-    #        t_iter += 1
-    #        if t_iter + 1 > plate_size:
-    #            break
-    #        continue
-
-    #    top_PDB_chain_ID = target_dict['top_PDB_chain_ID']
-
-    #    #top_exp_tag_type = target_dict['top_construct_data']['tag_type']
-
-    #    target_NCBI_GeneID = target_dict['target_NCBI_GeneID']
-    #    construct_aa_start = target_dict['construct_target_region_start_plasmid_coords']
-    #    construct_aa_end = target_dict['construct_target_region_end_plasmid_coords'] # this refers to the last aa in 0-based aa coordinates
-    #    construct_aa_seq = target_dict['construct_target_region_plasmid_seq']
-
-    #    construct_dna_start = (construct_aa_start * 3)
-    #    construct_dna_end = (construct_aa_end * 3) + 2 # this refers to the last nucleotide in 0-based nucleotide coordinates
-
-    #    # Build spreadsheeet
-
-    #    ID = targetID + '_' + top_PDB_chain_ID
-    #    ID_cell = ws.cell(row=ntargets_selected+1, column=0)
-    #    ID_cell.value = ID
-
-    #    GeneID_cell = ws.cell(row=ntargets_selected+1, column=1)
-    #    GeneID_cell.value = target_NCBI_GeneID
-    #    
-    #    exp_tag_loc = target_dict['top_construct_data']['tag_loc']
-    #    exp_tag_loc_cell = ws.cell(row=ntargets_selected+1, column=2)
-    #    exp_tag_loc_cell.value = exp_tag_loc
-
-    #    # residue span: 1-based inclusive aa coordinates
-    #    construct_aa_start_cell = ws.cell(row=ntargets_selected+1, column=3)
-    #    construct_aa_end_cell = ws.cell(row=ntargets_selected+1, column=4)
-    #    construct_aa_start_cell.value = construct_aa_start + 1
-    #    construct_aa_end_cell.value = construct_aa_end + 1
-    #    
-    #    # aa_seq
-    #    construct_aa_seq_cell = ws.cell(row=ntargets_selected+1, column=5)
-    #    construct_aa_seq_cell.value = construct_aa_seq
-
-    #    # DNA span: 1-based inclusive dna nucleotide coordinates
-    #    construct_dna_start_cell = ws.cell(row=ntargets_selected+1, column=6)
-    #    construct_dna_end_cell = ws.cell(row=ntargets_selected+1, column=7)
-    #    construct_dna_start_cell.value = construct_dna_start + 1
-    #    construct_dna_end_cell.value = construct_dna_end + 1
-    #    
-    #    # dna_seq
-    #    orig_plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
-    #    construct_dna_seq = orig_plasmid_dna_seq[ construct_dna_start : construct_dna_end + 1 ]
-    #    construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=8)
-    #    construct_dna_seq_cell.value = construct_dna_seq
-
-    #    if len(construct_dna_seq) % 3 != 0:
-    #        raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
-
-    #    t_iter += 1
-    #    ntargets_selected += 1
-    #    if t_iter + 1 > plate_size:
-    #        break
 
     # Save spreadsheet
     wb.save(output_Excel_filepath)
