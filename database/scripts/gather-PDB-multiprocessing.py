@@ -11,7 +11,7 @@
 # IMPORTS
 #==============================================================================
 
-import sys,os,gzip,re,datetime,copy
+import sys,os,gzip,re,datetime,copy,urllib2
 from lxml import etree
 import TargetExplorer as clab
 import Bio.Data.SCOPData
@@ -106,7 +106,22 @@ def gather_pdb(e):
             sifts = etree.fromstring( gzip.open(local_sifts_file_path, 'r').read() )
         else:
             print 'Downloading SIFTS file (compressed) and saving as:', local_sifts_file_path
-            page = clab.PDB.retrieve_sifts(pdbid)
+            try:
+                page = clab.PDB.retrieve_sifts(pdbid)
+            except urllib2.URLError as urlerror:
+                if urlerror.reason == 'ftp error: [Errno ftp error] 550 Failed to change directory.':
+                    # Check the PDB file has definitely been downloaded. If so, then the problem is probably that the SIFTS people have not yet created the file for this PDB entry, or they have not added it to their server yet.
+                    if os.path.exists(local_pdb_file_path):
+                        # In this case, return a message telling the script to delete this PDB structure from the DB
+                        print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdbid
+                        #return 'DELETE_ME - SIFTS file could not be downloaded'
+                        entry_results.append('DELETE_ME - SIFTS file could not be downloaded')
+                        continue
+                    else:
+                        raise urlerror
+                else:
+                    raise urlerror
+
             with gzip.open(local_sifts_file_path, 'wb') as local_sifts_file:
                 local_sifts_file.write(page)
             sifts = etree.fromstring(page)
@@ -381,6 +396,9 @@ if __name__ == '__main__':
         structure_nodes = pdb_node.findall('structure')
 
         for s in range(len(structure_nodes)):
+            if results[e][s] == 'DELETE_ME - SIFTS file could not be downloaded':
+                structure_nodes[s].set('DELETE_ME','')
+                continue
             chain_nodes = structure_nodes[s].findall('chain')
 
             # Remove any existing data derived from gather-pdb.py before adding new data
@@ -421,8 +439,13 @@ if __name__ == '__main__':
 
 
     # =======================
-    # Delete pk_pdb/chain entries with @DELETE_ME attrib. These were cases where the sifts_uniprotAC did not match the uniprotAC in DB_root (derived from the UniProt entry by gather-uniprot.py), or where more than 90% of the experimental sequence was unobserved
+    # Delete PDB structure and chain entries with @DELETE_ME attrib. These were cases where the sifts_uniprotAC did not match the uniprotAC in DB_root (derived from the UniProt entry by gather-uniprot.py), or where more than 90% of the experimental sequence was unobserved
     # =======================
+    structures_to_be_deleted = set( DB_root.findall('entry/PDB/structure[@DELETE_ME=""]') )
+    for s in structures_to_be_deleted:
+        PDB_node = s.getparent()
+        PDB_node.remove(s)
+
     structures_with_chains_to_be_deleted = set( DB_root.findall('entry/PDB/structure/chain[@DELETE_ME=""]/..') )
     for s in structures_with_chains_to_be_deleted:
         chains_to_be_deleted = s.findall('chain[@DELETE_ME=""]')
