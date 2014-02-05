@@ -116,7 +116,7 @@ def gather_pdb(e):
     uniprotAC = uniprot_node.get('AC')
     entry_name = uniprot_node.get('entry_name')
 
-    #if entry_name != 'CDC7_HUMAN':
+    #if entry_name != 'MLKL_HUMAN':
     #    return None
 
     # results will be added to this container object and returned at the end of the function
@@ -163,10 +163,9 @@ def gather_pdb(e):
                     if os.path.exists(local_pdb_file_path):
                         # In this case, just add a message telling the script to delete this PDB structure from the DB. The continue clause skips to the end of the function.
                         print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdbid
-                        #return 'DELETE_ME - SIFTS file could not be downloaded'
-                        #entry_results.append('DELETE_ME - SIFTS file could not be downloaded')
+                        structure_results_obj = Structure_Data(structureID=pdbid)
                         structure_results_obj.exception_message='DELETE_ME - SIFTS file could not be downloaded'
-                        Gather_PDB_Results.add_structure_results(structure_results_obj)
+                        results_obj.add_structure_results(structure_results_obj)
                         continue
                     else:
                         raise urlerror
@@ -177,6 +176,9 @@ def gather_pdb(e):
                 local_sifts_file.write(page)
             sifts = etree.fromstring(page)
 
+        # structure results will be added to this object
+        structure_results_obj = Structure_Data(structureID=pdbid)
+
         # ======
         # From the PDB file, get the EXPRESSION_SYSTEM and related fields, using Bio.PDB.PDBParser
         # ======
@@ -186,13 +188,13 @@ def gather_pdb(e):
         # and the chain IDs
         DB_chainIDs_lower = [chain_node.get('ID').lower() for chain_node in DB_chain_nodes]
 
-        # XXX make QUIET True when finished
         pdbparser = Bio.PDB.PDBParser(QUIET=True)
         #pdbparser = Bio.PDB.PDBParser(QUIET=False)
         pdbdata = pdbparser.get_structure(pdbid, local_pdb_file_path)
         pdbheader = pdbparser.get_header()
         # Bio PDB compound structure: {'compound': {'1': {'chain': 'a, b'}}}
         pdbcompounds = pdbheader['compound']
+        #skip_structure = False
         for pdbcompoundID in pdbcompounds.keys():
             try:
                 for pdbchainID in pdbcompounds[pdbcompoundID]['chain'].split(', '):
@@ -200,11 +202,12 @@ def gather_pdb(e):
                         matching_pdbcompoundID = pdbcompoundID
                         break
             except Exception as e:
-                print 'ERROR for PDB %s. PDB header dict as parsed by BioPython follows:' % pdbid
+                print 'ERROR for entry %s PDB %s. PDB header dict as parsed by BioPython follows:' % (entry_name, pdbid)
                 print pdbheader
                 print traceback.format_exc()
-                #os.remove(local_pdb_file_path)
 
+                # XXX uncommenting this and the skip_structure commands means that the problematic PDB file will be deleted, and a new one downloaded. The script continues at this point without re-parsing the new PDB file, so the results will be wrong. But then can re-run the script with the proper PDB files.
+                #os.remove(local_pdb_file_path)
                 #page = clab.PDB.retrieve_pdb(pdbid, compressed='yes')
                 ## download and write compressed file, read in and decompress with gzip package, write decompressed file, delete compressed file.
                 #with open(local_pdb_file_path + '.gz', 'wb') as local_pdb_file:
@@ -214,9 +217,12 @@ def gather_pdb(e):
                 #    with open(local_pdb_file_path, 'w') as local_pdb_file:
                 #        local_pdb_file.write(local_pdb_gz_contents)
                 #os.remove(local_pdb_file_path + '.gz')
-
                 #skip_structure = True
+
                 raise e
+
+        #if skip_structure:
+        #    continue
 
         expression_data = {}
         # Bio PDB source structure: {'source': {'1': {'expression_system': 'escherichia coli'}}}
@@ -225,20 +231,6 @@ def gather_pdb(e):
             if key[0:10] == 'expression':
                 # Make expression data upper-case again. I think it looks better for single-case text.
                 expression_data[key.upper()] = pdbexpression_data[key].upper()
-
-        #expression_data = dict()
-        #with open(local_pdb_file_path,'r') as local_pdb_file:
-        #    for line in local_pdb_file.readlines():
-        #        regex_search = re.search('EXPRESSION_SYSTEM.*:', line)
-        #        if regex_search != None:
-        #            key = line[regex_search.start() : regex_search.end() - 1]
-        #            data = line[regex_search.end() + 1 : ].strip()
-        #            if data[-1] == ';':
-        #                data = data[:-1]
-        #            expression_data[key] = data
-
-        # structure results will be added to this object
-        structure_results_obj = Structure_Data(structureID=pdbid)
 
         # ======
         # Iterate through chains
@@ -516,12 +508,6 @@ if __name__ == '__main__':
     pool = Pool()
     results = pool.map(gather_pdb, entry_range)
     #results = map(gather_pdb, entry_range)   # serial version, for debugging
-    #for results_obj in results:
-    #    if results_obj:
-    #        print results_obj.entry_name, results_obj.structures, '\n'
-    #        for structures_obj in results_obj.structures:
-    #            print structures_obj.structureID, structures_obj.exception_message, structures_obj.expression_data, structures_obj.chains, '\n'
-    #sys.exit()
 
     for result in results:
 
@@ -589,62 +575,10 @@ if __name__ == '__main__':
             DB_structure_node.insert(0, DB_expression_data_node)
             DB_structure_node.set('pdbcompoundID', structure_result.pdbcompoundID)
 
-
-
-    # Now iterate through the DB XML tree and add in the PDB data
-    #for e in entry_range:
-    #    pdb_node = DB_root[e].find('PDB')
-    #    if pdb_node == None:
-    #        continue
-
-        #structure_nodes = pdb_node.findall('structure')
-
-        #for s in range(len(structure_nodes)):
-        #    if results[e][s] == 'DELETE_ME - SIFTS file could not be downloaded':
-        #        structure_nodes[s].set('DELETE_ME','')
-        #        continue
-        #    chain_nodes = structure_nodes[s].findall('chain')
-
-        #    # Remove any existing data derived from gather-pdb.py before adding new data
-        #    expression_data_node = structure_nodes[s].find('expression_data')
-        #    if expression_data_node != None:
-        #        structure_nodes[s].remove(expression_data_node)
-
-        #    for c in range(len(chain_nodes)):
-        #        DELETE_ME = results[e][s][c][6]
-        #        if DELETE_ME:
-        #            chain_nodes[c].set('DELETE_ME','')
-
-        #        # Remove any existing data derived from gather-pdb.py before adding new data
-        #        exp = chain_nodes[c].find('experimental_sequence')
-        #        if exp != None:
-        #            chain_nodes[c].remove(exp)
-        #        obs = chain_nodes[c].find('observed_sequence')
-        #        if obs != None:
-        #            chain_nodes[c].remove(obs)
-
-        #        exp = etree.SubElement(chain_nodes[c], 'experimental_sequence')
-        #        etree.SubElement(exp, 'sequence').text = '\n' + clab.core.seqwrap(results[e][s][c][0])
-        #        exp.set('length', str(len(results[e][s][c][0])))
-        #        #etree.SubElement(exp, 'sequence_aln').text = '\n' + clab.core.seqwrap(results[e][s][c][1]) # NOTE: this is no longer added to the database
-        #        etree.SubElement(exp, 'sequence_aln_conflicts').text = '\n' + clab.core.seqwrap(results[e][s][c][2])
-        #        obs = etree.SubElement(chain_nodes[c], 'observed_sequence')
-        #        etree.SubElement(obs, 'sequence_aln_exp').text = '\n' + clab.core.seqwrap(results[e][s][c][3])
-        #        etree.SubElement(obs, 'sequence_aln').text = '\n' + clab.core.seqwrap(results[e][s][c][4])
-        #        etree.SubElement(obs, 'ss_aln').text = '\n' + clab.core.seqwrap(results[e][s][c][5])
-        #    # Expression data
-        #    expression_data = results[e][s]['expression_data']
-        #    if verbose: print expression_data
-        #    expression_data_node = etree.Element('expression_data')
-        #    for expression_data_key in expression_data.keys():
-        #        expression_data_node.set(expression_data_key, expression_data[expression_data_key])
-        #    structure_nodes[s].insert(0, expression_data_node)
-                
-
-
     # =======================
     # Delete PDB structure and chain entries with @DELETE_ME attrib. These were cases where the sifts_uniprotAC did not match the uniprotAC in DB_root (derived from the UniProt entry by gather-uniprot.py), or where more than 90% of the experimental sequence was unobserved
     # =======================
+
     structures_to_be_deleted = set( DB_root.findall('entry/PDB/structure[@DELETE_ME=""]') )
     for s in structures_to_be_deleted:
         PDB_node = s.getparent()
