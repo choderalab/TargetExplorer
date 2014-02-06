@@ -43,7 +43,7 @@
                 @AC e.g. NP_001945.3
 
         <PDB>
-            <structure ID= > (multiple)
+            <structure ID= pdbcompoundID= > (multiple)
                 <chain ID= domainID= begin= end= > (multiple)
                     <experimental_sequence>
                         <sequence>

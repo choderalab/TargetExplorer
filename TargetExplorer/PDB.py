@@ -21,8 +21,16 @@ def retrieve_sifts(pdb_id):
     #sifts_download_base_url='http://www.ebi.ac.uk/pdbe-srv/view/files/sifts/'
     sifts_download_base_url='ftp://ftp.ebi.ac.uk/pub/databases/msd/sifts/xml/'
     url = sifts_download_base_url + pdb_id.lower() + '.xml.gz'
-    print url
+
+    # NOTE: can do exception handling for this as shown in the commented lines. In general this is done in the parent class.
+    #try:
     response = urllib2.urlopen(url)
+    #except urllib2.URLError as urlerror:
+    #    if urlerror.reason = 'ftp error: [Errno ftp error] 550 Failed to change directory.':
+    #        raise 
+    #    else:
+    #        raise urlerror
+
     sifts_page = response.read(100000000) # Max 100MB
     # Decompress string
     sifts_page = gzip.GzipFile(fileobj=StringIO.StringIO(sifts_page)).read()

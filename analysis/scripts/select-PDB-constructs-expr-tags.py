@@ -3,7 +3,7 @@
 # Daniel L. Parton <partond@mskcc.org> - 3 Jan 2014
 #
 
-import sys, os, openpyxl, re
+import sys, os, openpyxl, re, collections, traceback
 from lxml import etree
 from lxml.builder import E
 import TargetExplorer as clab
@@ -18,10 +18,13 @@ from openpyxl import Workbook
 try:
     override_target = sys.argv[ sys.argv.index('-target') + 1 ]
     targets = [override_target]
-    ndesired_targets = 1
+    plate_size = 1
+    ndesired_unique_targets = 1
 except ValueError:
     targets = 'All'
-    ndesired_targets = 96
+    # an Excel spreadsheet containing [plate_size] constructs will be created. The following value adjusts the number of unique targets. Any remaining well positions will be used for replicates, selected from the top-ranked DB entries (according to the DB target_score).
+    plate_size = 96
+    ndesired_unique_targets = 74
 
 results_dir = os.path.join('analysis', 'PDB_construct_selection')
 
@@ -52,7 +55,6 @@ def generate_html_from_alignment(title, alignment, alignment_IDs, additional_dat
     html_body.append( html_table )
 
     for i in range(len(alignment)):
-        #table = E.table( E.tr( E.td( E.div(alignment_IDs[i],CLASS='ali')), E.td( E.div(id='blank') ), E.td( E.div(id=alignment_IDs[i],CLASS='ali'),nowrap='' ) ) )
         # row
         row = E.tr()
 
@@ -77,8 +79,6 @@ def generate_html_from_alignment(title, alignment, alignment_IDs, additional_dat
             prettyseq = clab.core.seq2pretty_html(alignment[i])
 
         # set up sequence div
-        #row.append( E.td( E.div(id='sequence',CLASS='ali'), nowrap='') )
-        #seq_div = row.find('td/div[@id="sequence"]')
         seq_div = E.div(id='sequence',CLASS='ali')
         seq_div.set('style','background-color:#dddddd;letter-spacing:-5px')
 
@@ -107,9 +107,13 @@ def write_output(ofilename, html_tree):
     ofile.close()
 
 def process_target(t):
-
     target = targets_data[t].keys()[0]
-    target_results = {target : []} # results will be returned in this dict
+
+    # top PDB construct expression data will be added to a dict of this format (the variable is set here so that targets which are to be skipped can have data returned with the required structure)
+    null_construct_data = {'expression_system' : None, 'tag_type' : None, 'tag_loc' : None, 'authenticity_score' : 0}
+    # results for each target will be returned in this dict
+    null_target_results = {'targetID' : target, 'nmatching_PDB_structures' : 0, 'top_PDB_chain_ID' : None, 'top_construct_data' : null_construct_data, 'target_NCBI_GeneID' : None, 'construct_target_region_start_plasmid_coords' : None, 'construct_target_region_end_plasmid_coords' : None, 'construct_target_region_plasmid_seq' : None, 'DB_target_score' : None, 'DB_target_rank' : None}
+
     nmatching_PDB_structures = targets_data[t][target][0]
     print 'Working on target:', target
     # ===========
@@ -125,7 +129,6 @@ def process_target(t):
     output_html_body = output_html_tree.find('body')
     css_link = output_html_tree.find('head/link')
     css_link.set('type','text/css')
-    #css_path = os.path.join('..', '..', '..', 'TargetExplorer', 'seqlib.cs')
     css_path = os.path.join(css_filename)
     css_link.set('href',css_path)
     css_link.set('rel','stylesheet')
@@ -139,8 +142,7 @@ def process_target(t):
     target_domain_len = int(DB_domain.get('length'))
     if target_domain_len > 350 or target_domain_len < 191:
         print 'Target domain length %d. Skipping...' % target_domain_len
-        target_results[target] = [0, None, [None, None, None, 0]]
-        return target_results
+        return null_target_results
     DB_entry = DB_domain.getparent().getparent().getparent()
 
     # get IDs
@@ -148,14 +150,12 @@ def process_target(t):
     target_NCBI_Gene_node = DB_entry.find('NCBI_Gene/entry[@ID]')
     if target_NCBI_Gene_node == None:
         print 'Gene ID not found for target %s' % target_UniProt_entry_name
-        target_results[target] = [0, None, [None, None, None, 0]]
-        return target_results
+        return null_target_results
     target_NCBI_GeneID = int(target_NCBI_Gene_node.get('ID'))
 
     if target_NCBI_GeneID not in plasmid_NCBI_GeneIDs:
         print 'Gene ID %s (%s) not found in Harvard plasmid library.' % (target_NCBI_GeneID, target_UniProt_entry_name)
-        target_results[target] = [0, None, [None, None, None, 0]]
-        return target_results
+        return null_target_results
 
     # get UniProt canonical isoform sequence
     UniProt_canonseq = clab.core.sequnwrap( DB_entry.findtext('UniProt/isoforms/canonical_isoform/sequence') )
@@ -167,8 +167,7 @@ def process_target(t):
     # get PDB sequences (only those which have the desired expression_system tag) and store in dict e.g. { '3GKZ_B' : 'MGYL...' }
     PDB_matching_seq_nodes = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]/../chain/experimental_sequence/sequence' % desired_expression_system_regex, extensions = { (None, 'match_regex'): match_regex } )
     if len(PDB_matching_seq_nodes) == 0:
-        target_results[target] = [0, None, [None, None, None, 0]] # Skip targets with no PDB sequences with matching expression data
-        return target_results
+        return null_target_results
     # PDB_seqs structure: { [PDB_ID]_[PDB_CHAIN_ID] : sequence }
     # remove 'X' residues
     PDB_seqs = { seq_node.getparent().getparent().getparent().get('ID') + '_' + seq_node.getparent().getparent().get('ID') : clab.core.sequnwrap(seq_node.text.replace('X', '')) for seq_node in PDB_matching_seq_nodes }
@@ -194,6 +193,13 @@ def process_target(t):
     aligned_seqs = clab.align.run_clustalo(alignment_IDs, pre_alignment_seqs)
     alignment = [ [alignment_IDs[i], seq] for i, seq in enumerate(aligned_seqs) ] # convert aligned_seqs to this list of 2-element lists
     UniProt_canon_seq_aligned = alignment[0]
+
+    # manual exceptions
+    for i, PDB_chain_ID in enumerate(PDB_seqs.keys()):
+        PDB_ID = PDB_chain_ID.split('_')[0]
+        alignment_override = clab.core.parse_nested_dicts(manual_exceptions, [target, PDB_ID, 'alignment_override'])
+        if alignment_override != None:
+            alignment[i+2][1] = alignment_override.strip()
 
     # ===========
     # compare plasmid and PDB seqs with aligned UniProt canonical seq - put non-matching aas in lower case
@@ -229,9 +235,7 @@ def process_target(t):
     # Then look for non-matching sequence at the N- or C-term, of >3 aas.
     # Favor N-terminal tags, since QB3 MacroLab plasmids with His tags and TEV cleavage sites perform best in this configuration
 
-    # TODO ?go through and change re.match to re.search and alter regex strings appropriately
-
-    TEV_cleaved_Nterm_regex = '^g[has]m{0,1}g{0,1}s{0,1}[A-Z]+[A-Z]{30}'
+    TEV_cleaved_Nterm_regex = '^g[has]m{0,1}g{0,1}[sd]{0,1}[A-Z]+[A-Z]{30}'
     TEV_uncleaved_Nterm_regex = '.*[eE][nNvV][lL][yY]{0,1}[fF][qQ].*[A-Z]{30}'
     TEV_Cterm_regex = '.*[A-Z]{30}.*[eE][nN][lL][yY][fF][qQ]'
     histag_Nterm_regex = '.*[hH]{6}.*[A-Z]+'
@@ -240,63 +244,86 @@ def process_target(t):
     other_extra_seq_Cterm_regex = '.*[A-Z]{30}.*[a-z]{3}'
 
     authenticity_scores = [0] * len(PDB_construct_seqs_aligned)
-    # construct_data structure: {alignment_ID : [expression_system, tag_type, terminus, authenticity_score], ...} where terminus can be 'Nterm' or 'Cterm'
-    construct_data = { x[0] : None for x in alignment }
+    # data for each construct will be added to this dict in the following for loop. Expression system data is added immediately.
+    constructs_data = { x[0] : {'expression_system' : expression_system_data[x[0]]} for x in alignment[2:] }
     expr_tag_strings = { x[0] : None for x in alignment }
     for i in range(len(PDB_construct_seqs_aligned)):
         ID = PDB_construct_seqs_aligned[i][0]
         PDB_entry_ID = ID.split('_')[0]
         seq = PDB_construct_seqs_aligned[i][1].replace('-', '') # remove '-' from sequence for regex searches
-        construct_data[ID] = [ expression_system_data[ID] ]
 
         # first check for manual exceptions
         manual_exception_behavior = clab.core.parse_nested_dicts(manual_exceptions, [target, PDB_entry_ID, 'authenticity_score', 'behavior'])
+
+        override_tag_type = False
+        if manual_exception_behavior != None:
+            if manual_exception_behavior[0:8] == 'override':
+                override_tag_type = manual_exception_behavior.split(';')[1].strip()
+
         if manual_exception_behavior == 'downweight':
             authenticity_scores[i] = -10
             expr_tag_strings[ID] = 'manually deprioritized'
-            construct_data[ID] += [None, None, authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = None
+            constructs_data[ID]['tag_loc'] = None
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
 
         # now use regexes to check for the presence of expression tags, and use this information to set the authenticity_scores
-        elif re.match(TEV_cleaved_Nterm_regex, seq):
+        elif re.match(TEV_cleaved_Nterm_regex, seq) or override_tag_type == 'TEV_cleaved_Nterm':
             authenticity_scores[i] = 10
             expr_tag_strings[ID] = 'TEV_cleaved_Nterm'
-            construct_data[ID] += ['TEV_cleaved', 'Nterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'TEV_cleaved'
+            constructs_data[ID]['tag_loc'] = 'Nterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(TEV_uncleaved_Nterm_regex, seq):
+        elif re.match(TEV_uncleaved_Nterm_regex, seq) or override_tag_type == 'TEV_uncleaved_Nterm':
             authenticity_scores[i] = 9
             expr_tag_strings[ID] = 'TEV_uncleaved_Nterm'
-            construct_data[ID] += ['TEV_uncleaved', 'Nterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'TEV_uncleaved'
+            constructs_data[ID]['tag_loc'] = 'Nterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(TEV_Cterm_regex, seq):
+        elif re.match(TEV_Cterm_regex, seq) or override_tag_type == 'TEV_Cterm':
             authenticity_scores[i] = 8
             expr_tag_strings[ID] = 'TEV_Cterm'
-            construct_data[ID] += ['TEV', 'Cterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'TEV'
+            constructs_data[ID]['tag_loc'] = 'Cterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(histag_Nterm_regex, seq):
+        elif re.match(histag_Nterm_regex, seq) or override_tag_type == 'Histag_Nterm':
             authenticity_scores[i] = 7
             expr_tag_strings[ID] = 'Histag_Nterm'
-            construct_data[ID] += ['Histag', 'Nterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'Histag'
+            constructs_data[ID]['tag_loc'] = 'Nterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(histag_Cterm_regex, seq):
+        elif re.match(histag_Cterm_regex, seq) or override_tag_type == 'Histag_Cterm':
             authenticity_scores[i] = 6
             expr_tag_strings[ID] = 'Histag_Cterm'
-            construct_data[ID] += ['Histag', 'Cterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'Histag'
+            constructs_data[ID]['tag_loc'] = 'Cterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(other_extra_seq_Nterm_regex, seq):
+        elif re.match(other_extra_seq_Nterm_regex, seq) or override_tag_type == 'other_extra_seq_Nterm':
             authenticity_scores[i] = 4
             expr_tag_strings[ID] = 'other_extra_seq_Nterm'
-            construct_data[ID] += ['other_extra_seq', 'Nterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'other_extra_seq'
+            constructs_data[ID]['tag_loc'] = 'Nterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(other_extra_seq_Cterm_regex, seq):
+        elif re.match(other_extra_seq_Cterm_regex, seq) or override_tag_type == 'other_extra_seq_Cterm':
             authenticity_scores[i] = 3
             expr_tag_strings[ID] = 'other_extra_seq_Cterm'
-            construct_data[ID] += ['other_extra_seq', 'Cterm', authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = 'other_extra_seq'
+            constructs_data[ID]['tag_loc'] = 'Cterm'
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
         else:
             authenticity_scores[i] = 0
             expr_tag_strings[ID] = None
-            construct_data[ID] += [None, None, authenticity_scores[i]]
+            constructs_data[ID]['tag_type'] = None
+            constructs_data[ID]['tag_loc'] = None
+            constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
 
     html_additional_data.append( expr_tag_strings )
@@ -377,23 +404,22 @@ def process_target(t):
     construct_target_region_end_UniProt_coords = len(top_PDB_seq_aln_vs_UniProt_conflicts) - regex_match_backward.end()
     construct_target_region_seq = top_PDB_seq_aln_vs_UniProt_conflicts[ construct_target_region_start_UniProt_coords : construct_target_region_end_UniProt_coords + 1]
 
-    #print construct_target_region_seq
-    #print sorted_alignment_seqs[0]
-    #print sorted_alignment_seqs[2]
-
     # now get the construct target region span in the coordinates of the alignment
     # do this by constructing a regex which accounts for the presence of '-' chars, and searching it against the aligned construct sequence
     # ignore '-' chars existing within construct_target_region_seq (which shouldn't be there according to the PDB standard, but frequently are, as SEQRES records often contain the observed sequence rather than the experimental sequence)
+    # also convert all residues to upper case. This helps to avoid errors occurring due to non-ideal alignments.
 
     construct_target_region_regex = ''.join([ aa + '-*' for aa in construct_target_region_seq if aa != '-' ])[:-2] # ignore last '-*'
-    regex_match = re.search(construct_target_region_regex, sorted_alignment_seqs[2])
+    regex_match = re.search(construct_target_region_regex.upper(), sorted_alignment_seqs[2].upper())
     try:
         construct_target_region_start_aln_coords = regex_match.start()
     except Exception as e:
         print UniProt_canon_seq_target_domain_seq
         print construct_target_region_seq
+        print construct_target_region_regex
         print sorted_alignment_seqs[2]
         print sorted_alignment_seqs[2].replace('-', '')
+        print traceback.format_exc()
         raise e
     construct_target_region_end_aln_coords = regex_match.end() - 1
 
@@ -407,22 +433,34 @@ def process_target(t):
     construct_target_region_end_plasmid_coords = regex_match.end() - 1
 
     # ===========
+    # get the target_score and target_rank from the DB
+    # ===========
+
+    DB_target_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % target)
+    DB_target_score = DB_target_score_node.get('target_score')
+    DB_target_rank = DB_target_score_node.get('target_rank')
+
+    # ===========
     # add data to targets_results
     # ===========
 
-    # targets_results structure:[ { targetID : data } , ... ] where data is constructed as [nmatching_PDB_structures, top_PDB_chain_ID, construct_data ], where construct_data is constructed as [expression_system, tag_type, tag_loc, authenticity_score]
-
-    # And the top PDB ID to targets_data
-    target_results[target].append(nmatching_PDB_structures)
-    target_results[target].append(top_PDB_chain_ID)
+    # Construct target results dict
+    target_results = {}
+    target_results['targetID'] = target
+    target_results['nmatching_PDB_structures'] = nmatching_PDB_structures
+    target_results['top_PDB_chain_ID'] = top_PDB_chain_ID
     # And the construct_data for the top_PDB_chain_ID
-    target_results[target].append(construct_data[top_PDB_chain_ID])
+    top_construct_data = constructs_data[top_PDB_chain_ID]
+    target_results['top_construct_data'] = top_construct_data
     # And the Gene ID
-    target_results[target].append(target_NCBI_GeneID)
+    target_results['target_NCBI_GeneID'] = target_NCBI_GeneID
     # Add the plasmid sequence corresponding to the construct target region, and the start and end aa coordinates
-    target_results[target].append(construct_target_region_start_plasmid_coords)
-    target_results[target].append(construct_target_region_end_plasmid_coords)
-    target_results[target].append(construct_target_region_plasmid_seq)
+    target_results['construct_target_region_start_plasmid_coords'] = construct_target_region_start_plasmid_coords
+    target_results['construct_target_region_end_plasmid_coords'] = construct_target_region_end_plasmid_coords
+    target_results['construct_target_region_plasmid_seq'] = construct_target_region_plasmid_seq
+    # And the DB target_score and target_rank
+    target_results['DB_target_score'] = DB_target_score
+    target_results['DB_target_rank'] = DB_target_rank
 
     return target_results
 
@@ -480,7 +518,7 @@ if __name__ == '__main__':
     # Sort targets based on number of PDB structures with matching expression systems
     # ===========
 
-    # targets_data and targets_results structure:[ { targetID : data } , ... ] where data will be constructed as [nmatching_PDB_structures, top_PDB_chain_ID, construct_data ]
+    # targets_data and targets_results structure:[ { targetID : data } , ... ] where data will be constructed as [nmatching_PDB_structures, top_PDB_chain_ID, top_construct_data ]
     targets_data = []
 
     for target in targets:
@@ -512,8 +550,6 @@ if __name__ == '__main__':
             print 'WARNING: length of DNA sequence not divisible by 3, for plasmid with Gene Symbol %s and NCBI Gene ID %s' % (Symbol, NCBI_GeneID)
         # Translate to DNA sequence (don't include stop codon)
         aa_seq = Bio.Seq.Seq(dna_seq, Bio.Alphabet.generic_dna).translate(to_stop=True)
-        #if len(dna_seq) % 3 != 0:
-        #    print aa_seq
         plasmid_aa_seqs[NCBI_GeneID] = aa_seq
         plasmid_dna_seqs[NCBI_GeneID] = dna_seq
 
@@ -532,11 +568,8 @@ if __name__ == '__main__':
     # ===========
     # sort targets based firstly on the PDB construct authenticity score, and secondly on the number of PDB constructs with the desired expression system
     # ===========
-    # targets_results structure:[ { targetID : data } , ... ] where data is constructed as [nmatching_PDB_structures, top_PDB_chain_ID, construct_data ], where construct_data is constructed as [expression_system, tag_type, tag_loc, authenticity_score]
     # negate values for reverse sorting
-    dict_for_sorting = { target_dict.keys()[0] : [ -target_dict.values()[0][2][3], -target_dict.values()[0][0] ] for target_dict in targets_results }
-    # PDB_construct_seqs_aligned structure: [ ['PDB_chain_ID', 'sequence'], ... ]
-    targets_results = sorted( targets_results, key = lambda x: dict_for_sorting[x.keys()[0]] )
+    targets_results = sorted( targets_results, key = lambda x: (-x['top_construct_data']['authenticity_score'], -x['nmatching_PDB_structures']) )
 
     # ===========
     # print and write file containing sorted targets with details on PDB structure selection
@@ -558,33 +591,29 @@ if __name__ == '__main__':
         if t == 96:
             PDB_selections_text += ('=' * len(PDB_selections_text.split('\n')[2])) + '\n'
 
-        # ignore targets with no matching PDB structures or plasmid sequence, or authenticity_score of 0
-        if target_dict == None:
-            continue
-        # (Note: ror some reason, target_dict.values()[0][0] (nmatching_PDB_structures) needs to be referenced directly - assigning to a variable beforehand results in a value of 0. No idea why.)
-        if target_dict.values()[0][0] == 0 or len(target_dict.values()[0]) < 2:
+        # ignore targets with no matching PDB structures or plasmid sequence
+        if target_dict['nmatching_PDB_structures'] == 0:
             continue
 
-        target = target_dict.keys()[0]
-        top_PDB_chain_ID = target_dict.values()[0][1]
-        construct_data = target_dict.values()[0][2]
-        if construct_data[1] == None:
+        targetID = target_dict['targetID']
+        top_PDB_chain_ID = target_dict['top_PDB_chain_ID']
+        top_construct_data = target_dict['top_construct_data']
+        if top_construct_data['tag_type'] == None:
             expr_tag_string = 'None'
         else:
-            expr_tag_string = construct_data[1] + '_' + construct_data[2]
+            expr_tag_string = top_construct_data['tag_type'] + '_' + top_construct_data['tag_loc']
 
-        target_domain_score_node = DB_root.find('entry/target_score/domain[@targetID="%s"]' % target)
-        target_score = target_domain_score_node.get('target_score')
-        target_rank = target_domain_score_node.get('target_rank')
+        target_score = target_dict['DB_target_score']
+        target_rank = target_dict['DB_target_rank']
 
-        PDB_selections_text += '%18s  %24d  %16s  %23s  %18d  %30s  %11s  %12s\n' % (target, target_dict.values()[0][0], top_PDB_chain_ID, expr_tag_string, construct_data[3], construct_data[0], target_rank, target_score)
-        if target_dict.values()[0][0] > 0:
+        PDB_selections_text += '%18s  %24d  %16s  %23s  %18d  %30s  %11s  %12s\n' % (targetID, target_dict['nmatching_PDB_structures'], top_PDB_chain_ID, expr_tag_string, top_construct_data['authenticity_score'], top_construct_data['expression_system'], target_rank, target_score)
+        if target_dict['nmatching_PDB_structures'] > 0:
             ntargets_zero_or_more_PDB += 1
-            if construct_data[1] != None:
+            if top_construct_data['tag_type'] != None:
                 ntargets_zero_or_more_PDB_expr_tag += 1
-        if target_dict.values()[0][0] > 1:
+        if target_dict['nmatching_PDB_structures'] > 1:
             ntargets_one_or_more_PDB += 1
-            if construct_data[1] != None:
+            if top_construct_data['tag_type'] != None:
                 ntargets_one_or_more_PDB_expr_tag += 1
 
     PDB_selections_text += '\nTotal targets with plasmid and > 0 matching PDB structures: %d\n' % ntargets_zero_or_more_PDB
@@ -605,11 +634,6 @@ if __name__ == '__main__':
     ws = wb.get_active_sheet()
     ws.title = output_Excel_filename[0 : output_Excel_filename.find('.xlsx')]
 
-    # Also print data to a csv file
-    #csv_filepath = output_Excel_filepath[0 : output_Excel_filepath.find('.xlsx')] + '.txt'
-    #with open(csv_filepath, 'w') as csv_file:
-    #csv_file.write('Construct index, construct start residue (1-based aa), construct end residue, construct aa sequence, construct DNA sequence (from Harvard DF/HCC library of pJP1520 kinase plasmids)\n')
-
     headings = ['targetID', 'GeneID', 'expression tag location', 'aa_start', 'aa_end', 'aa_seq', 'dna_start', 'dna_end', 'dna_seq']
     for h in range(len(headings)):
         heading_cell = ws.cell(row=0, column=h)
@@ -617,27 +641,29 @@ if __name__ == '__main__':
 
     t_iter = 0
     ntargets_selected = 0
-    while True:
 
-        targetID = targets_results[t_iter].keys()[0]
+    # create new list of target results, removing targets with no matching PDB structures, and then keeping only the top [ndesired_unique_targets]
+    xl_output_targets_results = [t for t in targets_results if t['nmatching_PDB_structures'] > 0][0:ndesired_unique_targets]
 
-        #print t_iter, ndesired_targets
-        #print targets_results[t_iter]
+    # and a list of the same target results, sorted by DB rank
+    xl_output_targets_results_sorted_by_target_rank = sorted( xl_output_targets_results, key = lambda x: int(x['DB_target_rank']) )
 
-        if targets_results[t_iter][targetID][0] == 0:
-            t_iter += 1
-            if t_iter + 1 > ndesired_targets:
-                break
-            continue
+    for well_index in range(plate_size):
+        if well_index < ndesired_unique_targets:
+            target_index = well_index
+            target_dict = xl_output_targets_results[target_index]
+        else:
+            target_index = well_index - ndesired_unique_targets
+            target_dict = xl_output_targets_results_sorted_by_target_rank[target_index]
 
-        top_PDB_chain_ID = targets_results[t_iter][targetID][1]
+        targetID = target_dict['targetID']
 
-        top_exp_tag_type = targets_results[t_iter][targetID][2]
+        top_PDB_chain_ID = target_dict['top_PDB_chain_ID']
 
-        target_NCBI_GeneID = targets_results[t_iter][targetID][3]
-        construct_aa_start = targets_results[t_iter][targetID][4]
-        construct_aa_end = targets_results[t_iter][targetID][5] # this refers to the last aa in 0-based aa coordinates
-        construct_aa_seq = targets_results[t_iter][targetID][6]
+        target_NCBI_GeneID = target_dict['target_NCBI_GeneID']
+        construct_aa_start = target_dict['construct_target_region_start_plasmid_coords']
+        construct_aa_end = target_dict['construct_target_region_end_plasmid_coords'] # this refers to the last aa in 0-based aa coordinates
+        construct_aa_seq = target_dict['construct_target_region_plasmid_seq']
 
         construct_dna_start = (construct_aa_start * 3)
         construct_dna_end = (construct_aa_end * 3) + 2 # this refers to the last nucleotide in 0-based nucleotide coordinates
@@ -645,45 +671,40 @@ if __name__ == '__main__':
         # Build spreadsheeet
 
         ID = targetID + '_' + top_PDB_chain_ID
-        ID_cell = ws.cell(row=ntargets_selected+1, column=0)
+        ID_cell = ws.cell(row=well_index+1, column=0)
         ID_cell.value = ID
 
-        GeneID_cell = ws.cell(row=ntargets_selected+1, column=1)
+        GeneID_cell = ws.cell(row=well_index+1, column=1)
         GeneID_cell.value = target_NCBI_GeneID
         
-        exp_tag_loc = targets_results[t_iter][targetID][2][2]
-        exp_tag_loc_cell = ws.cell(row=ntargets_selected+1, column=2)
+        exp_tag_loc = target_dict['top_construct_data']['tag_loc']
+        exp_tag_loc_cell = ws.cell(row=well_index+1, column=2)
         exp_tag_loc_cell.value = exp_tag_loc
 
         # residue span: 1-based inclusive aa coordinates
-        construct_aa_start_cell = ws.cell(row=ntargets_selected+1, column=3)
-        construct_aa_end_cell = ws.cell(row=ntargets_selected+1, column=4)
+        construct_aa_start_cell = ws.cell(row=well_index+1, column=3)
+        construct_aa_end_cell = ws.cell(row=well_index+1, column=4)
         construct_aa_start_cell.value = construct_aa_start + 1
         construct_aa_end_cell.value = construct_aa_end + 1
         
         # aa_seq
-        construct_aa_seq_cell = ws.cell(row=ntargets_selected+1, column=5)
+        construct_aa_seq_cell = ws.cell(row=well_index+1, column=5)
         construct_aa_seq_cell.value = construct_aa_seq
 
         # DNA span: 1-based inclusive dna nucleotide coordinates
-        construct_dna_start_cell = ws.cell(row=ntargets_selected+1, column=6)
-        construct_dna_end_cell = ws.cell(row=ntargets_selected+1, column=7)
+        construct_dna_start_cell = ws.cell(row=well_index+1, column=6)
+        construct_dna_end_cell = ws.cell(row=well_index+1, column=7)
         construct_dna_start_cell.value = construct_dna_start + 1
         construct_dna_end_cell.value = construct_dna_end + 1
         
         # dna_seq
         orig_plasmid_dna_seq = plasmid_dna_seqs[target_NCBI_GeneID]
         construct_dna_seq = orig_plasmid_dna_seq[ construct_dna_start : construct_dna_end + 1 ]
-        construct_dna_seq_cell = ws.cell(row=ntargets_selected+1, column=8)
+        construct_dna_seq_cell = ws.cell(row=well_index+1, column=8)
         construct_dna_seq_cell.value = construct_dna_seq
 
         if len(construct_dna_seq) % 3 != 0:
             raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
-
-        t_iter += 1
-        ntargets_selected += 1
-        if t_iter + 1 > ndesired_targets:
-            break
 
     # Save spreadsheet
     wb.save(output_Excel_filepath)
