@@ -1,4 +1,79 @@
 --- #Manual exceptions
+MK14_HUMAN_D0:
+    3K3I:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper contains no information on expression protocol. Sequence cannot be confirmed.
+
+    3K3J:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 3K3I
+
+    3K3J:
+        comment: >
+            Full-length. Confirmed from paper.
+
+AURKA_HUMAN_D0:
+    2NP8:
+        comment: >
+            Paper says that E coli BL21 cells were used as hosts, and the same sequence was expressed as in Nowakowski et al 2002. The latter used insect cell hosts. Sequence confirmed as correct.
+
+MK03_HUMAN_D0:
+    2ZOQ:
+        comment: >
+            E coli expression and sequence (full-length) confirmed. N-terminal GST tag.
+
+KS6A3_HUMAN_D0:
+    comment: >
+        TODO: INCORRECT CAT DOMAIN
+
+KS6A3_HUMAN_D1:
+    4JG7:
+        comment: >
+            E coli expression and sequence (full-length) confirmed. N-terminal His tag, uncleaved.
+
+ITK_HUMAN_D1:
+    comment: >
+        TODO check, but likely that all structures used insect expression. If so, downweight these structures
+
+MK01_HUMAN_D0:
+    4FMQ:
+        comment: >
+            confirmed
+
+EGFR_HUMAN_D0:
+    2RF9:
+        comment: >
+            Paper cites Zhang et al 2006. Sequence confirmed!
+
+BRAF_HUMAN_D0:
+    4JVG:
+        comment: >
+            Sequence confirmed from paper. Original construct has 16 solubility mutations. Will it express without these? We'll see...
+
+MET_HUMAN_D0:
+    4EEV:
+        comment: >
+            Sequence confirmed from paper. Authors actually used non-UniProt-canonical isoform P08581-2, but only difference is an 18-residue insert well outside the kinase catalytic domain and the expressed construct.
+
+FGFR1_HUMAN_D0:
+    3GQL:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
+ABL1_HUMAN_D0:
+    3UE4:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
+CHK2_HUMAN_D0:
+    2CN5:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
 CDK2_HUMAN_D0:
     4BCP:
         comment: >
@@ -20,32 +95,10 @@ CDK2_HUMAN_D0:
             comment: >
                 As for 3QHW
 
-MK14_HUMAN_D0:
-    3K3I:
-        authenticity_score:
-            behavior: downweight
-            comment: >
-                Paper contains no information on expression protocol. Sequence cannot be confirmed.
-
-    3K3J:
-        authenticity_score:
-            behavior: downweight
-            comment: >
-                As for 3K3I
-
-    3K3J:
+FAK1_HUMAN_D0:
+    2IJM:
         comment: >
-            Full-length. Confirmed from paper.
-
-AURKA_HUMAN_D0:
-    2NP8:
-        comment: >
-            Paper says that E coli BL21 cells were used as hosts, and the same sequence was expressed as in Nowakowski et al 2002. The latter used insect cell hosts. Sequence confirmed as correct!
-
-MK01_HUMAN_D0:
-    4FMQ:
-        comment: >
-            confirmed
+            No publication, but sequence seems reasonable. SEQRES records include a few N/C-terminal residues unresolved in the structure.
 
 MK08_HUMAN_D0:
     2XS0:
@@ -57,11 +110,30 @@ MK08_HUMAN_D0:
         comment: >
             Paper doesn't appear to mention sequence, but the PDB SEQRES records are identical to a number of other PDB entries, including 3O2M, from which the construct sequence can be confirmed as correct. Note that the PDB construct includes mutations T183E and Y185E.
 
-EGFR_HUMAN_D0:
-    2RF9:
+MP2K1_HUMAN_D0:
+    comment: >
+        TODO
+    3MBL:
         comment: >
-            Paper cites Zhang et al 2006. Sequence confirmed!
+            Paper contains no information on expression protocol.
+    3PP1:
+        comment: >
+            Paper contains no information on expression protocol.
 
+STK3_HUMAN_D0:
+    4LGD:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Sequence and E coli expression confirmed from paper. However, the PDB chains include two regions of the protein which were actually expressed as separate proteins. The algorithm here would select the region span comprising the two regions plus the region inbetween. 4LG4 by the same authors is a much more suitable construct, consisting of only the kinase catalytic domain. It was expressed with a TEV cleavage site, but only a single non-WT Gly is left behind, and this is not detected automatically by the construct authenticity algorithm.
+
+    4LG4:
+        authenticity_score:
+            behavior: override; TEV_cleaved_Nterm
+        alignment_override: >
+            ---------------gEDSLTKQPEEVFDVLEKLGEGSYGSVFKAIHKESGQVVAIKQVPVESDLQEIIKEISIMQQCDSPYVVKYYGSYFKNTDLWIVMEYCGAGSVSDIIRLRNKTLIEDEIATILKSTLKGLEYLHFMRKIHRnIKAGNILLNTEGHAKLADFGVAGQLTDTMAKRNTVIGTPFWMAPEVIQEIGYNCVADIWSLGITSIEMAEGKPPYADIHPMRAIFMIPTNPPPTFRKPELWSDDFTDFVKKCLVKNPEQRATATQLLQHPFIKNAKPVSILRDLITEAMEIKAKRHEEQQRELEEEE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        comment: >
+            See notes for 4LGD. Regarding the aligment_override, ClustalO provides a non-ideal alignment which needs to be overridden.
 
 PIM1_HUMAN_D0:
     4A7C:

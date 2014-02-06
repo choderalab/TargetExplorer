@@ -3,7 +3,7 @@
 # Daniel L. Parton <partond@mskcc.org> - 3 Jan 2014
 #
 
-import sys, os, openpyxl, re, collections
+import sys, os, openpyxl, re, collections, traceback
 from lxml import etree
 from lxml.builder import E
 import TargetExplorer as clab
@@ -194,6 +194,13 @@ def process_target(t):
     alignment = [ [alignment_IDs[i], seq] for i, seq in enumerate(aligned_seqs) ] # convert aligned_seqs to this list of 2-element lists
     UniProt_canon_seq_aligned = alignment[0]
 
+    # manual exceptions
+    for i, PDB_chain_ID in enumerate(PDB_seqs.keys()):
+        PDB_ID = PDB_chain_ID.split('_')[0]
+        alignment_override = clab.core.parse_nested_dicts(manual_exceptions, [target, PDB_ID, 'alignment_override'])
+        if alignment_override != None:
+            alignment[i+2][1] = alignment_override.strip()
+
     # ===========
     # compare plasmid and PDB seqs with aligned UniProt canonical seq - put non-matching aas in lower case
     # ===========
@@ -247,6 +254,12 @@ def process_target(t):
 
         # first check for manual exceptions
         manual_exception_behavior = clab.core.parse_nested_dicts(manual_exceptions, [target, PDB_entry_ID, 'authenticity_score', 'behavior'])
+
+        override_tag_type = False
+        if manual_exception_behavior != None:
+            if manual_exception_behavior[0:8] == 'override':
+                override_tag_type = manual_exception_behavior.split(';')[1].strip()
+
         if manual_exception_behavior == 'downweight':
             authenticity_scores[i] = -10
             expr_tag_strings[ID] = 'manually deprioritized'
@@ -256,49 +269,49 @@ def process_target(t):
             continue
 
         # now use regexes to check for the presence of expression tags, and use this information to set the authenticity_scores
-        elif re.match(TEV_cleaved_Nterm_regex, seq):
+        elif re.match(TEV_cleaved_Nterm_regex, seq) or override_tag_type == 'TEV_cleaved_Nterm':
             authenticity_scores[i] = 10
             expr_tag_strings[ID] = 'TEV_cleaved_Nterm'
             constructs_data[ID]['tag_type'] = 'TEV_cleaved'
             constructs_data[ID]['tag_loc'] = 'Nterm'
             constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(TEV_uncleaved_Nterm_regex, seq):
+        elif re.match(TEV_uncleaved_Nterm_regex, seq) or override_tag_type == 'TEV_uncleaved_Nterm':
             authenticity_scores[i] = 9
             expr_tag_strings[ID] = 'TEV_uncleaved_Nterm'
             constructs_data[ID]['tag_type'] = 'TEV_uncleaved'
             constructs_data[ID]['tag_loc'] = 'Nterm'
             constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(TEV_Cterm_regex, seq):
+        elif re.match(TEV_Cterm_regex, seq) or override_tag_type == 'TEV_Cterm':
             authenticity_scores[i] = 8
             expr_tag_strings[ID] = 'TEV_Cterm'
             constructs_data[ID]['tag_type'] = 'TEV'
             constructs_data[ID]['tag_loc'] = 'Cterm'
             constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(histag_Nterm_regex, seq):
+        elif re.match(histag_Nterm_regex, seq) or override_tag_type == 'Histag_Nterm':
             authenticity_scores[i] = 7
             expr_tag_strings[ID] = 'Histag_Nterm'
             constructs_data[ID]['tag_type'] = 'Histag'
             constructs_data[ID]['tag_loc'] = 'Nterm'
             constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(histag_Cterm_regex, seq):
+        elif re.match(histag_Cterm_regex, seq) or override_tag_type == 'Histag_Cterm':
             authenticity_scores[i] = 6
             expr_tag_strings[ID] = 'Histag_Cterm'
             constructs_data[ID]['tag_type'] = 'Histag'
             constructs_data[ID]['tag_loc'] = 'Cterm'
             constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(other_extra_seq_Nterm_regex, seq):
+        elif re.match(other_extra_seq_Nterm_regex, seq) or override_tag_type == 'other_extra_seq_Nterm':
             authenticity_scores[i] = 4
             expr_tag_strings[ID] = 'other_extra_seq_Nterm'
             constructs_data[ID]['tag_type'] = 'other_extra_seq'
             constructs_data[ID]['tag_loc'] = 'Nterm'
             constructs_data[ID]['authenticity_score'] = authenticity_scores[i]
             continue
-        elif re.match(other_extra_seq_Cterm_regex, seq):
+        elif re.match(other_extra_seq_Cterm_regex, seq) or override_tag_type == 'other_extra_seq_Cterm':
             authenticity_scores[i] = 3
             expr_tag_strings[ID] = 'other_extra_seq_Cterm'
             constructs_data[ID]['tag_type'] = 'other_extra_seq'
@@ -394,9 +407,10 @@ def process_target(t):
     # now get the construct target region span in the coordinates of the alignment
     # do this by constructing a regex which accounts for the presence of '-' chars, and searching it against the aligned construct sequence
     # ignore '-' chars existing within construct_target_region_seq (which shouldn't be there according to the PDB standard, but frequently are, as SEQRES records often contain the observed sequence rather than the experimental sequence)
+    # also convert all residues to upper case. This helps to avoid errors occurring due to non-ideal alignments.
 
     construct_target_region_regex = ''.join([ aa + '-*' for aa in construct_target_region_seq if aa != '-' ])[:-2] # ignore last '-*'
-    regex_match = re.search(construct_target_region_regex, sorted_alignment_seqs[2])
+    regex_match = re.search(construct_target_region_regex.upper(), sorted_alignment_seqs[2].upper())
     try:
         construct_target_region_start_aln_coords = regex_match.start()
     except Exception as e:
@@ -405,6 +419,7 @@ def process_target(t):
         print construct_target_region_regex
         print sorted_alignment_seqs[2]
         print sorted_alignment_seqs[2].replace('-', '')
+        print traceback.format_exc()
         raise e
     construct_target_region_end_aln_coords = regex_match.end() - 1
 
