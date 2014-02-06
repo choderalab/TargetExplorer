@@ -46,13 +46,11 @@
     FGFR1_HUMAN_D0                        10            3GQL_B             Histag_Nterm                   7                ESCHERICHIA COLI           11          62.4
      CSKP_HUMAN_D0                         8            3TAC_A             Histag_Nterm                   7                ESCHERICHIA COLI          108          37.3
       ITK_HUMAN_D0                         5            3QGW_B             Histag_Nterm                   7                ESCHERICHIA COLI           53          45.7
-    KS6A3_HUMAN_D0                         5            4JG7_A             Histag_Nterm                   7                ESCHERICHIA COLI           50          45.8
     KS6A3_HUMAN_D1                         5            4JG7_A             Histag_Nterm                   7                ESCHERICHIA COLI           51          45.8
       MET_HUMAN_D0                         5            4EEV_A             Histag_Nterm                   7                ESCHERICHIA COLI            6          68.4
      MK13_HUMAN_D0                         4            4EYJ_A             Histag_Nterm                   7                ESCHERICHIA COLI          241          31.0
     MP2K4_HUMAN_D0                         3            3ALN_C             Histag_Nterm                   7                ESCHERICHIA COLI          178          33.0
      PLK2_HUMAN_D0                         2            4I6B_A             Histag_Nterm                   7                ESCHERICHIA COLI          189          32.5
-    KS6A1_HUMAN_D0                         1            3RNY_B             Histag_Nterm                   7                ESCHERICHIA COLI          130          36.2
     KS6A1_HUMAN_D1                         1            3RNY_B             Histag_Nterm                   7                ESCHERICHIA COLI          131          36.2
      MK08_HUMAN_D0                        25            2NO3_A             Histag_Cterm                   6                ESCHERICHIA COLI           35          50.7
      NEK2_HUMAN_D0                        20            2XKE_A             Histag_Cterm                   6                ESCHERICHIA COLI          157          34.1
@@ -90,7 +88,6 @@
      FAK2_HUMAN_D0                         2            3ET7_A                     None                   0                ESCHERICHIA COLI           75          41.8
     IGF1R_HUMAN_D0                         2            3O23_A                     None                   0                ESCHERICHIA COLI           18          57.1
     KCC2D_HUMAN_D0                         2            2VN9_A                     None                   0                ESCHERICHIA COLI          174          33.5
-    KS6A5_HUMAN_D0                         2            3KN6_A                     None                   0                ESCHERICHIA COLI          126          36.3
     KS6A5_HUMAN_D1                         2            3KN6_A                     None                   0                ESCHERICHIA COLI          127          36.3
      MK09_HUMAN_D0                         2            3NPC_B                     None                   0                ESCHERICHIA COLI           79          41.2
     OXSR1_HUMAN_D0                         2            3DAK_B                     None                   0                ESCHERICHIA COLI          344          27.7
@@ -98,10 +95,10 @@
       BTK_HUMAN_D0                         1            1K2P_A                     None                   0                ESCHERICHIA COLI           55          45.4
      CLK2_HUMAN_D0                         1            3NR9_C                     None                   0                ESCHERICHIA COLI          194          32.2
      DMPK_HUMAN_D0                         1            2VD5_B                     None                   0                ESCHERICHIA COLI          109          37.2
-======================================================================================================================================================================
       HCK_HUMAN_D0                         1            2HK5_A                     None                   0                ESCHERICHIA COLI           56          45.3
      INSR_HUMAN_D0                         1            2AUH_A                     None                   0                ESCHERICHIA COLI           15          60.9
      JAK3_HUMAN_D0                         1            1YVJ_A                     None                   0                ESCHERICHIA COLI           47          46.8
+======================================================================================================================================================================
     KC1G2_HUMAN_D0                         1            2C47_A                     None                   0                ESCHERICHIA COLI          235          31.1
     KCC1G_HUMAN_D0                         1            2JAM_A                     None                   0                ESCHERICHIA COLI          309          29.6
     KCC1D_HUMAN_D0                         1            2JC6_A                     None                   0                ESCHERICHIA COLI          250          30.8
@@ -117,7 +114,7 @@
     TGFR1_HUMAN_D0                         1            1B6C_F                     None                   0                ESCHERICHIA COLI           19          56.4
     VGFR1_HUMAN_D0                         1            3HNG_A                     None                   0                ESCHERICHIA COLI           20          56.4
 
-Total targets with plasmid and > 0 matching PDB structures: 113
-Total targets with plasmid and > 1 matching PDB structures: 70
-Total targets with plasmid and > 0 matching PDB structures and a detected expr_tag: 74
-Total targets with plasmid and > 1 matching PDB structures and a detected expr_tag: 52
+Total targets with plasmid and > 0 matching PDB structures: 110
+Total targets with plasmid and > 1 matching PDB structures: 68
+Total targets with plasmid and > 0 matching PDB structures and a detected expr_tag: 72
+Total targets with plasmid and > 1 matching PDB structures and a detected expr_tag: 51

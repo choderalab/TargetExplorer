@@ -35,7 +35,7 @@ KS6A3_HUMAN_D1:
         comment: >
             E coli expression and sequence (full-length) confirmed. N-terminal His tag, uncleaved.
 
-ITK_HUMAN_D1:
+ITK_HUMAN_D0:
     comment: >
         TODO check, but likely that all structures used insect expression. If so, downweight these structures
 

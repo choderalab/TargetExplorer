@@ -146,6 +146,7 @@ def process_target(t):
 
     # get DB entry
     DB_domain = DB_root.find('entry/UniProt/domains/domain[@targetID="%s"]' % target)
+    domainID = DB_domain.get('domainID')
     target_domain_len = int(DB_domain.get('length'))
     if target_domain_len > 350 or target_domain_len < 191:
         print 'Target domain length %d. Skipping...' % target_domain_len
@@ -171,8 +172,8 @@ def process_target(t):
     # Get PDB info from DB
     # ===========
 
-    # get PDB sequences (only those which have the desired expression_system tag) and store in dict e.g. { '3GKZ_B' : 'MGYL...' }
-    PDB_matching_seq_nodes = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]/../chain/experimental_sequence/sequence' % desired_expression_system_regex, extensions = { (None, 'match_regex'): match_regex } )
+    # get PDB sequences which correspond to the target domain and have the desired expression_system tag, and store in dict e.g. { '3GKZ_B' : 'MGYL...' }
+    PDB_matching_seq_nodes = DB_entry.xpath( 'PDB/structure/expression_data[match_regex(@EXPRESSION_SYSTEM, "%s")]/../chain[@domainID="%s"]/experimental_sequence/sequence' % (desired_expression_system_regex, domainID), extensions = { (None, 'match_regex'): match_regex } )
     if len(PDB_matching_seq_nodes) == 0:
         return null_target_results
     # PDB_seqs structure: { [PDB_ID]_[PDB_CHAIN_ID] : sequence }
