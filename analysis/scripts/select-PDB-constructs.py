@@ -31,7 +31,7 @@ except ValueError:
     targets = 'All'
     # an Excel spreadsheet containing [plate_size] constructs will be created. The following value adjusts the number of unique targets. Any remaining well positions will be used for replicates, selected from the top-ranked DB entries (according to the DB target_score).
     plate_size = 96
-    ndesired_unique_targets = 74
+    ndesired_unique_targets = 69
 
 results_dir = os.path.join('analysis', 'PDB_construct_selection')
 
@@ -116,10 +116,15 @@ def write_output(ofilename, html_tree):
 def process_target(t):
     target = targets_data[t].keys()[0]
 
-    # top PDB construct expression data will be added to a dict of this format (the variable is set here so that targets which are to be skipped can have data returned with the required structure)
     null_construct_data = {'expression_system' : None, 'tag_type' : None, 'tag_loc' : None, 'authenticity_score' : 0}
-    # results for each target will be returned in this dict
     null_target_results = {'targetID' : target, 'nmatching_PDB_structures' : 0, 'top_PDB_chain_ID' : None, 'top_construct_data' : null_construct_data, 'target_NCBI_GeneID' : None, 'construct_target_region_start_plasmid_coords' : None, 'construct_target_region_end_plasmid_coords' : None, 'construct_target_region_plasmid_seq' : None, 'DB_target_score' : None, 'DB_target_rank' : None}
+
+    target_manual_exception = clab.core.parse_nested_dicts(manual_exceptions, [target, 'behavior'])
+    if target_manual_exception != None:
+        if target_manual_exception == 'skip':
+            manual_exception_comment = clab.core.parse_nested_dicts(manual_exceptions, [target, 'comment'])
+            print manual_exception_comment
+            return null_target_results
 
     nmatching_PDB_structures = targets_data[t][target][0]
     print 'Working on target:', target
@@ -641,6 +646,9 @@ if __name__ == '__main__':
         target_node.set('DB_target_rank', target_rank)
         target_node.set('UniProt_AC', AC)
 
+    for target_node in PDB_selections_xml_tree:
+        target_node.set('nreplicates', '0')   # this will be updated later in the script
+
     PDB_selections_text += '\nTotal targets with plasmid and > 0 matching PDB structures: %d\n' % ntargets_zero_or_more_PDB
     PDB_selections_text += 'Total targets with plasmid and > 1 matching PDB structures: %d\n' % ntargets_one_or_more_PDB
     PDB_selections_text += 'Total targets with plasmid and > 0 matching PDB structures and a detected expr_tag: %d\n' % ntargets_zero_or_more_PDB_expr_tag
@@ -650,9 +658,6 @@ if __name__ == '__main__':
 
     with open(output_selections_filepath + '.txt', 'w') as output_selections_file:
         output_selections_file.write(PDB_selections_text)
-
-    with open(output_selections_filepath + '.xml', 'w') as output_selections_xml_file:
-        output_selections_xml_file.write(etree.tostring(PDB_selections_xml_tree, pretty_print=True))
 
     # ===========
     # write .xlsx spreadsheet containing the top 96 targets and necessary details for expression testing
@@ -731,9 +736,18 @@ if __name__ == '__main__':
         construct_dna_seq_cell = ws.cell(row=well_index+1, column=8)
         construct_dna_seq_cell.value = construct_dna_seq
 
+        target_node = PDB_selections_xml_tree.find('target[@targetID="%s"]' % targetID)
+        nreplicates = int(target_node.get('nreplicates')) + 1
+        target_node.set('nreplicates', str(nreplicates))
+
         if len(construct_dna_seq) % 3 != 0:
             raise Exception, 'modulo 3 of DNA sequence length should be 0. Instead was %d' % (len(construct_dna_seq) % 3)
 
     # Save spreadsheet
     wb.save(output_Excel_filepath)
+
+    # Save XML version of construct data
+    with open(output_selections_filepath + '.xml', 'w') as output_selections_xml_file:
+        output_selections_xml_file.write(etree.tostring(PDB_selections_xml_tree, pretty_print=True))
+
 

@@ -26,9 +26,9 @@ MK03_HUMAN_D0:
         comment: >
             E coli expression and sequence (full-length) confirmed. N-terminal GST tag.
 
-KS6A3_HUMAN_D0:
+MK10_HUMAN_D0:
     comment: >
-        TODO: INCORRECT CAT DOMAIN
+        No PDB constructs with detected expression tag. Top constructs probably have incorrectly annotated SEQRES records, containing only the observed residues.
 
 KS6A3_HUMAN_D1:
     4JG7:
@@ -36,18 +36,63 @@ KS6A3_HUMAN_D1:
             E coli expression and sequence (full-length) confirmed. N-terminal His tag, uncleaved.
 
 ITK_HUMAN_D0:
+    3QGW:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper contains no information on expression protocol. Cites 1SNU paper in acknowledgements - both papers from Vertex.
+    3QGY:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 3QGW
+    1SNU:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper clearly states that they used Hi5 insect cells. No idea why the EXPRESSION_SYSTEM tag in the PDB entry says escherichia coli.
+    1SM2:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 1SNU
+    1SNX:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 1SNU
+
+KAPCA_HUMAN_D0:
+    4AE9:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Isoform 2. SEQRES records probably correct. Downweighting because we don't handle isoforms properly yet.
+    4AE6:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 4AE6
+    3VQH:
+        comment: >
+            Full-length sequence and E coli expression confirmed from paper.
+
+MAPK2_HUMAN_D0:
     comment: >
-        TODO check, but likely that all structures used insect expression. If so, downweight these structures
+        Sequence from Harvard plasmid library is isoform 2, but this is not too different from isoform 1, so will not skip this.
+    2JBO:
+        comment: >
+            Sequence and E coli expression confirmed from paper. GSH tag and thrombin cleavage site.
+
+KC1D_HUMAN_D0:
+    4HNF:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
 
 MK01_HUMAN_D0:
     4FMQ:
         comment: >
             confirmed
-
-EGFR_HUMAN_D0:
-    2RF9:
-        comment: >
-            Paper cites Zhang et al 2006. Sequence confirmed!
 
 BRAF_HUMAN_D0:
     4JVG:
@@ -100,6 +145,11 @@ FAK1_HUMAN_D0:
         comment: >
             No publication, but sequence seems reasonable. SEQRES records include a few N/C-terminal residues unresolved in the structure.
 
+BMPR_HUMAN_D0:
+    3G2F:
+        comment: >
+            No publication, but sequence seems reasonable. SEQRES records include a few N/C-terminal residues unresolved in the structure.
+
 MK08_HUMAN_D0:
     2XS0:
         authenticity_score:
@@ -111,14 +161,25 @@ MK08_HUMAN_D0:
             Paper doesn't appear to mention sequence, but the PDB SEQRES records are identical to a number of other PDB entries, including 3O2M, from which the construct sequence can be confirmed as correct. Note that the PDB construct includes mutations T183E and Y185E.
 
 MP2K1_HUMAN_D0:
+    behavior: skip
     comment: >
-        TODO
+        Sequence from Harvard plasmid library has long deletion - not sure why. Skipping for now.
     3MBL:
         comment: >
             Paper contains no information on expression protocol.
     3PP1:
         comment: >
             Paper contains no information on expression protocol.
+
+MP2K2_HUMAN_D0:
+    1S9I:
+        comment: >
+            Sequence and E coli expression confirmed. C-terminal His tag.
+
+CSK21_HUMAN_D0:
+    3AXW:
+        comment: >
+            Sequence and E coli expression confirmed from paper SI. N-terminal GST tag.
 
 STK3_HUMAN_D0:
     4LGD:
