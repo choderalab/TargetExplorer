@@ -42,8 +42,10 @@ q:before, q:after {
 	content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+	border-collapse: separate;
+	border-spacing: 10px;
+    /*position: relative;
+    margin-left: -500px;*/
 }
 
 /* LAYOUT STYLES */
