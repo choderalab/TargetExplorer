@@ -31,6 +31,8 @@ class PDBCnstrct_Table(object):
 
     def add_table_headers(self):
         row = E.tr()
+        row.append( E.th ( E.div('index'), nowrap='' ) )
+        row.append( E.th ( E.div('nreps'), nowrap='' ) )
         row.append( E.th ( E.div('targetID'), nowrap='' ) )
         row.append( E.th ( E.div('nPDBs'), nowrap='' ) )
         row.append( E.th ( E.div('top_PDB'), nowrap='' ) )
@@ -42,8 +44,9 @@ class PDBCnstrct_Table(object):
         row.append( E.th ( E.div('UniProt_AC'), nowrap='' ) )
         self.table_node.append(row)
 
-    def add_construct_row(self, construct_xml):
+    def add_construct_row(self, index, construct_xml):
         targetID = construct_xml.get('targetID')
+        nreplicates = construct_xml.get('nreplicates')
         nPDBs = construct_xml.get('nmatching_PDB_structures')
         top_PDB = construct_xml.get('top_PDB_chain_ID')
         PDBID = top_PDB.split('_')[0]
@@ -55,6 +58,9 @@ class PDBCnstrct_Table(object):
         AC = construct_xml.get('UniProt_AC')
 
         row = E.tr()
+
+        row.append( E.td( E.div(str(index+1)), nowrap='' ) )
+        row.append( E.td( E.div(nreplicates), nowrap='' ) )
 
         # targetID, href to alignment html
         targetID_html = E.a(targetID)
@@ -93,6 +99,8 @@ PDB_constructs_xml = etree.parse(PDB_constructs_xml_filepath, parser).getroot()
 # Generate main content section node
 main_content_node = locallib.gen_main_content_node()
 
+# TODO add info on expr_tag_score etc.
+
 # Title for main content section
 h2_node = etree.SubElement(main_content_node, 'h2')
 a_node = etree.SubElement(h2_node, 'a')
@@ -103,16 +111,12 @@ span_node = etree.SubElement(a_node, 'span')
 span_node.set('class', 'octicon octicon-link')
 h2_node.text = 'PDB construct alignments'
 
-#a_node = etree.SubElement(main_content_node, 'a')
-#a_node.set('href', 'PDB-construct-alignments/ABL1_HUMAN_D0.html')
-#a_node.text = 'ABL1_HUMAN_D0'
-
 # Now construct the table of PDB construct data
 
 pdbcnstrct_table = PDBCnstrct_Table()
 
-for target_xml in PDB_constructs_xml:
-    pdbcnstrct_table.add_construct_row(target_xml)
+for t, target_xml in enumerate(PDB_constructs_xml):
+    pdbcnstrct_table.add_construct_row(t, target_xml)
 
 #main_content_node.append(pdbcnstrct_table.table_node)
 table_div = E.div()
@@ -122,12 +126,6 @@ main_content_node.append(table_div)
 
 
 
-
-
-# TODO have select-PDB-constructs.py output an XML file containing the construct selection data
-# TODO have this script read in the XML file
-# for target in target_node:
-#     gen_tr(target)  # targetID links to alignment file; top_PDB_chain_ID links to PDB entry; add UniProt AC and link to UniProt entry
 
 
 # TODO add footer info
