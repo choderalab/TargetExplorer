@@ -10,7 +10,7 @@
 # Daniel L. Parton <partond@mskcc.org> - 3 Jan 2014
 #
 
-import sys, os, openpyxl, re, collections, traceback
+import sys, os, openpyxl, re, traceback
 from lxml import etree
 from lxml.builder import E
 import TargetExplorer as clab
@@ -36,7 +36,7 @@ except ValueError:
 results_dir = os.path.join('analysis', 'PDB_construct_selection')
 
 output_Excel_filename = 'PDB_constructs.xlsx'
-output_selections_filename = 'PDB_constructs-data.txt'
+output_selections_filename = 'PDB_constructs-data' # will be output as both .txt and .xml files
 manual_exceptions_filename = 'manual_exceptions.yaml'
 output_Excel_filepath = os.path.join(results_dir, output_Excel_filename)
 output_selections_filepath = os.path.join(results_dir, output_selections_filename)
@@ -580,7 +580,7 @@ if __name__ == '__main__':
     targets_results = sorted( targets_results, key = lambda x: (-x['top_construct_data']['authenticity_score'], -x['nmatching_PDB_structures']) )
 
     # ===========
-    # print and write file containing sorted targets with details on PDB structure selection
+    # print and write human-readable text file and XML file, containing sorted targets with details on PDB structure selection
     # ===========
 
     print ''
@@ -594,6 +594,9 @@ if __name__ == '__main__':
     ntargets_one_or_more_PDB = 0
     ntargets_zero_or_more_PDB_expr_tag = 0
     ntargets_one_or_more_PDB_expr_tag = 0
+
+    PDB_selections_xml_tree = etree.Element('PDB_selections')
+
     for t, target_dict in enumerate(targets_results):
         # Add a line after the 96th target
         if t == 96:
@@ -604,6 +607,8 @@ if __name__ == '__main__':
             continue
 
         targetID = target_dict['targetID']
+        entry_name = targetID.split('_D')[0]
+        AC = DB_root.find('entry/UniProt[@entry_name="%s"]' % entry_name).get('AC')
         top_PDB_chain_ID = target_dict['top_PDB_chain_ID']
         top_construct_data = target_dict['top_construct_data']
         if top_construct_data['tag_type'] == None:
@@ -624,6 +629,18 @@ if __name__ == '__main__':
             if top_construct_data['tag_type'] != None:
                 ntargets_one_or_more_PDB_expr_tag += 1
 
+        # XML
+        target_node = etree.SubElement(PDB_selections_xml_tree, 'target')
+        target_node.set('targetID', targetID)
+        target_node.set('nmatching_PDB_structures', str(target_dict['nmatching_PDB_structures']))
+        target_node.set('top_PDB_chain_ID', top_PDB_chain_ID)
+        target_node.set('expr_tag_string', expr_tag_string)
+        target_node.set('authenticity_score', str(top_construct_data['authenticity_score']))
+        target_node.set('expression_system', top_construct_data['expression_system'])
+        target_node.set('DB_target_score', target_score)
+        target_node.set('DB_target_rank', target_rank)
+        target_node.set('UniProt_AC', AC)
+
     PDB_selections_text += '\nTotal targets with plasmid and > 0 matching PDB structures: %d\n' % ntargets_zero_or_more_PDB
     PDB_selections_text += 'Total targets with plasmid and > 1 matching PDB structures: %d\n' % ntargets_one_or_more_PDB
     PDB_selections_text += 'Total targets with plasmid and > 0 matching PDB structures and a detected expr_tag: %d\n' % ntargets_zero_or_more_PDB_expr_tag
@@ -631,8 +648,11 @@ if __name__ == '__main__':
 
     print PDB_selections_text
 
-    with open(output_selections_filepath, 'w') as output_selections_file:
+    with open(output_selections_filepath + '.txt', 'w') as output_selections_file:
         output_selections_file.write(PDB_selections_text)
+
+    with open(output_selections_filepath + '.xml', 'w') as output_selections_xml_file:
+        output_selections_xml_file.write(etree.tostring(PDB_selections_xml_tree, pretty_print=True))
 
     # ===========
     # write .xlsx spreadsheet containing the top 96 targets and necessary details for expression testing
