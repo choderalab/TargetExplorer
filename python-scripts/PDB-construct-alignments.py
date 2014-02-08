@@ -23,6 +23,11 @@ manual_exceptions_yaml_filepath = os.path.join(aln_dir, 'manual_exceptions.yaml'
 manual_exceptions_html_filepath = os.path.join(aln_dir, 'manual_exceptions.html')
 manual_exceptions_yaml_filepath_main_branch = os.path.join('..', 'analysis', 'PDB_construct_selection', 'manual_exceptions.yaml')
 
+PDB_constructs_xml_filepath = os.path.join(aln_dir, 'PDB_constructs-data.xml')
+PDB_constructs_xml_filepath_main_branch = os.path.join('..', 'analysis', 'PDB_construct_selection', 'PDB_constructs-data.xml')
+
+aln_dir_main_branch = os.path.join('..', 'analysis', 'PDB_construct_selection', 'alignments')
+
 # ============
 # definitions
 # ============
@@ -106,10 +111,18 @@ def manual_exceptions_yaml2html(input_yaml_filepath, output_html_filepath):
 # main
 # ============
 
+# copy PDB_constructs-data.xml from main branch
+shutil.copy(PDB_constructs_xml_filepath_main_branch, PDB_constructs_xml_filepath)
+
 # copy HTML alignment files and seqlib.css from main branch
 shutil.copy(manual_exceptions_yaml_filepath_main_branch, manual_exceptions_yaml_filepath)
 
-# TODO copy HTML alignment files and seqlib.css from main branch (currently done manually)
+# copy HTML alignment files and seqlib.css from main branch
+for filename in os.walk(aln_dir_main_branch).next()[2]:
+    if filename[0] != '.':
+        mainbranch_filepath = os.path.join(aln_dir_main_branch, filename)
+        ghpages_filepath = os.path.join(aln_dir, filename)
+        shutil.copy(mainbranch_filepath, ghpages_filepath)
 
 # read in XML
 
