@@ -1,12 +1,12 @@
 from lxml import etree
 from lxml.builder import E
 
-class Webpage(object):
+class PDBCnstrct_Webpage(object):
 
     def __init__(self):
         self.html_tree = self.init_html_tree()
         self.head_node = self.html_tree.find('head')
-        self.div_inner = self.html_tree.find('body/div[@id="container"]/div[@class="inner"]')
+        self.div_container = self.html_tree.find('body/div[@id="container"]')
         #self.main_content_node = self.html_tree.find('body/div/div/section[@id="main_content"]')
 
     def init_html_tree(self):
@@ -15,11 +15,8 @@ class Webpage(object):
         body_node = etree.SubElement(html_node, 'body')
         div_container = etree.SubElement(body_node, 'div')
         div_container.set('id', 'container')
-        div_inner = etree.SubElement(div_container, 'div')
-        div_inner.set('class', 'inner')
-
-        #main_content_node = etree.SubElement(div_inner, 'section')
-        #main_content_node.set('id', 'main_content')
+        #div_inner = etree.SubElement(div_container, 'div')
+        #div_inner.set('class', 'inner')
 
         return html_node
 
@@ -53,7 +50,8 @@ class Webpage(object):
         title_node = etree.SubElement(self.head_node, 'title')
         title_node.text = 'TargetExplorerDB by choderalab'
 
-        header_node = etree.SubElement(self.div_inner, 'header')
+        header_node = etree.SubElement(self.div_container, 'header')
+        header_node.set('class', 'TEDBheader')
         h1_node = etree.SubElement(header_node, 'h1')
         h1_node.text = 'TargetExplorerDB'
         #h2_node = etree.SubElement(header_node, 'h2')
@@ -62,8 +60,8 @@ class Webpage(object):
     def add_website_footer(self):
         pass
 
-    def add_main_content(self, main_content_node):
-        self.div_inner.append(main_content_node)
+    def add_content(self, content_node):
+        self.div_container.append(content_node)
 
     def write_html(self, ofilename):
         ofile = open(ofilename, 'w')
@@ -74,4 +72,9 @@ def gen_main_content_node():
     main_content_node = E.section()
     main_content_node.set('id', 'main_content')
     return main_content_node
+
+def gen_PDBCnstrct_section_node():
+    PDBCnstrct_content_node = E.section()
+    PDBCnstrct_content_node.set('class', 'PDBCnstrctMain')
+    return PDBCnstrct_content_node
 
