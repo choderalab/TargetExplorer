@@ -1,0 +1,208 @@
+--- #Manual exceptions
+MK14_HUMAN_D0:
+    3K3I:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper contains no information on expression protocol. Sequence cannot be confirmed.
+
+    3K3J:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 3K3I
+
+    3K3J:
+        comment: >
+            Full-length. Confirmed from paper.
+
+AURKA_HUMAN_D0:
+    2NP8:
+        comment: >
+            Paper says that E coli BL21 cells were used as hosts, and the same sequence was expressed as in Nowakowski et al 2002. The latter used insect cell hosts. Sequence confirmed as correct.
+
+MK03_HUMAN_D0:
+    2ZOQ:
+        comment: >
+            E coli expression and sequence (full-length) confirmed. N-terminal GST tag.
+
+MK10_HUMAN_D0:
+    comment: >
+        No PDB constructs with detected expression tag. Top constructs probably have incorrectly annotated SEQRES records, containing only the observed residues.
+
+KS6A3_HUMAN_D1:
+    4JG7:
+        comment: >
+            E coli expression and sequence (full-length) confirmed. N-terminal His tag, uncleaved.
+
+ITK_HUMAN_D0:
+    3QGW:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper contains no information on expression protocol. Cites 1SNU paper in acknowledgements - both papers from Vertex.
+    3QGY:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 3QGW
+    1SNU:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper clearly states that they used Hi5 insect cells. No idea why the EXPRESSION_SYSTEM tag in the PDB entry says escherichia coli.
+    1SM2:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 1SNU
+    1SNX:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 1SNU
+
+KAPCA_HUMAN_D0:
+    4AE9:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Isoform 2. SEQRES records probably correct. Downweighting because we don't handle isoforms properly yet.
+    4AE6:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 4AE6
+    3VQH:
+        comment: >
+            Full-length sequence and E coli expression confirmed from paper.
+
+MAPK2_HUMAN_D0:
+    comment: >
+        Sequence from Harvard plasmid library is isoform 2, but this is not too different from isoform 1, so will not skip this.
+    2JBO:
+        comment: >
+            Sequence and E coli expression confirmed from paper. GSH tag and thrombin cleavage site.
+
+KC1D_HUMAN_D0:
+    4HNF:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
+MK01_HUMAN_D0:
+    4FMQ:
+        comment: >
+            confirmed
+
+BRAF_HUMAN_D0:
+    4JVG:
+        comment: >
+            Sequence confirmed from paper. Original construct has 16 solubility mutations. Will it express without these? We'll see...
+
+MET_HUMAN_D0:
+    4EEV:
+        comment: >
+            Sequence confirmed from paper. Authors actually used non-UniProt-canonical isoform P08581-2, but only difference is an 18-residue insert well outside the kinase catalytic domain and the expressed construct.
+
+FGFR1_HUMAN_D0:
+    3GQL:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
+ABL1_HUMAN_D0:
+    3UE4:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
+CHK2_HUMAN_D0:
+    2CN5:
+        comment: >
+            Sequence and E coli expression confirmed from paper.
+
+CDK2_HUMAN_D0:
+    4BCP:
+        comment: >
+            Confirmed E coli expression and construct sequence. They used a
+            GST-tag with TEV protease cleavage site.
+
+    3QHW:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                TEV_cleaved_Nterm ('gh' sequence); one-domain protein; full-length
+                construct except two residues at C-term; most other PDB constructs are
+                full-length; paper indicates "full-length"; 3QHW authors seem to have input the
+                observed sequence in the SEQRES records (including the expression tag)
+
+    3QHR:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 3QHW
+
+FAK1_HUMAN_D0:
+    2IJM:
+        comment: >
+            No publication, but sequence seems reasonable. SEQRES records include a few N/C-terminal residues unresolved in the structure.
+
+BMPR_HUMAN_D0:
+    3G2F:
+        comment: >
+            No publication, but sequence seems reasonable. SEQRES records include a few N/C-terminal residues unresolved in the structure.
+
+MK08_HUMAN_D0:
+    2XS0:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Probably authentic construct sequence, and has N-terminal TEV cleavage site. But this is isoform beta-1 (P45983-3). The Harvard plasmid is isoform alpha-1 (P45983-1), and the UniProt canonical isoform is alpha-2 (P45983-2). The latter two isoforms are identical except for a region at the C-terminus, outside the catalytic domain. Downweighting this construct results in 2NO3_A becoming the top-ranked sequence.
+    2NO3:
+        comment: >
+            Paper doesn't appear to mention sequence, but the PDB SEQRES records are identical to a number of other PDB entries, including 3O2M, from which the construct sequence can be confirmed as correct. Note that the PDB construct includes mutations T183E and Y185E.
+
+MP2K1_HUMAN_D0:
+    behavior: skip
+    comment: >
+        Sequence from Harvard plasmid library has long deletion - not sure why. Skipping for now.
+    3MBL:
+        comment: >
+            Paper contains no information on expression protocol.
+    3PP1:
+        comment: >
+            Paper contains no information on expression protocol.
+
+MP2K2_HUMAN_D0:
+    1S9I:
+        comment: >
+            Sequence and E coli expression confirmed. C-terminal His tag.
+
+CSK21_HUMAN_D0:
+    3AXW:
+        comment: >
+            Sequence and E coli expression confirmed from paper SI. N-terminal GST tag.
+
+STK3_HUMAN_D0:
+    4LGD:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Sequence and E coli expression confirmed from paper. However, the PDB chains include two regions of the protein which were actually expressed as separate proteins. The algorithm here would select the region span comprising the two regions plus the region inbetween. 4LG4 by the same authors is a much more suitable construct, consisting of only the kinase catalytic domain. It was expressed with a TEV cleavage site, but only a single non-WT Gly is left behind, and this is not detected automatically by the construct authenticity algorithm.
+
+    4LG4:
+        authenticity_score:
+            behavior: override; TEV_cleaved_Nterm
+        alignment_override: >
+            ---------------gEDSLTKQPEEVFDVLEKLGEGSYGSVFKAIHKESGQVVAIKQVPVESDLQEIIKEISIMQQCDSPYVVKYYGSYFKNTDLWIVMEYCGAGSVSDIIRLRNKTLIEDEIATILKSTLKGLEYLHFMRKIHRnIKAGNILLNTEGHAKLADFGVAGQLTDTMAKRNTVIGTPFWMAPEVIQEIGYNCVADIWSLGITSIEMAEGKPPYADIHPMRAIFMIPTNPPPTFRKPELWSDDFTDFVKKCLVKNPEQRATATQLLQHPFIKNAKPVSILRDLITEAMEIKAKRHEEQQRELEEEE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        comment: >
+            See notes for 4LGD. Regarding the aligment_override, ClustalO provides a non-ideal alignment which needs to be overridden.
+
+PIM1_HUMAN_D0:
+    4A7C:
+        comment: >
+            Paper doesn't appear to mention the sequence or expression protocol, but PDB SEQRES records look likely to be authentic.
+
+TTK_HUMAN_D0:
+    3H9F:
+        comment: >
+            Paper SI confirms E coli expression, expression tag (His tag and TEV protease cleavage site), and sequence.
+

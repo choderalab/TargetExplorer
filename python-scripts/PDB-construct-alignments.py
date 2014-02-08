@@ -2,7 +2,7 @@
 # Daniel L. Parton <partond@mskcc.org> - 6 Feb 2014
 #
 
-import os
+import os, shutil
 from lxml import etree
 from lxml.builder import E
 import locallib
@@ -18,6 +18,9 @@ PDB_constructs_xml_filepath = os.path.join('..', 'analysis', 'PDB_construct_sele
 parser = etree.XMLParser(remove_blank_text=True)
 
 aln_dir = 'PDB-construct-alignments'
+
+manual_exceptions_yaml_filepath = os.path.join(aln_dir, 'manual_exceptions.yaml')
+manual_exceptions_yaml_filepath_main_branch = os.path.join('..', 'analysis', 'PDB_construct_selection', 'manual_exceptions.yaml')
 
 # ============
 # definitions
@@ -92,6 +95,11 @@ class PDBCnstrct_Table(object):
 # main
 # ============
 
+# copy HTML alignment files and seqlib.css from main branch
+shutil.copy(manual_exceptions_yaml_filepath_main_branch, manual_exceptions_yaml_filepath)
+
+# TODO copy HTML alignment files and seqlib.css from main branch (currently done manually)
+
 # read in XML
 
 PDB_constructs_xml = etree.parse(PDB_constructs_xml_filepath, parser).getroot()
@@ -148,8 +156,9 @@ p_node.text = 'Kinase targets are ranked firstly by expr_tag_score for the top P
 p_node.set('style', 'max-width: 1000px; text-align: justify;')
 
 p_node = etree.SubElement(PDBCnstrct_section, 'p')
-p_node.text = 'A series of manual exceptions have also been made to further refine the results, which can be badly affected by misannotated PDB entries.'
+p_node = E.p('A series of ', E.a('manual exceptions', href=manual_exceptions_yaml_filepath), ' have also been made to further refine the results, which can be badly affected by misannotated PDB entries.')
 p_node.set('style', 'max-width: 1000px; text-align: justify;')
+PDBCnstrct_section.append(p_node)
 
 # Now construct the table of PDB construct data
 pdbcnstrct_table = PDBCnstrct_Table()
@@ -165,14 +174,8 @@ PDBCnstrct_section.append(table_div)
 
 
 
-# TODO add footer info
-
-
-
-
 webpage = locallib.PDBCnstrct_Webpage()
 webpage.add_standard_header()
-#webpage.add_content(info_div)
 webpage.add_content(PDBCnstrct_section)
 webpage.write_html(output_html_index_filepath)
 
