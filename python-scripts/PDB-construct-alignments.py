@@ -20,6 +20,7 @@ parser = etree.XMLParser(remove_blank_text=True)
 aln_dir = 'PDB-construct-alignments'
 
 manual_exceptions_yaml_filepath = os.path.join(aln_dir, 'manual_exceptions.yaml')
+manual_exceptions_html_filepath = os.path.join(aln_dir, 'manual_exceptions.html')
 manual_exceptions_yaml_filepath_main_branch = os.path.join('..', 'analysis', 'PDB_construct_selection', 'manual_exceptions.yaml')
 
 # ============
@@ -90,6 +91,16 @@ class PDBCnstrct_Table(object):
 
         self.table_node.append(row)
 
+def manual_exceptions_yaml2html(input_yaml_filepath, output_html_filepath):
+    '''
+    Just a quick/dirty solution for now.
+    '''
+    with open(output_html_filepath, 'w') as html_file:
+        with open(input_yaml_filepath, 'r') as yaml_file:
+            yaml_text = yaml_file.read()
+            body_node = E.body(yaml_text, style='white-space: pre-wrap;')
+            html_file.write(etree.tostring(body_node, pretty_print=True))
+
 
 # ============
 # main
@@ -156,7 +167,7 @@ p_node.text = 'Kinase targets are ranked firstly by expr_tag_score for the top P
 p_node.set('style', 'max-width: 1000px; text-align: justify;')
 
 p_node = etree.SubElement(PDBCnstrct_section, 'p')
-p_node = E.p('A series of ', E.a('manual exceptions', href=manual_exceptions_yaml_filepath), ' have also been made to further refine the results, which can be badly affected by misannotated PDB entries.')
+p_node = E.p('A series of ', E.a('manual exceptions', href=manual_exceptions_html_filepath), ' have also been made to further refine the results, which can be badly affected by misannotated PDB entries.')
 p_node.set('style', 'max-width: 1000px; text-align: justify;')
 PDBCnstrct_section.append(p_node)
 
@@ -178,5 +189,7 @@ webpage = locallib.PDBCnstrct_Webpage()
 webpage.add_standard_header()
 webpage.add_content(PDBCnstrct_section)
 webpage.write_html(output_html_index_filepath)
+
+manual_exceptions_yaml2html(manual_exceptions_yaml_filepath, manual_exceptions_html_filepath)
 
 
