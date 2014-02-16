@@ -41,7 +41,9 @@ DB_root = etree.parse(DB_path).getroot()
 # ===========
 
 title = 'plasmids aligned against UniProt sequences'
-output_html_tree = E.html( E.head( E.link() ), E.body( E.h2(title), E.table() ) )
+subtitle = 'UniProt seqences are identified by targetID; plasmid sequences by GeneID. Second number on the plasmid row is the alignment score (plasmid seq vs UniProt seq) subtracted from the maximum possible (UniProt seq vs UniProt seq).'
+
+output_html_tree = E.html( E.head( E.link() ), E.body( E.h2(title), E.h3(subtitle), E.table() ) )
 output_html_body = output_html_tree.find('body')
 output_html_table = output_html_body.find('table')
 css_filename = 'seqlib.cs'
