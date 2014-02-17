@@ -69,8 +69,8 @@ def gen_html(html_table, aln_data):
         # score the alignment quality, subtract from the maximum possible, and add to first row
         # ===========
         if i == 1:
-            aln_qual_ignore_gaps = clab.align.score_aln(aln_data[0][1], aln_data[1][1], gap_penalty=-8)
-            aln_qual = clab.align.score_aln(aln_data[0][1], aln_data[1][1], gap_penalty=0)
+            aln_qual_ignore_gaps = clab.align.score_aln(aln_data[0][1], aln_data[1][1], gap_penalty=0)
+            aln_qual = clab.align.score_aln(aln_data[0][1], aln_data[1][1], gap_penalty=-8)
             max_aln_qual = clab.align.score_aln(aln_data[0][1], aln_data[0][1], gap_penalty=0)
             aln_score_ignore_gaps = str(aln_qual_ignore_gaps - max_aln_qual)
             aln_score = str(aln_qual - max_aln_qual)
