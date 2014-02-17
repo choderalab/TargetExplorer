@@ -150,7 +150,7 @@ This is the same method used by the UniProt alignment service.
             comparison += ' '
     return comparison
 
-def score_aln(seq1, seq2):
+def score_aln(seq1, seq2, gap_penalty=0):
     '''
     Scores an alignment between two sequences using a PAM matrix.
     '''
@@ -159,8 +159,9 @@ def score_aln(seq1, seq2):
     score = 0
     for i in range(len(seq1)):
         if seq1[i] == '-' or seq2[i] == '-':
-            continue
-        score += Gonnet_PAM250[seq1[i].upper()][seq2[i].upper()]
+            score=gap_penalty
+        else:
+            score += Gonnet_PAM250[seq1[i].upper()][seq2[i].upper()]
     return score
 
 # Gonnet_PAM250 is a scoring matrix based on an alignment of the entire SWISS-PROT database, by Gonnet, Cohen and Benner (1992).
