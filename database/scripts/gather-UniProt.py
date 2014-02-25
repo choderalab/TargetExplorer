@@ -64,7 +64,7 @@ else:
 now = datetime.datetime.utcnow()
 datestamp = now.strftime(TargetExplorer.DB.datestamp_format_string)
 
-parser = etree.XMLParser(remove_blank_text=True)
+parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
 
 days_elapsed_for_force_download = 7
 
@@ -192,7 +192,6 @@ for k in range(nuniprot_entries):
     rec_name = uniprot_entries[k].findtext('./protein/recommendedName/fullName')
     etree.SubElement(DBentry_uniprot, 'protein_recommended_name').text = rec_name
     gene_name_nodes = uniprot_entries[k].findall('./gene/name')
-    print gene_name_nodes
     DBentry_uniprot_gene_names = etree.SubElement(DBentry_uniprot, 'gene_names')
     for gene_name_node in gene_name_nodes:
         DBgene_name_node = etree.SubElement(DBentry_uniprot_gene_names, 'gene_name')
