@@ -191,8 +191,14 @@ for k in range(nuniprot_entries):
     DBentry_uniprot.set('entry_name', entry_name)
     rec_name = uniprot_entries[k].findtext('./protein/recommendedName/fullName')
     etree.SubElement(DBentry_uniprot, 'protein_recommended_name').text = rec_name
-    #gene_name = uniprot_entries[k].findtext('./gene/name[@type="primary"]')
-    #DBentry_uniprot.set('primary_gene_name', gene_name)
+    gene_name_nodes = uniprot_entries[k].findall('./gene/name')
+    print gene_name_nodes
+    DBentry_uniprot_gene_names = etree.SubElement(DBentry_uniprot, 'gene_names')
+    for gene_name_node in gene_name_nodes:
+        DBgene_name_node = etree.SubElement(DBentry_uniprot_gene_names, 'gene_name')
+        for key in gene_name_node.keys():
+            DBgene_name_node.set(key, gene_name_node.get(key))
+            DBgene_name_node.text = gene_name_node.text
 
     # = Date entry was last modified in UniProt =
     modified = uniprot_entries[k].attrib['modified']
