@@ -1,7 +1,7 @@
 import os, shutil
 
 main_branch_path = '..'
-html_page_path_main_branch = os.path.join(main_branch_path, 'external-data', 'Harvard-DFHCC-HIP_human_kinase_collection-pJP1520', 'aln-against-UniProt-seq.html')
+html_page_path_main_branch = os.path.join(main_branch_path, 'external-data', 'plasmids', 'DFHCC-PlasmID', 'HIP_human_kinase_collection-pJP1520', 'aln-against-UniProt-seq.html')
 
 shutil.copy(html_page_path_main_branch, 'Harvard-plasmids-vs-UniProt.html')
 

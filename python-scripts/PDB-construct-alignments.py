@@ -176,7 +176,7 @@ p_node.text = 'For a given kinase target, all PDB constructs expressed in E coli
 p_node.set('style', 'max-width: 1000px; text-align: justify;')
 
 p_node = etree.SubElement(PDBCnstrct_section, 'p')
-p_node.text = 'Kinase targets are ranked firstly by expr_tag_score for the top PDB construct, then by nPDBs. Only constructs for which an expression tag has been detected (expr_tag_score > 0) are selected for expression testing. Currently this process results in 69 unique kinase constructs. For the remaining 27 well positions, replicate experiments will be run for the kinases with the highest DB_target_score. Running replicate expreriments will help to allay cloning errors (error rate ~70%).'
+p_node.text = 'Kinase targets are ranked firstly by expr_tag_score for the top PDB construct, then by nPDBs. Only constructs for which an expression tag has been detected (expr_tag_score > 0) are selected for expression testing. Currently this process results in 69 unique kinase constructs. For the remaining 27 well positions, replicate experiments will be run for the kinases with the highest DB_target_score. Running replicate experiments will help to allay cloning errors (error rate ~70%).'
 p_node.set('style', 'max-width: 1000px; text-align: justify;')
 
 p_node = etree.SubElement(PDBCnstrct_section, 'p')
