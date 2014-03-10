@@ -1,0 +1,561 @@
+HsCD00001029    cDNA    1020    CDK5        cyclin-dependent kinase 5   NM_004935   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001076    cDNA    5756    PTK9        PTK9 protein tyrosine kinase 9  NM_002822   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000108    cDNA    7048    TGFBR2      transforming growth factor, beta receptor II (70/80kDa) NM_003242   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001101    cDNA    6885    MAP3K7      mitogen-activated protein kinase kinase kinase 7    NM_003188   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000113    cDNA    1432    MAPK14      mitogen-activated protein kinase 14 NM_139012   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001143    cDNA    5608    MAP2K6      mitogen-activated protein kinase kinase 6   NM_002758   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001147    cDNA    5606    MAP2K3      mitogen-activated protein kinase kinase 3   NM_002756   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001150    cDNA    5603    MAPK13      mitogen-activated protein kinase 13 NM_002754   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001159    cDNA    5602    MAPK10      mitogen-activated protein kinase 10 NM_002753   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001163    cDNA    5601    MAPK9       mitogen-activated protein kinase 9  NM_139069   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001167    cDNA    5600    MAPK11      mitogen-activated protein kinase 11 NM_002751   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001190    cDNA    4067    LYN     v-yes-1 Yamaguchi sarcoma viral related oncogene homolog    NM_002350   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001314    cDNA    5756    PTK9        PTK9 protein tyrosine kinase 9  NM_002822   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000137    cDNA    6416    MAP2K4      mitogen-activated protein kinase kinase 4   NM_003010   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001396    cDNA    10000   AKT3        v-akt murine thymoma viral oncogene homolog 3 (protein kinase B, gamma) NM_005465   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000142    cDNA    7083    TK2     thymidine kinase 2, mitochondrial   NM_004614   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001453    cDNA    1021    CDK6        cyclin-dependent kinase 6   NM_001259   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001459    cDNA    1020    CDK5        cyclin-dependent kinase 5   NM_004935   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000146    cDNA    1454    CSNK1E      casein kinase 1, epsilon    NM_001894   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001472    cDNA    1019    CDK4        cyclin-dependent kinase 4   NM_000075   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001480    cDNA    369 ARAF1       v-raf murine sarcoma 3611 viral oncogene homolog 1  BC007514    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001493    cDNA    2444    FRK     fyn-related kinase  NM_002031   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001538    cDNA    6880    TAF9        TAF9 RNA polymerase II, TATA box binding protein (TBP)-associated factor, 32kDa NM_003187   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000155    cDNA    3611    ILK     integrin-linked kinase  NM_004517   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001572    cDNA    1025    CDK9        cyclin-dependent kinase 9 (CDC2-related kinase) NM_001261   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001576    cDNA    81788   NUAK2       Homo sapiens NUAK family, SNF1-like kinase, 2 (NUAK2), mRNA.    NM_030952.1 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001577    cDNA    7443    VRK1        vaccinia related kinase 1   NM_003384   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001578    cDNA    2043    EPHA4       EphA4   NM_004438   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001579    cDNA    814 CAMK4       calcium/calmodulin-dependent protein kinase IV  NM_001744   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001580    cDNA    10110   SGK2        serum/glucocorticoid regulated kinase 2 NM_016276   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001581    cDNA    2869    GRK5        Homo sapiens G protein-coupled receptor kinase 5 (GRK5), mRNA.  NM_005308.2 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001582    cDNA    64122   FN3K        fructosamine-3-kinase   NM_022158   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001583    cDNA    27010   TPK1        thiamin pyrophosphokinase 1 NM_022445   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001584    cDNA    5170    PDPK1       3-phosphoinositide dependent protein kinase-1   NM_002613   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001585    cDNA    5166    PDK4        pyruvate dehydrogenase kinase, isoenzyme 4  NM_002612   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001586    cDNA    64080   RBKS        Homo sapiens ribokinase (RBKS), mRNA.   NM_022128.1 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001587    cDNA    51231   VRK3        Homo sapiens vaccinia related kinase 3 (VRK3), transcript variant 1, mRNA.  NM_016440.3 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001588    cDNA    5163    PDK1        pyruvate dehydrogenase kinase, isoenzyme 1  NM_002610   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001589    cDNA    83983   SSTK        serine/threonine protein kinase SSTK    NM_032037   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001590    cDNA    7006    TEC     tec protein tyrosine kinase NM_003215   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001591    cDNA    84197   SGK196      Homo sapiens protein kinase-like protein SgK196 (SGK196), mRNA. NM_032237.3 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001592    cDNA    55300   PI4K2B      phosphatidylinositol 4-kinase type-II beta  NM_018323   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001593    cDNA    1120    CHKL        choline kinase beta NM_005198   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001594    cDNA    81629   STK22D      serine/threonine kinase 22D (spermiogenesis associated) NM_032028   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001595    cDNA    8428    STK24       serine/threonine kinase 24 (STE20 homolog, yeast)   BC035578    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001597    cDNA    7525    YES1        v-yes-1 Yamaguchi sarcoma viral oncogene homolog 1  NM_005433   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001598    cDNA    6195    RPS6KA1     ribosomal protein S6 kinase, 90kDa, polypeptide 1   NM_002953   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001599    cDNA    1160    CKMT2       creatine kinase, mitochondrial 2 (sarcomeric)   NM_001825   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001601    cDNA    94  ACVRL1      activin A receptor type II-like 1   NM_000020   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001602    cDNA    1459    CSNK2A2     casein kinase 2, alpha prime polypeptide    NM_001896   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001603    cDNA    5128    PCTK2       PCTAIRE protein kinase 2    BC033005    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001604    cDNA    54963   UCKL1       Homo sapiens uridine-cytidine kinase 1-like 1 (UCKL1), transcript variant 1, mRNA.  NM_017859.3 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001605    cDNA    1457    CSNK2A1     casein kinase 2, alpha 1 polypeptide    NM_001895   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001606    cDNA    55872   TOPK        T-LAK cell-originated protein kinase    NM_018492   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001607    cDNA    1452    CSNK1A1     casein kinase 1, alpha 1    NM_001892   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001608    cDNA    9231    DLG5        discs, large homolog 5 (Drosophila) U61843  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001609    cDNA    7294    TXK     TXK tyrosine kinase NM_003328   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001610    cDNA    658 BMPR1B      bone morphogenetic protein receptor, type IB    NM_001203   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001611    cDNA    1195    CLK4        CDC-like kinase 4   NM_020666   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001612    cDNA    8780    RIOK3       Homo sapiens RIO kinase 3 (RIOK3), mRNA.    NM_003831.3 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001613    cDNA    57118   CKLiK       calcium/calmodulin-dependent protein kinase ID  NM_020397   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001614    cDNA    9641    IKBKE       inhibitor of kappa light polypeptide gene enhancer in B-cells, kinase epsilon   NM_014002   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001615    cDNA    640 BLK     B lymphoid tyrosine kinase  NM_001715   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001617    cDNA    204 AK2     adenylate kinase 2  NM_001625   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001620    cDNA    5586    PKN2        Homo sapiens protein kinase N2 (PKN2), mRNA.    NM_006256.2 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001621    cDNA    9706    ULK2        unc-51-like kinase 2 (C. elegans)   NM_014683   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001622    cDNA    57147   PACE-1      ezrin-binding partner PACE-1    NM_020423   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001623    cDNA    5562    PRKAA1      protein kinase, AMP-activated, alpha 1 catalytic subunit    AF100763    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001624    cDNA    1445    CSK     c-src tyrosine kinase   NM_004383   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001625    cDNA    27330   RPS6KA6     ribosomal protein S6 kinase, 90kDa, polypeptide 6   NM_014496   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001626    cDNA    5210    PFKFB4      6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 4   NM_004567   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001627    cDNA    51727   UMP-CMPK        UMP-CMP kinase  NM_016308   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001628    cDNA    1022    CDK7        cyclin-dependent kinase 7 (MO15 homolog, Xenopus laevis, cdk-activating kinase) NM_001799   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001629    cDNA    8536    CAMK1       calcium/calmodulin-dependent protein kinase I   NM_003656   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001630    cDNA    1326    MAP3K8      mitogen-activated protein kinase kinase kinase 8    NM_005204   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001631    cDNA    2872    MKNK2       MAP kinase-interacting serine/threonine kinase 2    NM_017572   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001632    cDNA    1606    DGKA        diacylglycerol kinase, alpha 80kDa  NM_001345   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001633    cDNA    57172   CAMK1G      calcium/calmodulin-dependent protein kinase IG  NM_020439   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001634    cDNA    1613    DAPK3       death-associated protein kinase 3   NM_001348   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001635    cDNA    1196    CLK2        CDC-like kinase 2   NM_001291   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001636    cDNA    5291    PIK3CB      phosphoinositide-3-kinase, catalytic, beta polypeptide  NM_006219   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001637    cDNA    5290    PIK3CA      phosphoinositide-3-kinase, catalytic, alpha polypeptide U79143  No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001638    cDNA    56924   PAK6        p21(CDKN1A)-activated kinase 6  NM_020168   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001639    cDNA    79837   FLJ22055        phosphatidylinositol-4-phosphate 5-kinase, type II, gamma   NM_024779   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001640    cDNA    55750   FLJ10842        hypothetical protein FLJ10842   NM_018238   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001641    cDNA    7444    VRK2        vaccinia related kinase 2   NM_006296   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001642    cDNA    6793    STK10       serine/threonine kinase 10  NM_005990   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001643    cDNA    5592    PRKG1       protein kinase, cGMP-dependent, type I  NM_006258   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001644    cDNA    1263    CNK     polo-like kinase 3 (Drosophila) NM_004073   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001645    cDNA    5634    PRPS2       phosphoribosyl pyrophosphate synthetase 2   NM_002765   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001646    cDNA    1455    CSNK1G2     casein kinase 1, gamma 2    NM_001319   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001647    cDNA    11329   STK38       serine/threonine kinase 38  NM_007271   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001648    cDNA    2645    GK      glycerol kinase NM_000167   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001649    cDNA    6197    RPS6KA3     ribosomal protein S6 kinase, 90kDa, polypeptide 3   NM_004586   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001650    cDNA    3984    LIMK1       LIM domain kinase 1 NM_002314   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001651    cDNA    205 AK3     adenylate kinase 3  NM_013410   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001653    cDNA    6788    STK3        serine/threonine kinase 3 (STE20 homolog, yeast)    U60206  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001654    cDNA    1608    DGKG        diacylglycerol kinase, gamma 90kDa  NM_001346   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001655    cDNA    1633    DCK     deoxycytidine kinase    NM_000788   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001656    cDNA    695 BTK     Bruton agammaglobulinemia tyrosine kinase   NM_000061   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001657    cDNA    8395    PIP5K1B     phosphatidylinositol-4-phosphate 5-kinase, type I, beta NM_003558   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001658    cDNA    5292    PIM1        pim-1 oncogene  NM_002648   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001659    cDNA    3702    ITK     IL2-inducible T-cell kinase NM_005546   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001660    cDNA    4751    NEK2        NIMA (never in mitosis gene a)-related kinase 2 NM_002497   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001661    cDNA    5305    PIP4K2A     Homo sapiens phosphatidylinositol-5-phosphate 4-kinase, type II, alpha (PIP4K2A), mRNA. NM_005028.4 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000171    cDNA    1111    CHEK1       CHK1 checkpoint homolog (S. pombe)  NM_001274   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001738    cDNA    10201   NME6        non-metastatic cells 6, protein expressed in (nucleoside-diphosphate kinase)    BC001808    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001774    cDNA    207 AKT1        v-akt murine thymoma viral oncogene homolog 1   BC000479    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000178    cDNA    9263    STK17A      serine/threonine kinase 17a (apoptosis-inducing)    NM_004760   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001787    cDNA    5213    PFKM        phosphofructokinase, muscle BC000534    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000180    cDNA    9262    STK17B      serine/threonine kinase 17b (apoptosis-inducing)    NM_004226   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001813    cDNA    6196    RPS6KA2     ribosomal protein S6 kinase, 90kDa, polypeptide 2   BC002363    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000185    cDNA    6446    SGK1        Homo sapiens serum/glucocorticoid regulated kinase 1, mRNA (cDNA clone MGC:5030 IMAGE:3459056), complete cds.   BC001263.1  No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001860    cDNA    801 CALM1       calmodulin 1 (phosphorylase kinase, delta)  BC000454    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001882    cDNA    4354    MPP1        membrane protein, palmitoylated 1, 55kDa    BC002392    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001883    cDNA    9212    AURKB       Homo sapiens aurora kinase B, mRNA (cDNA clone MGC:8406 IMAGE:2820719), complete cds.   BC000442.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001887    cDNA    4830    NME1    short variant   non-metastatic cells 1, protein (NM23A) expressed in    BC000293    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001961    cDNA    23729   SHPK        Homo sapiens sedoheptulokinase, mRNA (cDNA clone MGC:21179 IMAGE:4413491), complete cds.    BC020543.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001967    cDNA    23678   SGK3        Homo sapiens serum/glucocorticoid regulated kinase family, member 3, mRNA (cDNA clone MGC:21163 IMAGE:4391699), complete cds.   BC015326.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001973    cDNA    79646   PANK3       pantothenate kinase 3   BC013705    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001974    cDNA    54986   FLJ20574        hypothetical protein FLJ20574   BC014794    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001979    cDNA    50808   AK3     Homo sapiens adenylate kinase 3, mRNA (cDNA clone MGC:21124 IMAGE:4385034), complete cds.   BC013771.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00001994    cDNA    3932    LCK     lymphocyte-specific protein tyrosine kinase BC013200    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002006    cDNA    660 BMX     BMX non-receptor tyrosine kinase    BC016652    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002029    cDNA    5297    PI4KA   short variant   Homo sapiens phosphatidylinositol 4-kinase, catalytic, alpha, mRNA (cDNA clone IMAGE:3912560), partial cds. BC018120.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002048    cDNA    6885    MAP3K7      mitogen-activated protein kinase kinase kinase 7    BC017715    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002057    cDNA    5894    RAF1        v-raf-1 murine leukemia viral oncogene homolog 1    BC018119    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002097    cDNA    3705    ITPK1       inositol 1,3,4-triphosphate 5/6 kinase  BC018192    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002129    cDNA    3985    LIMK2       LIM domain kinase 2 BC013051    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021315    cDNA    285220  EPHA6       EPH receptor A6 XM_114973   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021316    cDNA    10420   TESK2       testis-specific kinase 2    NM_007170   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021425    cDNA    5596    MAPK4       mitogen-activated protein kinase 4  NM_002747   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021426    cDNA    54899   PXK     PX domain containing serine/threonine kinase    NM_017771   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021427    cDNA    8737    RIPK1       receptor (TNFRSF)-interacting serine-threonine kinase 1 NM_003804   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021429    cDNA    8573    CASK        calcium/calmodulin-dependent serine protein kinase (MAGUK family)   NM_003688   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021431    cDNA    8019    BRD3        bromodomain containing 3    NM_007371   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021432    cDNA    11011   TLK2        tousled-like kinase 2   NM_006852   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021433    cDNA    11011   TLK2        tousled-like kinase 2   NM_006852   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021436    cDNA    1607    DGKB        diacylglycerol kinase, beta 90kDa   NM_004080   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021437    cDNA    1741    DLG3        discs, large homolog 3 (neuroendocrine-dlg, Drosophila) NM_021120   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021438    cDNA    1741    DLG3        discs, large homolog 3 (neuroendocrine-dlg, Drosophila) NM_021120   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021439    cDNA    2241    FER     fer (fps/fes related) tyrosine kinase (phosphoprotein NCP94)    NM_005246   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021440    cDNA    80216   ALPK1       alpha-kinase 1  NM_025144   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021442    cDNA    4921    DDR2        discoidin domain receptor family, member 2  NM_006182   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021446    cDNA    8844    KSR1        kinase suppressor of ras 1  XM_290793   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021447    cDNA    25865   PRKD2       protein kinase D2   NM_016457   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021448    cDNA    23683   PRKD3       protein kinase D3   NM_005813   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021449    cDNA    23387   SIK3        Homo sapiens SIK family kinase 3 (SIK3), mRNA.  NM_025164.3 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021451    cDNA    25778   RIPK5       receptor interacting protein kinase 5   NM_015375   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021453    cDNA    8999    CDKL2       cyclin-dependent kinase-like 2 (CDC2-related kinase)    NM_003948   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021454    cDNA    387851  AK3L2       adenylate kinase 3-like 2   XM_370688   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021455    cDNA    23097   CDK19       Homo sapiens cyclin-dependent kinase 19 (CDK19), mRNA.  NM_015076.3 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021456    cDNA    7046    TGFBR1      transforming growth factor, beta receptor I (activin A receptor type II-like kinase, 53kDa) NM_004612   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021457    cDNA    6795    AURKC       aurora kinase C NM_003160   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021458    cDNA    6795    AURKC       aurora kinase C NM_003160   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021459    cDNA    2821    NLK     nemo like kinase    NM_016231   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021460    cDNA    2321    FLT1        fms-related tyrosine kinase 1 (vascular endothelial growth factor/vascular permeability factor receptor)    NM_002019   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021461    cDNA    30849   PIK3R4      phosphoinositide-3-kinase, regulatory subunit 4, p150   NM_014602   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021463    cDNA    79834   KIAA2002        KIAA2002 protein    XM_370878   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021464    cDNA    4233    MET     met proto-oncogene (hepatocyte growth factor receptor)  NM_000245   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021465    cDNA    1612    DAPK1       death-associated protein kinase 1   NM_004938   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021466    cDNA    51755   CRKRS       Cdc2-related kinase, arginine/serine-rich   NM_016507   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021467    cDNA    26576   STK23       serine/threonine kinase 23  NM_014370   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021469    cDNA    127933  UHMK1       U2AF homology motif (UHM) kinase 1  NM_144624   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021471    cDNA    8814    CDKL1       cyclin-dependent kinase-like 1 (CDC2-related kinase)    NM_004196   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021472    cDNA    23604   DAPK2       death-associated protein kinase 2   NM_014326   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021473    cDNA    65061   CDK15       Homo sapiens cyclin-dependent kinase 15 (CDK15), transcript variant 3, mRNA.    NM_139158.2 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021474    cDNA    1119    CHKA        choline kinase alpha    NM_001277   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021476    cDNA    1760    DMPK        dystrophia myotonica-protein kinase NM_004409   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021477    cDNA    5207    PFKFB1      6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 1   NM_002625   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021478    cDNA    3609    MPP4        membrane protein, palmitoylated 4 (MAGUK p55 subfamily member 4)    NM_033066   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021479    cDNA    57787   MARK4       MAP/microtubule affinity-regulating kinase 4    NM_031417   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021480    cDNA    51086   TNNI3K      TNNI3 interacting kinase    NM_015978   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021481    cDNA    8491    MAP4K3      mitogen-activated protein kinase kinase kinase kinase 3 NM_003618   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021483    cDNA    154043  MAGI1       membrane associated guanylate kinase, WW and PDZ domain containing 1    NM_004742   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021484    cDNA    84284   C1orf57     chromosome 1 open reading frame 57  BC005102    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021485    cDNA    5579    PRKCB1      protein kinase C, beta 1    BC036472    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021486    cDNA    8382    NME5        non-metastatic cells 5, protein expressed in (nucleoside-diphosphate kinase)    BC026182    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021487    cDNA    11040   PIM2        pim-2 oncogene  BC018111    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021488    cDNA    5582    PRKCG       protein kinase C, gamma BC047876    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021489    cDNA    7272    TTK     TTK protein kinase  BC032858    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021490    cDNA    55224   ETNK2       ethanolamine kinase 2   BC010082    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021491    cDNA    29941   PKN3        protein kinase N3   BC062558    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021492    cDNA    55351   STK32B      serine/threonine kinase 32B BC038238    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021493    cDNA    55437   ALS2CR2     amyotrophic lateral sclerosis 2 (juvenile) chromosome region, candidate 2   BC008302    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021495    cDNA    221264  C6orf199        chromosome 6 open reading frame 199 BC022031    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021496    cDNA    3099    HK2     hexokinase 2    BC064369    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021497    cDNA    5609    MAP2K7      mitogen-activated protein kinase kinase 7   BC038295    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021498    cDNA    9807    IHPK1       inositol hexaphosphate kinase 1 BC012944    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021499    cDNA    2042    EPHA3       EPH receptor A3 BC063282    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021500    cDNA    8569    MKNK1       MAP kinase interacting serine/threonine kinase 1    BC002755    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021501    cDNA    160851  DGKH        diacylglycerol kinase, eta  BC043292    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021502    cDNA    51265   CDKL3       cyclin-dependent kinase-like 3  BC041799    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021503    cDNA    11213   IRAK3       interleukin-1 receptor-associated kinase 3  BC057800    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021504    cDNA    9414    TJP2        tight junction protein 2 (zona occludens 2) BC027592    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021505    cDNA    9060    PAPSS2      Homo sapiens 3'-phosphoadenosine 5'-phosphosulfate synthase 2, mRNA (cDNA clone MGC:1916 IMAGE:2988345), complete cds   BC009894    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021506    cDNA    50488   MINK1       misshapen-like kinase 1 (zebrafish) BC034673    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021508    cDNA    2050    EPHB4       EPH receptor B4 BC052804    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021509    cDNA    8550    MAPKAPK5        mitogen-activated protein kinase-activated protein kinase 5 BC047284    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021510    cDNA    8899    PRPF4B      PRP4 pre-mRNA processing factor 4 homolog B (yeast) BC034969    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021511    cDNA    2931    GSK3A       glycogen synthase kinase 3 alpha    BC051865    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021512    cDNA    56164   STK31       serine/threonine kinase 31  BC059374    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021513    cDNA    65975   STK33       serine/threonine kinase 33  BC031231    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021514    cDNA    659 BMPR2       bone morphogenetic protein receptor, type II (serine/threonine kinase)  BC052985    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021515    cDNA    11035   RIPK3       receptor-interacting serine-threonine kinase 3  BC062584    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021516    cDNA    4881    NPR1        natriuretic peptide receptor A/guanylate cyclase A (atrionatriuretic peptide receptor A)    BC063304    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021517    cDNA    10200   MPP6        membrane protein, palmitoylated 6 (MAGUK p55 subfamily member 6)    BC023638    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021518    cDNA    10420   TESK2       testis-specific kinase 2    BC033085    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021519    cDNA    699 BUB1        BUB1 budding uninhibited by benzimidazoles 1 homolog (yeast)    BC028201    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021520    cDNA    8444    DYRK3       dual-specificity tyrosine-(Y)-phosphorylation regulated kinase 3    BC015501    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021521    cDNA    4356    MPP3        membrane protein, palmitoylated 3 (MAGUK p55 subfamily member 3)    BC056865    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021523    cDNA    6850    SYK     spleen tyrosine kinase  BC002962    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021524    cDNA    56155   TEX14       testis expressed sequence 14    BC040526    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021525    cDNA    673 BRAF        v-raf murine sarcoma viral oncogene homolog B1  NM_004333   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021526    cDNA    9113    LATS1       LATS, large tumor suppressor, homolog 1 (Drosophila)    NM_004690   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021527    cDNA    5156    PDGFRA      platelet-derived growth factor receptor, alpha polypeptide  NM_006206   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021528    cDNA    1956    EGFR        epidermal growth factor receptor (erythroblastic leukemia viral (v-erb-b) oncogene homolog, avian)  NM_005228   Yes/Yes FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021529    cDNA    3643    INSR        insulin receptor    NM_000208   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021532    cDNA    673 BRAF    oncogenic activating mutant v-raf murine sarcoma viral oncogene homolog B1  NM_004333   Yes/Yes FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021533    cDNA    284656  EPHA10      EPH receptor A10    BC067734    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021537    cDNA    92  ACVR2A      activin A receptor, type IIA    BC067418    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021538    cDNA    26576   STK23       serine/threonine kinase 23  BC092416    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021539    cDNA    253430  IPMK        inositol polyphosphate multikinase  BC065709    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021540    cDNA    85366   MYLK2       myosin light chain kinase 2, skeletal muscle    BC092413    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021541    cDNA    5753    PTK6        PTK6 protein tyrosine kinase 6  BC035843    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021545    cDNA    169436  C9orf96     chromosome 9 open reading frame 96  BC036504    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021546    cDNA    4882    NPR2        natriuretic peptide receptor B/guanylate cyclase B (atrionatriuretic peptide receptor B)    BC096343    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021547    cDNA    2049    EPHB3       EPH receptor B3 BC052968    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021548    cDNA    6357    SCYL1       SCY1-like 1 (S. cerevisiae) AAH69233    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021549    cDNA    8491    MAP4K3      mitogen-activated protein kinase kinase kinase kinase 3 BC071579    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021550    cDNA    1609    DGKQ        diacylglycerol kinase, theta 110kDa BC063801    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021551    cDNA    3815    KIT     v-kit Hardy-Zuckerman 4 feline sarcoma viral oncogene homolog   BC071593    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021553    cDNA    83903   GSG2        germ cell associated 2 (haspin) BC047457    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021554    cDNA    6046    BRD2        bromodomain containing 2    BC063840    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021633    cDNA    55589   BMP2K       BMP2 inducible kinase   BC036021    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021634    cDNA    817 CAMK2D      calcium/calmodulin-dependent protein kinase (CaM kinase) II delta   BC032784    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021635    cDNA    2931    GSK3A       glycogen synthase kinase 3 alpha    BC027984    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021636    cDNA    29110   TBK1        TANK-binding kinase 1   BC034950    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021638    cDNA    4752    NEK3        NIMA (never in mitosis gene a)-related kinase 3 BC019916    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021640    cDNA    197258  FUK     fucokinase  BC032542    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021641    cDNA    5747    PTK2        PTK2 protein tyrosine kinase 2  BC035404    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021643    cDNA    5256    PHKA2       phosphorylase kinase, alpha 2 (liver)   BC014036    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021823    cDNA    5207    PFKFB1      6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 1   BC096079    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021826    cDNA    117283  IHPK3       inositol hexaphosphate kinase 3 BC089389    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021827    cDNA    25778   RIPK5       receptor interacting protein kinase 5   BC053627    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021828    cDNA    23396   PIP5K1C potential short variant phosphatidylinositol-4-phosphate 5-kinase, type I, gamma    BC011138    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021829    cDNA    83549   UCK1    potential short variant uridine-cytidine kinase 1   BC015547    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021830    cDNA    26289   AK5 potential short variant adenylate kinase 5  BC012467    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021831    cDNA    51447   IHPK2   short variant   inositol hexaphosphate kinase 2 BC001864    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021832    cDNA    7190    TRAP1   potential short variant TNF receptor-associated protein 1   BC002994    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021833    cDNA    6880    TAF9    short variant   TAF9 RNA polymerase II, TATA box binding protein (TBP)-associated factor, 32kDa BC007426    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021834    cDNA    80347   COASY   potential short variant Coenzyme A synthase BC006354    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021835    cDNA    51361   FLJ10986    potential short variant hypothetical protein FLJ10986   BC000610    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021836    cDNA    55500   ETNK1   potential short variant ethanolamine kinase 1   BC006111    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021837    cDNA    55312   RFK     riboflavin kinase   BC015473    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021838    cDNA    7371    UCK2    potential short variant uridine-cytidine kinase 2   BC002906    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021840    cDNA    5607    MAP2K5      mitogen-activated protein kinase kinase 5   NM_145160   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021841    cDNA    5605    MAP2K2      mitogen-activated protein kinase kinase 2   NM_030662   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021842    cDNA    9088    PKMYT1      protein kinase, membrane associated tyrosine/threonine 1    NM_004203   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021843    cDNA    9149    DYRK1B      dual-specificity tyrosine-(Y)-phosphorylation regulated kinase 1B   NM_006483   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021844    cDNA    51765   RP6-213H19.1        Mst3 and SOK1-related kinase    AF344883    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021845    cDNA    8859    STK19       serine/threonine kinase 19  NM_004197   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021846    cDNA    2268    FGR     Gardner-Rasheed feline sarcoma viral (v-fgr) oncogene homolog   BC002836    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021848    cDNA    92335   LYK5        protein kinase LYK5 XM_044379   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021849    cDNA    269 AMHR2       anti-Mullerian hormone receptor, type II    NM_020547   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002185    cDNA    1455    CSNK1G2     casein kinase 1, gamma 2    BC020972    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021850    cDNA    5594    MAPK1       mitogen-activated protein kinase 1  NM_138957   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021851    cDNA    10922   FASTK   potential short variant Fas-activated serine/threonine kinase   BC000377    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021852    cDNA    5598    MAPK7   short variant   mitogen-activated protein kinase 7  BC007992    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021853    cDNA    5601    MAPK9       mitogen-activated protein kinase 9  NM_139069   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021854    cDNA    815 CAMK2A      calcium/calmodulin-dependent protein kinase (CaM kinase) II alpha   NM_171825   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021855    cDNA    9261    MAPKAPK2        mitogen-activated protein kinase-activated protein kinase 2 NM_004759   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021856    cDNA    7184    HSP90B1     Homo sapiens heat shock protein 90kDa beta (Grp94), member 1 (HSP90B1), mRNA.   NM_003299.2 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021857    cDNA    10114   HIPK3       homeodomain interacting protein kinase 3    AF305239    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021904    cDNA    10110   SGK2        serum/glucocorticoid regulated kinase 2 NM_016276   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00021928    cDNA    3932    LCK     lymphocyte-specific protein tyrosine kinase NM_005356   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022110    cDNA    6788    STK3        serine/threonine kinase 3 (STE20 homolog, yeast)    NM_006281   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022124    cDNA    5604    MAP2K1      mitogen-activated protein kinase kinase 1   NM_002755   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022338    cDNA    5289    PIK3C3      phosphoinositide-3-kinase, class 3  NM_002647   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022339    cDNA    3101    HK3     hexokinase 3 (white cell)   NM_002115   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022340    cDNA    57144   PAK7        p21(CDKN1A)-activated kinase 7  XM_045653   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022341    cDNA    3654    IRAK1       interleukin-1 receptor-associated kinase 1  NM_001569   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022342    cDNA    6732    SRPK1       SFRS protein kinase 1   NM_003137   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022343    cDNA    9020    MAP3K14     mitogen-activated protein kinase kinase kinase 14   NM_003954   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022345    cDNA    816 CAMK2B      calcium/calmodulin-dependent protein kinase (CaM kinase) II beta    NM_001220   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022346    cDNA    51135   IRAK4       interleukin-1 receptor-associated kinase 4  NM_016123   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022347    cDNA    10733   PLK4        polo-like kinase 4 (Drosophila) NM_014264   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022348    cDNA    1436    CSF1R       colony stimulating factor 1 receptor, formerly McDonough feline sarcoma viral (v-fms) oncogene homolog  NM_005211   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022349    cDNA    147746  HIPK4       homeodomain interacting protein kinase 4    NM_144685   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022350    cDNA    2185    PTK2B       PTK2B protein tyrosine kinase 2 beta    NM_004103   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022351    cDNA    701 BUB1B       BUB1 budding uninhibited by benzimidazoles 1 homolog beta (yeast)   NM_001211   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022352    cDNA    6733    SRPK2       SFRS protein kinase 2   NM_003138   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022355    cDNA    2064    ERBB2       v-erb-b2 erythroblastic leukemia viral oncogene homolog 2, neuro/glioblastoma derived oncogene homolog (avian)  NM_004448   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022362    cDNA    4916    NTRK3       neurotrophic tyrosine kinase, receptor, type 3  NM_001012338    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022363    cDNA    4593    MUSK        muscle, skeletal, receptor tyrosine kinase  NM_005592   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022364    cDNA    79705   LRRK1       leucine-rich repeat kinase 1    NM_024652   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022365    cDNA    5578    PRKCA       protein kinase C, alpha NM_002737   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022366    cDNA    8019    BRD3        bromodomain containing 3    NM_007371   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022367    cDNA    984 CDK11B      Homo sapiens cyclin-dependent kinase 11B (CDK11B), transcript variant 2, mRNA.  NM_033486.1 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022368    cDNA    2534    SLK     STE20-like kinase (yeast)   AB002804    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022369    cDNA    6789    STK4        serine/threonine kinase 4   NM_006282   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022370    cDNA    2041    EPHA1       EPH receptor A1 NM_005232   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022371    cDNA    4915    NTRK2       neurotrophic tyrosine kinase, receptor, type 2  AF400441    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022372    cDNA    3645    INSRR       insulin receptor-related receptor   NM_014215   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022373    cDNA    9252    RPS6KA5     ribosomal protein S6 kinase, 90kDa, polypeptide 5   NM_004755   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022374    cDNA    27  ABL2        v-abl Abelson murine leukemia viral oncogene homolog 2 (arg, Abelson-related gene)  NM_005158   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022375    cDNA    8999    CDKL2       cyclin-dependent kinase-like 2 (CDC2-related kinase)    NM_003948   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022377    cDNA    2534    FYN     FYN oncogene related to SRC, FGR, YES   NM_002037   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022378    cDNA    5063    PAK3        p21 (CDKN1A)-activated kinase 3 NM_002578   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022379    cDNA    5058    PAK1        p21/Cdc42/Rac1-activated kinase 1 (STE20 homolog, yeast)    NM_002576   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022380    cDNA    177 RAGE        renal tumor antigen NM_014226   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022381    cDNA    55359   STYK1       serine/threonine/tyrosine kinase 1  NM_018423   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022382    cDNA    83931   STK40       serine/threonine kinase 40  NM_032017   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022383    cDNA    4215    MAP3K3      mitogen-activated protein kinase kinase kinase 3    NM_002401   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022384    cDNA    22858   ICK     intestinal cell (MAK-like) kinase   NM_014920   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022386    cDNA    2305    MPP2        membrane protein, palmitoylated 2 (MAGUK p55 subfamily member 2)    NM_005374   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022387    cDNA    6011    GRK1        G protein-coupled receptor kinase 1 NM_002929   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022388    cDNA    8317    CDC7        CDC7 cell division cycle 7 (S. cerevisiae)  NM_003503   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022389    cDNA    3656    IRAK2       interleukin-1 receptor-associated kinase 2  NM_001570   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022390    cDNA    8396    PIP5K2B     phosphatidylinositol-4-phosphate 5-kinase, type II, beta    NM_003559   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022391    cDNA    65220   NADK        NAD kinase  AK023114    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022393    cDNA    7535    ZAP70       zeta-chain (TCR) associated protein kinase 70kDa    NM_001079   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022394    cDNA    10746   MAP3K2      mitogen-activated protein kinase kinase kinase 2    AB208963    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022395    cDNA    4117    MAK     male germ cell-associated kinase    NM_005906   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022397    cDNA    79858   NEK11       NIMA (never in mitosis gene a)- related kinase 11   NM_024800   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022398    cDNA    56997   CABC1       chaperone, ABC1 activity of bc1 complex like (S. pombe) NM_020247   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022399    cDNA    208 AKT2        v-akt murine thymoma viral oncogene homolog 2   NM_001626   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022400    cDNA    157 ADRBK2      adrenergic, beta, receptor kinase 2 NM_005160   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022401    cDNA    2081    ERN1        endoplasmic reticulum to nucleus signalling 1   NM_001433   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022402    cDNA    5581    PRKCE       protein kinase C, epsilon   NM_005400   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022403    cDNA    6041    RNASEL      ribonuclease L (2',5'-oligoisoadenylate synthetase-dependent)   NM_021133   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022404    cDNA    6792    CDKL5       cyclin-dependent kinase-like 5  NM_003159   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022406    cDNA    54861   SNRK        SNF related kinase  NM_017719   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022407    cDNA    5754    PTK7        PTK7 protein tyrosine kinase 7  NM_002821   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022408    cDNA    53588   MPP5        membrane protein, palmitoylated 5 (MAGUK p55 subfamily member 5)    NM_022474   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022409    cDNA    25  ABL1        v-abl Abelson murine leukemia viral oncogene homolog 1  NM_005157   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022410    cDNA    5293    PIK3CD      phosphoinositide-3-kinase, catalytic, delta polypeptide Y10055  No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022411    cDNA    5255    PHKA1       phosphorylase kinase, alpha 1 (muscle)  NM_002637   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022412    cDNA    23387   SIK3        Homo sapiens SIK family kinase 3 (SIK3), mRNA.  NM_025164.3 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022413    cDNA    80201   HKDC1       hexokinase domain containing 1  NM_025130   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022414    cDNA    23178   PASK        PAS domain containing serine/threonine kinase   NM_015148   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022415    cDNA    10290   APEG1       aortic preferentially expressed gene 1  AK128689    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022416    cDNA    25989   ULK3        unc-51-like kinase 3 (C. elegans)   NM_015518   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022417    cDNA    124923  FLJ25006        hypothetical protein FLJ25006   NM_144610   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022418    cDNA    93  ACVR2B      activin A receptor, type IIB    NM_001106   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022419    cDNA    1018    CDK3        cyclin-dependent kinase 3   NM_001258   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022421    cDNA    57143   ADCK1       aarF domain containing kinase 1 NM_020421   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022422    cDNA    344387  CDKL4       cyclin-dependent kinase-like 4  AY845084    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022423    cDNA    5062    PAK2        p21 (CDKN1A)-activated kinase 2 NM_002577   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022424    cDNA    8558    CDK10       cyclin-dependent kinase (CDC2-like) 10  NM_003674   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022425    cDNA    9942    XYLB        xylulokinase homolog (H. influenzae)    NM_005108   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022429    cDNA    10221   TRIB1       tribbles homolog 1 (Drosophila) NM_025195   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022490    cDNA    2065    ERBB3   potential short variant v-erb-b2 erythroblastic leukemia viral oncogene homolog 3 (avian)   BC002706    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022516    cDNA    2580    GAK potential short variant cyclin G associated kinase  BC008668    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022522    cDNA    472 ATM potential short variant ataxia telangiectasia mutated (includes complementation groups A, C and D)  BC007023    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002254    cDNA    84930   MASTL       Homo sapiens microtubule associated serine/threonine kinase-like, mRNA (cDNA clone MGC:17352 IMAGE:3449913), complete cds.  BC009107.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022571    cDNA    2870    GRK6        G protein-coupled receptor kinase 6 BC017272    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022572    cDNA    149420  PDIK1L      PDLIM1 interacting kinase 1 like    BC028713    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022573    cDNA    9833    MELK        maternal embryonic leucine zipper kinase    BC014039    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022574    cDNA    5568    PRKACG      protein kinase, cAMP-dependent, catalytic, gamma    BC039888    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022575    cDNA    122481  AK7     adenylate kinase 7  BC035256    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022576    cDNA    8711    TNK1        tyrosine kinase, non-receptor, 1    BC035782    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022577    cDNA    10494   STK25       serine/threonine kinase 25 (STE20 homolog, yeast)   BC015793    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022578    cDNA    130399  ACVR1C      activin A receptor, type IC BC022530    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022579    cDNA    150094  SNF1LK      SNF1-like kinase    BC038504    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022580    cDNA    93627   MGC16169        hypothetical protein MGC16169   BC009208    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022581    cDNA    10155   TRIM28      tripartite motif-containing 28  BC004978    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022582    cDNA    657 BMPR1A      bone morphogenetic protein receptor, type IA    BC028383    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022583    cDNA    2585    GK2     glycerol kinase 2   BC029820    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022584    cDNA    5313    PKLR        pyruvate kinase, liver and RBC  BC025737    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022585    cDNA    10020   GNE     glucosamine (UDP-N-acetyl)-2-epimerase/N-acetylmannosamine kinase   NM_005476   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022586    cDNA    2048    EPHB2       EPH receptor B2 NM_017449   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022587    cDNA    4638    MYLK        myosin, light polypeptide kinase    NM_005965   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022588    cDNA    51776   ZAK     sterile alpha motif and leucine zipper containing kinase AZK    NM_016653   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00022589    cDNA    5871    MAP4K2      mitogen-activated protein kinase kinase kinase kinase 2 NM_004579   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002272    cDNA    4598    MVK     mevalonate kinase (mevalonic aciduria)  BC016140    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002290    cDNA    5165    PDK3        pyruvate dehydrogenase kinase, isoenzyme 3  BC015948    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000023    cDNA    5610    EIF2AK2     Homo sapiens eukaryotic translation initiation factor 2-alpha kinase 2 (EIF2AK2), transcript variant 1, mRNA.   NM_002759.3 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002363    cDNA    112858  TP53RK      Homo sapiens TP53 regulating kinase, mRNA (cDNA clone MGC:9600 IMAGE:3899629), complete cds.    BC009727.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002385    cDNA    5328    PLAU        plasminogen activator, urokinase    BC013575    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002468    cDNA    9061    PAPSS1      3'-phosphoadenosine 5'-phosphosulfate synthase 1    BC011392    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002478    cDNA    10298   PAK4        p21(CDKN1A)-activated kinase 4  BC011368    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002495    cDNA    5129    PCTK3       PCTAIRE protein kinase 3    BC011526    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002504    cDNA    4296    MAP3K11     mitogen-activated protein kinase kinase kinase 11   BC011263    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002505    cDNA    4296    MAP3K11     mitogen-activated protein kinase kinase kinase 11   BC011263    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002574    cDNA    26007   DKFZP586B1621       DKFZP586B1621 protein   BC001341    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002582    cDNA    1025    CDK9        cyclin-dependent kinase 9 (CDC2-related kinase) BC001968    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002596    cDNA    6446    SGK1        Homo sapiens serum/glucocorticoid regulated kinase 1, mRNA (cDNA clone MGC:5030 IMAGE:3459056), complete cds.   BC001263.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002660    cDNA    4705    NDUFA10     NADH dehydrogenase (ubiquinone) 1 alpha subcomplex, 10, 42kDa   BC003417    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002678    cDNA    55781   FLJ11159        RIO kinase 2 (yeast)    BC000953    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002730    cDNA    203 AK1     adenylate kinase 1  BC001116    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002740    cDNA    1716    DGUOK   potential short variant deoxyguanosine kinase   BC001121    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002771    cDNA    5106    PCK2        phosphoenolpyruvate carboxykinase 2 (mitochondrial) BC001454    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002782    cDNA    1198    CLK3        CDC-like kinase 3   BC002555    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002794    cDNA    5261    PHKG2       phosphorylase kinase, gamma 2 (testis)  BC002541    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002823    cDNA    5214    PFKP        phosphofructokinase, platelet   BC002536    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002844    cDNA    8576    STK16       serine/threonine kinase 16  BC002618    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002925    cDNA    369 ARAF        Homo sapiens v-raf murine sarcoma 3611 viral oncogene homolog, mRNA (cDNA clone MGC:2356 IMAGE:3347509), complete cds.  BC002466.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002926    cDNA    55577   NAGK        N-acetylglucosamine kinase  BC001029    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002965    cDNA    4831    NME2        non-metastatic cells 2, protein (NM23B) expressed in    BC002476    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002987    cDNA    8566    PDXK        pyridoxal (pyridoxine, vitamin B6) kinase   BC000123    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00002993    cDNA    91  ACVR1B      activin A receptor, type IB BC000254    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000301    cDNA    6300    MAPK12      mitogen-activated protein kinase 12 NM_002969   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003029    cDNA    4145    MATK        megakaryocyte-associated tyrosine kinase    BC003109    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003030    cDNA    2932    GSK3B       glycogen synthase kinase 3 beta BC000251    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003033    cDNA    4832    NME3        non-metastatic cells 3, protein expressed in    BC000250    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003041    cDNA    2584    GALK1       galactokinase 1 BC001166    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003065    cDNA    1017    CDK2        cyclin-dependent kinase 2   BC003065    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003072    cDNA    5127    PCTK1       PCTAIRE protein kinase 1    BC001048    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003078    cDNA    808 CALM3       calmodulin 3 (phosphorylase kinase, delta)  BC005137    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003091    cDNA    2585    GALK2       galactokinase 2 BC005141    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003101    cDNA    1432    MAPK14      mitogen-activated protein kinase 14 BC000092    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003142    cDNA    6199    RPS6KB2     ribosomal protein S6 kinase, 70kDa, polypeptide 2   BC000094    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003146    cDNA    5298    PI4KB       Homo sapiens phosphatidylinositol 4-kinase, catalytic, beta, mRNA (cDNA clone MGC:1921 IMAGE:3508885), complete cds.    BC000029.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003170    cDNA    29959   NRBP1       Homo sapiens nuclear receptor binding protein 1, mRNA (cDNA clone MGC:902 IMAGE:3534543), complete cds. BC001221.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003202    cDNA    2645    GCK     glucokinase (hexokinase 4, maturity onset diabetes of the young 2)  BC001890    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003211    cDNA    1020    CDK5        cyclin-dependent kinase 5   BC005115    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003236    cDNA    5631    PRPS1       phosphoribosyl pyrophosphate synthetase 1   BC001605    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000325    cDNA    5584    PRKCI       protein kinase C, iota  NM_002740   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000326    cDNA    5580    PRKCD       protein kinase C, delta NM_006254   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003263    cDNA    132 ADK     adenosine kinase    BC003568    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003274    cDNA    1453    CSNK1D      casein kinase 1, delta  BC003558    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000331    cDNA    3055    HCK     hemopoietic cell kinase NM_002110   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003326    cDNA    5347    PLK     polo-like kinase 1 (Drosophila) BC003002    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003332    cDNA    55361   PI4K2A      Homo sapiens phosphatidylinositol 4-kinase type 2 alpha, mRNA (cDNA clone MGC:4395 IMAGE:2905670), complete cds.    BC003167.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003371    cDNA    1111    CHEK1       CHK1 checkpoint homolog (S. pombe)  BC004202    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003372    cDNA    11200   CHEK2       CHK2 checkpoint homolog (S. pombe)  BC004207    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003373    cDNA    1841    DTYMK       deoxythymidylate kinase (thymidylate kinase)    BC001827    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003382    cDNA    26353   H11     heat shock 22kDa protein 8  BC002673    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003385    cDNA    28951   TRIB2       Homo sapiens tribbles homolog 2 (Drosophila), mRNA (cDNA clone MGC:3860 IMAGE:3607549), complete cds.   BC002637.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000339    cDNA    5599    MAPK8       mitogen-activated protein kinase 8  NM_002750   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000340    cDNA    5597    MAPK6       mitogen-activated protein kinase 6  NM_002748   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000344    cDNA    5595    MAPK3       mitogen-activated protein kinase 3  BC013992    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003494    cDNA    5979    RET     ret proto-oncogene (multiple endocrine neoplasia and medullary thyroid carcinoma 1, Hirschsprung disease)   BC004257    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003564    cDNA    4833    NME4        non-metastatic cells 4, protein expressed in    BC004880    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003610    cDNA    780 DDR1        discoidin domain receptor family, member 1  BC008716    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003613    cDNA    5603    MAPK13      mitogen-activated protein kinase 13 BC001641    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003631    cDNA    5590    PRKCZ       protein kinase C, zeta  BC008058    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003656    cDNA    27102   EIF2AK1     Homo sapiens eukaryotic translation initiation factor 2-alpha kinase 1, mRNA (cDNA clone MGC:797 IMAGE:2989989), complete cds.  BC006524.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003690    cDNA    2011    MARK2       MAP/microtubule affinity-regulating kinase 2    BC008771    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003706    cDNA    9943    OXSR1       Homo sapiens oxidative-stress responsive 1, mRNA (cDNA clone MGC:1572 IMAGE:3163379), complete cds. BC008726.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003715    cDNA    3098    HK1     hexokinase 1    BC008730    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003741    cDNA    548596  CKMT1A      Homo sapiens creatine kinase, mitochondrial 1A, mRNA (cDNA clone MGC:2314 IMAGE:3535486), complete cds. BC006467.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003743    cDNA    805 CALM2       calmodulin 2 (phosphorylase kinase, delta)  BC006464    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003757    cDNA    79012   MGC8407     hypothetical protein MGC8407    BC005828    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003795    cDNA    10783   NEK6        NIMA (never in mitosis gene a)-related kinase 6 BC004209    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003798    cDNA    1019    CDK4        cyclin-dependent kinase 4   BC005864    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003845    cDNA    5164    PDK2        pyruvate dehydrogenase kinase, isoenzyme 2  BC005811    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003857    cDNA    3795    KHK     ketohexokinase (fructokinase)   BC006233    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003873    cDNA    83694   RPS6KL1     ribosomal protein S6 kinase-like 1  BC004540    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003895    cDNA    8767    RIPK2       receptor-interacting serine-threonine kinase 2  BC004553    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00003955    cDNA    8445    DYRK2       dual-specificity tyrosine-(Y)-phosphorylation regulated kinase 2    BC006375    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000396    cDNA    9212    STK12       aurora kinase B NM_004217   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004002    cDNA    6790    STK6        serine/threonine kinase 6   BC006423    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004004    cDNA    10654   PMVK        phosphomevalonate kinase    BC006089    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004005    cDNA    83732   RIOK1       Homo sapiens RIO kinase 1 (yeast), mRNA (cDNA clone MGC:12903 IMAGE:3537086), complete cds. BC006104.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004008    cDNA    56848   SPHK2       sphingosine kinase 2    BC006161    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004029    cDNA    8394    PIP5K1A     phosphatidylinositol-4-phosphate 5-kinase, type I, alpha    BC007833    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004030    cDNA    5607    MAP2K5      mitogen-activated protein kinase kinase 5   BC008838    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004057    cDNA    7083    TK1     thymidine kinase 1, soluble BC007872    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004083    cDNA    5211    PFKL        phosphofructokinase, liver  BC007536    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004086    cDNA    7867    MAPKAPK3        mitogen-activated protein kinase-activated protein kinase 3 BC007591    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004107    cDNA    5315    PKM2        pyruvate kinase, muscle BC007640    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004114    cDNA    10295   BCKDK       branched chain alpha-ketoacid dehydrogenase kinase  BC007363    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004122    cDNA    6794    STK11       serine/threonine kinase 11 (Peutz-Jeghers syndrome) BC007981    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004128    cDNA    8877    SPHK1       sphingosine kinase 1    BC008040    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000420    cDNA    203 AK1     adenylate kinase 1  NM_000476   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004260    cDNA    1158    CKM     creatine kinase, muscle BC007462    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000428    cDNA    1459    CSNK2A2     casein kinase 2, alpha prime polypeptide    NM_001896   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004319    cDNA    29922   NME7        non-metastatic cells 7, protein expressed in (nucleoside-diphosphate kinase)    BC006983    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000433    cDNA    1445    CSK     c-src tyrosine kinase   NM_004383   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004474    cDNA    2987    GUK1        guanylate kinase 1  BC009914    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004537    cDNA    983 CDC2        cell division cycle 2, G1 to S and G2 to M  BC014563    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004665    cDNA    57761   TRIB3       Homo sapiens tribbles homolog 3 (Drosophila), mRNA (cDNA clone MGC:854 IMAGE:3528490), complete cds.    BC019363.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004710    cDNA    1152    CKB     creatine kinase, brain  BC019281    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004854    cDNA    10769   PLK2        Homo sapiens polo-like kinase 2 (Drosophila), mRNA (cDNA clone MGC:10589 IMAGE:3831747), complete cds   BC013879.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004863    cDNA    9024    STK29       serine/threonine kinase 29  BC024291    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004864    cDNA    140609  NEK7        NIMA (never in mitosis gene a)-related kinase 7 NM_133494   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004865    cDNA    167359  MGC42105        hypothetical protein MGC42105   XM_094437   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004866    cDNA    225689  ERK8        extracellular signal-regulated kinase 8 NM_139021   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004868    cDNA    202374  MGC22688        serine/threonine kinase 32A XM_114476   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004869    cDNA    81629   STK22C      serine/threonine kinase 22C (spermiogenesis associated) NM_052841   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004872    cDNA    23012   STK38L      serine/threonine kinase 38 like XM_044823   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004873    cDNA    5232    PGK2        phosphoglycerate kinase 2   NM_138733   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004874    cDNA    64149   NJMU-R1     protein kinase Njmu-R1  NM_022344   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00004957    cDNA    1017    CDK2        cyclin-dependent kinase 2   M68520  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005072    cDNA    1111    CHEK1       CHK1 checkpoint homolog (S. pombe)  AF016582    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005096    cDNA    1956    EGFR    short variant   epidermal growth factor receptor (erythroblastic leukemia viral (v-erb-b) oncogene homolog, avian)  U48722  No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005099    cDNA    1454    CSNK1E      casein kinase 1, epsilon    L37043  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005104    cDNA    5894    RAF1        v-raf-1 murine leukemia viral oncogene homolog 1    X03484  No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005153    cDNA    204 AK2     adenylate kinase 2  BC009405    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005170    cDNA    2264    FGFR4       fibroblast growth factor receptor 4 BC011847    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005176    cDNA    6714    SRC     v-src sarcoma (Schmidt-Ruppin A-2) viral oncogene homolog (avian)   BC011566    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005190    cDNA    5170    PDPK1       3-phosphoinositide dependent protein kinase-1   BC012103    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005196    cDNA    7297    TYK2        tyrosine kinase 2   BC014243    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005234    cDNA    701 BUB1B       BUB1 budding uninhibited by benzimidazoles 1 homolog beta (yeast)   BC018739    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005242    cDNA    3706    ITPKA       inositol 1,4,5-trisphosphate 3-kinase A BC026331    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005247    cDNA    818 CAMK2G      calcium/calmodulin-dependent protein kinase (CaM kinase) II gamma   BC034044    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005268    cDNA    206426  MGC26597        hypothetical protein MGC26597   BC028580    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005271    cDNA    27148   STK36       serine/threonine kinase 36 (fused homolog, Drosophila)  BC026158    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005282    cDNA    122011  CSNK1A1L        Homo sapiens casein kinase 1, alpha 1-like, mRNA (cDNA clone MGC:33182 IMAGE:5266487), complete cds.    BC028723.2  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005290    cDNA    11183   MAP4K5      mitogen-activated protein kinase kinase kinase kinase 5 BC036013    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005301    cDNA    8798    DYRK4       dual-specificity tyrosine-(Y)-phosphorylation regulated kinase 4    BC031244    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005613    cDNA    197259  FLJ34389        hypothetical protein FLJ34389   NM_152649   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005616    cDNA    2242    FES     feline sarcoma oncogene BC035357    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000562    cDNA    8536    CAMK1       calcium/calmodulin-dependent protein kinase I   NM_003656   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005625    cDNA    84254   CAMKK1      calcium/calmodulin-dependent protein kinase kinase 1, alpha BC031647    No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005638    cDNA    79934   ADCK4       Homo sapiens aarF domain containing kinase 4, mRNA (cDNA clone MGC:36739 IMAGE:4997823), complete cds.  BC027473.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005646    cDNA    65018   PINK1       PTEN induced putative kinase 1  BC028215    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005649    cDNA    2305    MPP2        membrane protein, palmitoylated 2 (MAGUK p55 subfamily member 2)    BC030287    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005673    cDNA    139728  PNCK        Similar to calcium/calmodulin-dependent protein kinase 1, beta  BC033746    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005680    cDNA    7016    TESK1       testis-specific kinase 1    BC038448    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005708    cDNA    29904   EEF2K       elongation factor-2 kinase  BC032665    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005709    cDNA    166614  MGC45428        hypothetical protein MGC45428   BC032726    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005710    cDNA    9874    TLK1        tousled-like kinase 1   BC032657    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005725    cDNA    156 ADRBK1      adrenergic, beta, receptor kinase 1 BC037963    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005729    cDNA    5585    PKN1        Homo sapiens protein kinase N1, mRNA (cDNA clone MGC:46204 IMAGE:5752583), complete cds.    BC040061.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005730    cDNA    51314   TXNDC3      thioredoxin domain containing 3 (spermatozoa)   BC036816    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005734    cDNA    7075    TIE1        Homo sapiens tyrosine kinase with immunoglobulin-like and EGF-like domains 1, mRNA (cDNA clone MGC:46155 IMAGE:5767075), complete cds.  BC038239.1  No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005739    cDNA    5294    PIK3CG      phosphoinositide-3-kinase, catalytic, gamma polypeptide BC035683    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005749    cDNA    10645   CAMKK2      calcium/calmodulin-dependent protein kinase kinase 2, beta  BC026060    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005762    cDNA    1969    EPHA2       EphA2   BC037166    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005778    cDNA    5105    PCK1        phosphoenolpyruvate carboxykinase 1 (soluble)   BC023978    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005779    cDNA    5594    MAPK1       mitogen-activated protein kinase 1  BC017832    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005820    cDNA    3055    HCK     hemopoietic cell kinase M16591  No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005836    cDNA    4140    MARK3       MAP/microtubule affinity-regulating kinase 3    BC024773    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005866    cDNA    5159    PDGFRB      platelet-derived growth factor receptor, beta polypeptide   BC032224    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005907    cDNA    2260    FGFR1       fibroblast growth factor receptor 1 (fms-related tyrosine kinase 2, Pfeiffer syndrome)  BC018128    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005923    cDNA    1195    CLK1        CDC-like kinase 1   BC031549    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005969    cDNA    91461   PKDCC       Homo sapiens protein kinase domain containing, cytoplasmic (PKDCC), mRNA.   NM_138370.2 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005970    cDNA    5567    PRKACB      protein kinase, cAMP-dependent, catalytic, beta NM_182948   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005973    cDNA    340371  NRBP2       Homo sapiens nuclear receptor binding protein 2 (NRBP2), mRNA.  NM_178564.3 No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005974    cDNA    1956    EGFR        epidermal growth factor receptor (erythroblastic leukemia viral (v-erb-b) oncogene homolog, avian)  NM_005228   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005977    cDNA    5566    PRKACA      protein kinase, cAMP-dependent, catalytic, alpha    NM_002730   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005978    cDNA    5563    PRKAA2      protein kinase, AMP-activated, alpha 2 catalytic subunit    NM_006252   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005979    cDNA    23617   STK22B      serine/threonine kinase 22B (spermiogenesis associated) NM_053006   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005982    cDNA    5230    PGK1        phosphoglycerate kinase 1   NM_000291   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005983    cDNA    5218    CDK14       Homo sapiens cyclin-dependent kinase 14 (CDK14), mRNA.  NM_012395.2 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005984    cDNA    5209    PFKFB3      6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 3   NM_004566   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00005986    cDNA    55681   SCYL2       Homo sapiens SCY1-like 2 (S. cerevisiae) (SCYL2), mRNA. NM_017988.4 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00006000    cDNA    5260    PHKG1       phosphorylase kinase, gamma 1 (muscle)  NM_006213   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00006002    cDNA    1452    CSNK1A1     casein kinase 1, alpha 1    NM_001892   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000651    cDNA    2987    GUK1        guanylate kinase 1  NM_000858   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000672    cDNA    4833    NME4        non-metastatic cells 4, protein expressed in    NM_005009   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000732    cDNA    10654   PMVK        phosphomevalonate kinase    NM_006556   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00074096    cDNA    5286    PIK3C2A     phosphoinositide-3-kinase, class 2, alpha polypeptide   NM_002645.1 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00074098    cDNA    7786    MAP3K12     mitogen-activated protein kinase kinase kinase 12   NM_006301.2 No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000767    cDNA    5606    MAP2K3      mitogen-activated protein kinase kinase 3   NM_002756   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000768    cDNA    5605    MAP2K2      mitogen-activated protein kinase kinase 2   NM_030662   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000769    cDNA    5603    MAPK13      mitogen-activated protein kinase 13 NM_002754   No/Yes  FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000770    cDNA    5602    MAPK10      mitogen-activated protein kinase 10 NM_002753   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079950    cDNA    11344   PTK9L       PTK9L protein tyrosine kinase 9-like (A6-related protein)   BC003161    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079951    cDNA    4139    MARK1       MAP/microtubule affinity-regulating kinase 1    BC113869    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079952    cDNA    90956   ADCK2       aarF domain containing kinase 2 BC014107    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079954    cDNA    1456    CSNK1G3     casein kinase 1, gamma 3    BC047567    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079955    cDNA    136332  LRGUK       leucine-rich repeats and guanylate kinase domain containing BC104897    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079957    cDNA    1024    CDK8        cyclin-dependent kinase 8   BC069634    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079958    cDNA    91754   NEK9        NIMA (never in mitosis gene a)- related kinase 9    BC112101    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079959    cDNA    203054  ADCK5       aarF domain containing kinase 5 BC101659    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00079960    cDNA    3717    JAK2        Janus kinase 2 (a protein tyrosine kinase)  BC039695    No/No   FUSION  pDNR-Dual    bacterial: ampicillin  
+HsCD00000962    cDNA    1633    DCK     deoxycytidine kinase    NM_000788   No/No   FUSION  pDNR-Dual    bacterial: ampicillin  

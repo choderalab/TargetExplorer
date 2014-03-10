@@ -89,15 +89,11 @@ Returns a list of aligned sequences
         which_result = TargetExplorer.core.which('clustalo')
         if which_result != None:
             clustalo_binary = which_result
-        # Otherwise try these relative locations within this project
-        else:
-            if platform.system() == 'Darwin' and platform.machine() == 'x86_64':
-                clustalo_binary = os.path.join('..', 'external-tools/clustal-omega/clustal-omega-1.0.3-Mac-ppc-x86_64')
-            elif platform.system() == 'Linux' and platform.machine() == 'x86_64':
-                clustalo_binary = os.path.join('..', 'external-tools/clustal-omega/clustalo-1.1.0-linux-64')
     if clustalo_binary != None:
         if not os.path.exists(clustalo_binary):
             raise Exception, 'clustalo binary not found.'
+    else:
+        raise Exception, 'clustalo binary not found.'
 
     # Put the lists of sequence ids and sequences into FASTA format
     nseq = len(sequence_ids)

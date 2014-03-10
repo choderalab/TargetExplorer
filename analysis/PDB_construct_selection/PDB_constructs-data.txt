@@ -1,119 +1,499 @@
-= Targets sorted by number of PDB structures with matching expression system tag =
-
-            target  nmatching_PDB_structures  top_PDB_chain_ID  detected_expression_tag  authenticity_score               expression_system  target_rank  target_score
-            ______  ________________________  ________________  _______________________  __________________               _________________  ___________  ______________
-     MK14_HUMAN_D0                       188            2Y8O_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           14          61.3
-     CDK2_HUMAN_D0                       162            4BCP_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           26          53.7
-    AURKA_HUMAN_D0                        55            2NP8_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           44          47.9
-     MK01_HUMAN_D0                        32            4FMQ_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           16          59.0
-    DAPK1_HUMAN_D0                        31            4B4L_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          179          33.0
-    MAPK2_HUMAN_D0                        20            2JBO_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           74          41.8
-     PAK4_HUMAN_D0                        13            2J0I_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          161          33.9
-     ABL1_HUMAN_D0                         6            3UE4_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           12          62.3
-     BRAF_HUMAN_D0                         4            4JVG_D        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI            4          75.1
-     MST4_HUMAN_D0                         4            4FZD_B        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          307          29.7
-    MKNK2_HUMAN_D0                         3            2AC3_A        TEV_cleaved_Nterm                  10           ESCHERICHIA COLI BL21          246          30.9
-     KC1D_HUMAN_D0                         2            4HNF_B        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           92          39.1
-     KC1E_HUMAN_D0                         2            4HNI_A        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          183          32.6
-     MK07_HUMAN_D0                         2            4IC7_D        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          182          32.7
-     STK3_HUMAN_D0                         2            4LG4_B        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          216          31.5
-    AAPK2_HUMAN_D0                         1            2H6D_A        TEV_cleaved_Nterm                  10           ESCHERICHIA COLI BL21          200          32.1
-     FAK1_HUMAN_D0                         1            2IJM_B        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI           31          51.7
-    MKNK1_HUMAN_D0                         1            2HW6_B        TEV_cleaved_Nterm                  10                ESCHERICHIA COLI          214          31.6
-     PIM1_HUMAN_D0                        78            4A7C_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI           76          41.4
-      TTK_HUMAN_D0                        12            3H9F_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          156          34.3
-    STK24_HUMAN_D0                         8            3ZHP_C      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          267          30.4
-     HASP_HUMAN_D0                         7            3E7V_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          370          21.5
-     CLK3_HUMAN_D0                         5            2WU7_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          227          31.4
-    DAPK3_HUMAN_D0                         4            2J90_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          195          32.1
-    MAPK3_HUMAN_D0                         4            3FXW_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          371          20.3
-      SLK_HUMAN_D0                         4            2JFL_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          210          31.7
-    DYRK2_HUMAN_D0                         3            3KVW_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          248          30.8
-     PAK6_HUMAN_D0                         3            2C30_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          283          30.1
-    KCC2A_HUMAN_D0                         2            2VZ6_B      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          376          17.3
-    ST17B_HUMAN_D0                         2            3LM0_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          281          30.2
-     KCC4_HUMAN_D0                         1            2W4O_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          230          31.4
-    CDKL1_HUMAN_D0                         1            4AGU_C      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          360          27.2
-    KCC2G_HUMAN_D0                         1            2V7O_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          222          31.4
-     PAK7_HUMAN_D0                         1            2F57_B      TEV_uncleaved_Nterm                   9      ESCHERICHIA COLI BL21(DE3)          247          30.9
-    PHKG2_HUMAN_D0                         1            2Y7J_D      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          136          35.9
-    PMYT1_HUMAN_D0                         1            3P1A_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          303          29.8
-    STK16_HUMAN_D0                         1            2BUJ_B      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          299          29.9
-    STRAA_HUMAN_D0                         1            3GNI_B      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          402          11.5
-     VRK2_HUMAN_D0                         1            2V62_B      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          354          27.4
-     VRK3_HUMAN_D0                         1            2JII_A      TEV_uncleaved_Nterm                   9                ESCHERICHIA COLI          444           6.3
-    EPHA3_HUMAN_D0                        21            4GK2_A             Histag_Nterm                   7                ESCHERICHIA COLI           93          39.0
-    FGFR1_HUMAN_D0                        10            3GQL_B             Histag_Nterm                   7                ESCHERICHIA COLI           11          62.4
-     CSKP_HUMAN_D0                         8            3TAC_A             Histag_Nterm                   7                ESCHERICHIA COLI          108          37.3
-    KS6A3_HUMAN_D1                         5            4JG7_A             Histag_Nterm                   7                ESCHERICHIA COLI           51          45.8
-      MET_HUMAN_D0                         5            4EEV_A             Histag_Nterm                   7                ESCHERICHIA COLI            6          68.4
-     MK13_HUMAN_D0                         4            4EYJ_A             Histag_Nterm                   7                ESCHERICHIA COLI          241          31.0
-    MP2K4_HUMAN_D0                         3            3ALN_C             Histag_Nterm                   7                ESCHERICHIA COLI          178          33.0
-     PLK2_HUMAN_D0                         2            4I6B_A             Histag_Nterm                   7                ESCHERICHIA COLI          189          32.5
-    KS6A1_HUMAN_D1                         1            3RNY_B             Histag_Nterm                   7                ESCHERICHIA COLI          131          36.2
-     MK08_HUMAN_D0                        25            2NO3_A             Histag_Cterm                   6                ESCHERICHIA COLI           35          50.7
-     NEK2_HUMAN_D0                        20            2XKE_A             Histag_Cterm                   6                ESCHERICHIA COLI          157          34.1
-     PAK1_HUMAN_D0                        11            3Q52_A             Histag_Cterm                   6                ESCHERICHIA COLI          154          34.4
-    E2AK2_HUMAN_D0                         3            3UIU_A             Histag_Cterm                   6                ESCHERICHIA COLI          128          36.2
-     CDK6_HUMAN_D0                         2            4EZ5_A             Histag_Cterm                   6                ESCHERICHIA COLI          314          29.1
-    MP2K6_HUMAN_D0                         2            3VN9_A             Histag_Cterm                   6                ESCHERICHIA COLI          215          31.6
-     NEK7_HUMAN_D0                         2            2WQN_A             Histag_Cterm                   6                ESCHERICHIA COLI          291          30.0
-    BMPR2_HUMAN_D0                         1            3G2F_A             Histag_Cterm                   6                ESCHERICHIA COLI           77          41.2
-    CDK16_HUMAN_D0                         1            3MTL_A             Histag_Cterm                   6                ESCHERICHIA COLI          254          30.7
-     MELK_HUMAN_D0                         1            4IXP_A             Histag_Cterm                   6                ESCHERICHIA COLI          138          35.8
-    MP2K2_HUMAN_D0                         1            1S9I_A             Histag_Cterm                   6      ESCHERICHIA COLI BL21(DE3)           87          39.8
-    CSK21_HUMAN_D0                        45            3AXW_A    other_extra_seq_Nterm                   4                ESCHERICHIA COLI           63          43.5
-     CHK2_HUMAN_D0                        36            2CN5_A    other_extra_seq_Nterm                   4                ESCHERICHIA COLI           24          55.2
-      CSK_HUMAN_D0                         3            3D7T_A    other_extra_seq_Nterm                   4                ESCHERICHIA COLI          146          35.0
-     MK11_HUMAN_D0                         3            3GC8_A    other_extra_seq_Nterm                   4                ESCHERICHIA COLI          160          33.9
-    CSK22_HUMAN_D0                         2            3E3B_X    other_extra_seq_Nterm                   4                ESCHERICHIA COLI          150          34.7
-    MARK3_HUMAN_D0                         2            2QNJ_A    other_extra_seq_Nterm                   4      ESCHERICHIA COLI BL21(DE3)          365          25.5
-    MARK2_HUMAN_D0                         1            3IEC_D    other_extra_seq_Nterm                   4                ESCHERICHIA COLI          238          31.0
-     MK03_HUMAN_D0                         1            2ZOQ_B    other_extra_seq_Nterm                   4                ESCHERICHIA COLI           49          46.0
-     VRK1_HUMAN_D0                         1            3OP5_D    other_extra_seq_Nterm                   4                ESCHERICHIA COLI          384          15.4
-     MK10_HUMAN_D0                        36            2B1P_A                     None                   0                ESCHERICHIA COLI           42          48.0
-    KAPCA_HUMAN_D0                        15            3VQH_A                     None                   0                ESCHERICHIA COLI           62          43.6
-     CHK1_HUMAN_D0                         9            2E9V_A                     None                   0                ESCHERICHIA COLI           40          48.6
-    DAPK2_HUMAN_D0                         6            1WMK_C                     None                   0                ESCHERICHIA COLI          295          29.9
-      FES_HUMAN_D0                         4            3CBL_A                     None                   0                ESCHERICHIA COLI          116          36.7
-    KCC1A_HUMAN_D0                         4            4FG7_A                     None                   0                ESCHERICHIA COLI          253          30.7
-    STK10_HUMAN_D0                         4            4BC6_A                     None                   0                ESCHERICHIA COLI          125          36.3
-      ILK_HUMAN_D0                         3            3KMW_A                     None                   0                ESCHERICHIA COLI          389          14.2
-     KSYK_HUMAN_D0                         3            4F4P_A                     None                   0                ESCHERICHIA COLI           70          42.6
-     TIE2_HUMAN_D0                         3            3L8P_A                     None                   0                ESCHERICHIA COLI           36          50.4
-     M3K5_HUMAN_D0                         2            3VW6_A                     None                   0                ESCHERICHIA COLI          151          34.6
-     CLK1_HUMAN_D0                         2            2VAG_A                     None                   0                ESCHERICHIA COLI          170          33.5
-     FAK2_HUMAN_D0                         2            3ET7_A                     None                   0                ESCHERICHIA COLI           75          41.8
-    IGF1R_HUMAN_D0                         2            3O23_A                     None                   0                ESCHERICHIA COLI           18          57.1
-    KCC2D_HUMAN_D0                         2            2VN9_A                     None                   0                ESCHERICHIA COLI          174          33.5
-    KS6A5_HUMAN_D1                         2            3KN6_A                     None                   0                ESCHERICHIA COLI          127          36.3
-     MK09_HUMAN_D0                         2            3NPC_B                     None                   0                ESCHERICHIA COLI           79          41.2
-    OXSR1_HUMAN_D0                         2            3DAK_B                     None                   0                ESCHERICHIA COLI          344          27.7
-    AURKB_HUMAN_D0                         1            4AF3_A                     None                   0                ESCHERICHIA COLI           38          50.0
-      BTK_HUMAN_D0                         1            1K2P_A                     None                   0                ESCHERICHIA COLI           55          45.4
-     CLK2_HUMAN_D0                         1            3NR9_C                     None                   0                ESCHERICHIA COLI          194          32.2
-     DMPK_HUMAN_D0                         1            2VD5_B                     None                   0                ESCHERICHIA COLI          109          37.2
-      HCK_HUMAN_D0                         1            2HK5_A                     None                   0                ESCHERICHIA COLI           56          45.3
-     INSR_HUMAN_D0                         1            2AUH_A                     None                   0                ESCHERICHIA COLI           15          60.9
-     JAK3_HUMAN_D0                         1            1YVJ_A                     None                   0                ESCHERICHIA COLI           47          46.8
-    KC1G2_HUMAN_D0                         1            2C47_A                     None                   0                ESCHERICHIA COLI          235          31.1
-    KCC1G_HUMAN_D0                         1            2JAM_A                     None                   0                ESCHERICHIA COLI          309          29.6
-======================================================================================================================================================================
-    KCC1D_HUMAN_D0                         1            2JC6_A                     None                   0                ESCHERICHIA COLI          250          30.8
-    KCC2B_HUMAN_D0                         1            3BHH_D                     None                   0                ESCHERICHIA COLI          244          30.9
-     MK06_HUMAN_D0                         1            2I6L_B                     None                   0                ESCHERICHIA COLI          287          30.0
-     MK12_HUMAN_D0                         1            1CM8_A                     None                   0                ESCHERICHIA COLI          111          36.9
-    PDPK1_HUMAN_D0                         1            2R7B_A                     None                   0                ESCHERICHIA COLI           96          38.5
-     PIM2_HUMAN_D0                         1            2IWI_A                     None                   0                ESCHERICHIA COLI          105          37.4
-     PLK1_HUMAN_D0                         1            3THB_A                     None                   0                ESCHERICHIA COLI           29          52.2
-     PLK4_HUMAN_D0                         1            3COK_B                     None                   0      ESCHERICHIA COLI BL21(DE3)          201          32.0
-    STK25_HUMAN_D0                         1            2XIK_A                     None                   0                ESCHERICHIA COLI          297          29.9
-     STK4_HUMAN_D0                         1            3COM_A                     None                   0      ESCHERICHIA COLI BL21(DE3)          112          36.9
-    TGFR1_HUMAN_D0                         1            1B6C_F                     None                   0                ESCHERICHIA COLI           19          56.4
-    VGFR1_HUMAN_D0                         1            3HNG_A                     None                   0                ESCHERICHIA COLI           20          56.4
-      ITK_HUMAN_D0                         5            1SNU_A                     None                 -10                ESCHERICHIA COLI           53          45.7
-
-Total targets with plasmid and > 0 matching PDB structures: 109
-Total targets with plasmid and > 1 matching PDB structures: 67
-Total targets with plasmid and > 0 matching PDB structures and a detected expr_tag: 69
-Total targets with plasmid and > 1 matching PDB structures and a detected expr_tag: 48
+           targetID  top_plasmid_nconflicts  nmatching_PDB_structures top_PDB_chain_ID   top_cnstrct_expr_tag  top_cnstrct_auth_score        top_cnstrct_expr_sys DB_target_rank DB_target_score
+0     MK14_HUMAN_D0                       0                       188           2Y8O_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             14            61.3
+1     CDK2_HUMAN_D0                       0                       164           4BCP_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             26            53.7
+2    AURKA_HUMAN_D0                       0                        55           2NP8_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             44            47.9
+3     MK01_HUMAN_D0                       0                        32           4FMQ_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             16            59.0
+4    DAPK1_HUMAN_D0                       1                        31           4B4L_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            180            33.0
+5    MAPK2_HUMAN_D0                       0                        21           2JBO_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             74            41.8
+6     PAK4_HUMAN_D0                       0                        13           2J0I_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            162            33.9
+7     ABL1_HUMAN_D0                       0                         6           3UE4_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             12            62.3
+8     BRAF_HUMAN_D0                       0                         4           4JVG_D      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI              4            75.1
+9     MST4_HUMAN_D0                       0                         4           4FZD_B      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            307            29.7
+10     SRC_HUMAN_D0                       0                         4           4MXO_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             10            65.3
+11   AAPK2_HUMAN_D0                       0                         3           2H6D_A      Nterm_TEV_cleaved                      10       ESCHERICHIA COLI BL21            201            32.1
+12   MKNK2_HUMAN_D0                       3                         3           2AC5_A      Nterm_TEV_cleaved                      10       ESCHERICHIA COLI BL21            247            30.9
+13    KC1D_HUMAN_D0                       0                         2           4HNF_B      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             92            39.1
+14    KC1E_HUMAN_D0                       0                         2           4HNI_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            184            32.6
+15    MK07_HUMAN_D0                      85                         2           4IC7_D      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            183            32.7
+16    STK3_HUMAN_D0                       0                         2           4LG4_B      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            217            31.5
+17   EPHB2_HUMAN_D0                       1                         1           3ZFM_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             89            39.5
+18   EPHB3_HUMAN_D0                       0                         1           3ZFY_B      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            204            31.9
+19   EPHB4_HUMAN_D0                       1                         1           3ZEW_A      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             94            38.8
+20    FAK1_HUMAN_D0                       0                         1           2IJM_B      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI             31            51.7
+21   MKNK1_HUMAN_D0                       4                         1           2HW6_B      Nterm_TEV_cleaved                      10            ESCHERICHIA COLI            215            31.6
+22    PIM1_HUMAN_D0                       1                        81           4A7C_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI             76            41.4
+23     TTK_HUMAN_D0                       0                        18           3H9F_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            157            34.3
+24   STK24_HUMAN_D0                       0                         8           3ZHP_C    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            268            30.4
+25    HASP_HUMAN_D0                       1                         7           3E7V_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            371            21.5
+26    CLK3_HUMAN_D0                       0                         5           2WU7_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            228            31.4
+27   DAPK3_HUMAN_D0                       0                         4           2J90_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            196            32.1
+28   MAPK3_HUMAN_D0                       0                         4           3FXW_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            372            20.3
+29     SLK_HUMAN_D0                       1                         4           2JFL_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            211            31.7
+30   DYRK2_HUMAN_D0                       0                         3           3KVW_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            249            30.8
+31    PAK6_HUMAN_D0                       0                         3           2C30_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            284            30.1
+32   KCC2A_HUMAN_D0                       1                         2           2VZ6_B    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            376            17.3
+33   ST17B_HUMAN_D0                       0                         2           3LM0_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            282            30.2
+34    KCC4_HUMAN_D0                       0                         1           2W4O_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            231            31.4
+35   CDKL1_HUMAN_D0                      20                         1           4AGU_C    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            360            27.1
+36   KCC2G_HUMAN_D0                       1                         1           2V7O_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            223            31.4
+37    PAK7_HUMAN_D0                       0                         1           2F57_B    Nterm_TEV_uncleaved                       9  ESCHERICHIA COLI BL21(DE3)            248            30.8
+38   PHKG2_HUMAN_D0                       0                         1           2Y7J_D    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            136            35.9
+39   PMYT1_HUMAN_D0                       0                         1           3P1A_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            303            29.8
+40   STK16_HUMAN_D0                       1                         1           2BUJ_B    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            299            29.9
+41   STRAA_HUMAN_D0                       0                         1           3GNI_B    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            402            11.5
+42    VRK2_HUMAN_D0                       0                         1           2V62_B    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            354            27.4
+43    VRK3_HUMAN_D0                       0                         1           2JII_A    Nterm_TEV_uncleaved                       9            ESCHERICHIA COLI            444             6.3
+44   EPHA3_HUMAN_D0                       0                        21           4GK2_A           Nterm_Histag                       7            ESCHERICHIA COLI             93            39.0
+45   FGFR1_HUMAN_D0                       0                        13           3GQL_B           Nterm_Histag                       7            ESCHERICHIA COLI             11            62.3
+46    CSKP_HUMAN_D0                       0                         8           3TAC_A           Nterm_Histag                       7            ESCHERICHIA COLI            108            37.3
+47   KS6A3_HUMAN_D1                       0                         5           4JG7_A           Nterm_Histag                       7            ESCHERICHIA COLI             51            45.8
+48     MET_HUMAN_D0                       0                         5           4EEV_A           Nterm_Histag                       7            ESCHERICHIA COLI              6            68.4
+49    PLK2_HUMAN_D0                       0                         5           4I5P_A           Nterm_Histag                       7            ESCHERICHIA COLI            190            32.5
+50    MK13_HUMAN_D0                       0                         4           4EYJ_A           Nterm_Histag                       7            ESCHERICHIA COLI            242            31.0
+51   MP2K4_HUMAN_D0                       0                         3           3ALN_C           Nterm_Histag                       7            ESCHERICHIA COLI            179            33.0
+52   KS6A1_HUMAN_D1                       0                         1           3RNY_B           Nterm_Histag                       7            ESCHERICHIA COLI            131            36.2
+53    MK08_HUMAN_D0                       0                        25           2NO3_A           Cterm_Histag                       6            ESCHERICHIA COLI             35            50.7
+54    NEK2_HUMAN_D0                       0                        20           2XKE_A           Cterm_Histag                       6            ESCHERICHIA COLI            158            34.1
+55    PAK1_HUMAN_D0                       1                        11           3Q52_A           Cterm_Histag                       6            ESCHERICHIA COLI            155            34.4
+56   E2AK2_HUMAN_D0                       0                         3           3UIU_A           Cterm_Histag                       6            ESCHERICHIA COLI            128            36.2
+57    CDK6_HUMAN_D0                       0                         2           4EZ5_A           Cterm_Histag                       6            ESCHERICHIA COLI            314            29.1
+58   MP2K6_HUMAN_D0                       0                         2           3VN9_A           Cterm_Histag                       6            ESCHERICHIA COLI            216            31.5
+59    NEK7_HUMAN_D0                       0                         2           2WQN_A           Cterm_Histag                       6            ESCHERICHIA COLI            292            30.0
+60   BMPR2_HUMAN_D0                       0                         1           3G2F_A           Cterm_Histag                       6            ESCHERICHIA COLI             77            41.2
+61   CDK16_HUMAN_D0                       0                         1           3MTL_A           Cterm_Histag                       6            ESCHERICHIA COLI            255            30.7
+62    MELK_HUMAN_D0                       0                         1           4IXP_A           Cterm_Histag                       6            ESCHERICHIA COLI            138            35.8
+63   MP2K2_HUMAN_D0                       0                         1           1S9I_A           Cterm_Histag                       6  ESCHERICHIA COLI BL21(DE3)             87            39.8
+64   CSK21_HUMAN_D0                       0                        45           3AXW_A  Nterm_other_extra_seq                       4            ESCHERICHIA COLI             63            43.5
+65    CHK2_HUMAN_D0                       0                        36           2CN5_A  Nterm_other_extra_seq                       4            ESCHERICHIA COLI             24            55.2
+66     CSK_HUMAN_D0                       0                         3           3D7T_A  Nterm_other_extra_seq                       4            ESCHERICHIA COLI            147            35.0
+67    MK11_HUMAN_D0                       0                         3           3GC8_A  Nterm_other_extra_seq                       4            ESCHERICHIA COLI            161            33.9
+68   CSK22_HUMAN_D0                       0                         2           3E3B_X  Nterm_other_extra_seq                       4            ESCHERICHIA COLI            151            34.7
+69   MARK3_HUMAN_D0                       0                         2           2QNJ_A  Nterm_other_extra_seq                       4  ESCHERICHIA COLI BL21(DE3)            366            25.5
+70   MARK2_HUMAN_D0                       0                         1           3IEC_D  Nterm_other_extra_seq                       4            ESCHERICHIA COLI            239            31.0
+71    MK03_HUMAN_D0                       0                         1           2ZOQ_B  Nterm_other_extra_seq                       4            ESCHERICHIA COLI             49            46.0
+72    VRK1_HUMAN_D0                       0                         1           3OP5_D  Nterm_other_extra_seq                       4            ESCHERICHIA COLI            384            15.4
+73    MK10_HUMAN_D0                       0                        36           2B1P_A                   None                       0            ESCHERICHIA COLI             42            48.0
+74   KAPCA_HUMAN_D0                       0                        15           3VQH_A                   None                       0            ESCHERICHIA COLI             62            43.6
+75    CHK1_HUMAN_D0                       0                         9           2E9V_A                   None                       0            ESCHERICHIA COLI             40            48.6
+76   DAPK2_HUMAN_D0                       0                         6           1WMK_C                   None                       0            ESCHERICHIA COLI            295            29.9
+77     FES_HUMAN_D0                       0                         4           3CBL_A                   None                       0            ESCHERICHIA COLI            116            36.7
+78   KCC1A_HUMAN_D0                       0                         4           4FG7_A                   None                       0            ESCHERICHIA COLI            254            30.7
+79   STK10_HUMAN_D0                       0                         4           4BC6_A                   None                       0            ESCHERICHIA COLI            125            36.3
+80     ILK_HUMAN_D0                       0                         3           3KMW_A                   None                       0            ESCHERICHIA COLI            389            14.2
+81    KSYK_HUMAN_D0                       0                         3           4F4P_A                   None                       0            ESCHERICHIA COLI             70            42.6
+82    TIE2_HUMAN_D0                       2                         3           3L8P_A                   None                       0            ESCHERICHIA COLI             36            50.4
+83    M3K5_HUMAN_D0                       0                         2           3VW6_A                   None                       0            ESCHERICHIA COLI            152            34.6
+84    CLK1_HUMAN_D0                       0                         2           2VAG_A                   None                       0            ESCHERICHIA COLI            171            33.5
+85    FAK2_HUMAN_D0                       0                         2           3ET7_A                   None                       0            ESCHERICHIA COLI             75            41.8
+86   IGF1R_HUMAN_D0                       0                         2           3O23_A                   None                       0            ESCHERICHIA COLI             18            57.1
+87   KCC2D_HUMAN_D0                       0                         2           2VN9_A                   None                       0            ESCHERICHIA COLI            175            33.4
+88   KS6A5_HUMAN_D1                       0                         2           3KN6_A                   None                       0            ESCHERICHIA COLI            127            36.3
+89    MK09_HUMAN_D0                       9                         2           3NPC_B                   None                       0            ESCHERICHIA COLI             79            41.2
+90   OXSR1_HUMAN_D0                       0                         2           3DAK_B                   None                       0            ESCHERICHIA COLI            344            27.7
+91   AURKB_HUMAN_D0                       1                         1           4AF3_A                   None                       0            ESCHERICHIA COLI             38            50.0
+92     BTK_HUMAN_D0                       0                         1           1K2P_A                   None                       0            ESCHERICHIA COLI             55            45.3
+93    CLK2_HUMAN_D0                     329                         1           3NR9_C                   None                       0            ESCHERICHIA COLI            195            32.1
+94    DMPK_HUMAN_D0                       2                         1           2VD5_B                   None                       0            ESCHERICHIA COLI            109            37.2
+95     HCK_HUMAN_D0                       0                         1           2HK5_A                   None                       0            ESCHERICHIA COLI             56            45.3
+96    INSR_HUMAN_D0                       0                         1           2AUH_A                   None                       0            ESCHERICHIA COLI             15            60.9
+97    JAK3_HUMAN_D0                       0                         1           1YVJ_A                   None                       0            ESCHERICHIA COLI             47            46.8
+98   KC1G2_HUMAN_D0                       0                         1           2C47_A                   None                       0            ESCHERICHIA COLI            236            31.1
+99   KCC1G_HUMAN_D0                       1                         1           2JAM_A                   None                       0            ESCHERICHIA COLI            309            29.6
+100  KCC1D_HUMAN_D0                       0                         1           2JC6_A                   None                       0            ESCHERICHIA COLI            251            30.8
+101  KCC2B_HUMAN_D0                       0                         1           3BHH_D                   None                       0            ESCHERICHIA COLI            245            30.9
+102   MK06_HUMAN_D0                       1                         1           2I6L_B                   None                       0            ESCHERICHIA COLI            288            30.0
+103   MK12_HUMAN_D0                       0                         1           1CM8_A                   None                       0            ESCHERICHIA COLI            111            36.9
+104   MLKL_HUMAN_D0                       1                         1           4M67_A                   None                       0            ESCHERICHIA COLI            430             6.4
+105  PDPK1_HUMAN_D0                       0                         1           2R7B_A                   None                       0            ESCHERICHIA COLI             96            38.5
+106   PIM2_HUMAN_D0                       0                         1           2IWI_A                   None                       0            ESCHERICHIA COLI            105            37.4
+107   PLK1_HUMAN_D0                       0                         1           3THB_A                   None                       0            ESCHERICHIA COLI             29            52.2
+108   PLK4_HUMAN_D0                       0                         1           3COK_B                   None                       0  ESCHERICHIA COLI BL21(DE3)            202            32.0
+109  STK25_HUMAN_D0                       0                         1           2XIK_A                   None                       0            ESCHERICHIA COLI            297            29.9
+110   STK4_HUMAN_D0                       0                         1           3COM_A                   None                       0  ESCHERICHIA COLI BL21(DE3)            112            36.9
+111  TGFR1_HUMAN_D0                     279                         1           1B6C_F                   None                       0            ESCHERICHIA COLI             19            56.4
+112  VGFR1_HUMAN_D0                       0                         1           3HNG_A                   None                       0            ESCHERICHIA COLI             20            56.4
+113  AAPK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+114   CDK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+115   CDK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+116   CDK5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+117   CDK7_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+118   CDK9_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+119   EGFR_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+120  ERBB2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+121  ERBB4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+122  GSK3B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+123  HIPK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+124   IKKA_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+125   IKKB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+126   M3K7_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+127   AAK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+128   ABL2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+129   ACK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+130  ACV1C_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+131  ACV1B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+132  ACVL1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+133  ACVR1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+134  ADCK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+135  ADCK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+136  ADCK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+137  ADCK5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+138  ADCK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+139   AKT1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+140   AKT2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+141   AKT3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+142    ALK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+143  AMHR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+144  ANKK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+145  ANPRA_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+146  ANPRB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+147   ARAF_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+148  ARBK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+149  ARBK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+150  AURKC_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+151  AVR2A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+152  AVR2B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+153    BLK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+154  BMP2K_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+155  BMR1A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+156  BMR1B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+157    BMX_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+158  BRSK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+159  BRSK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+160  BUB1B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+161   BUB1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+162  CAMKV_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+163  CD11A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+164  CD11B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+165   CDC7_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+166  CDK10_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+167  CDK12_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+168  CDK13_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+169  CDK14_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+170  CDK15_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+171  CDK17_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+172  CDK18_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+173  CDK19_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+174  CDK20_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+175   CDK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+176   CDK8_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+177  CDKL2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+178  CDKL3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+179  CDKL4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+180  CDKL5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+181   CLK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+182  CSF1R_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+183  CSK23_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+184   CTRO_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+185  DCLK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+186  DCLK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+187  DCLK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+188   DDR1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+189   DDR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+190  DUSTY_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+191  DYR1A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+192  DYR1B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+193  DYRK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+194  DYRK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+195  E2AK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+196  E2AK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+197  E2AK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+198  EPHA1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+199  EPHA2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+200  EPHA4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+201  EPHA6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+202  EPHA5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+203  EPHA7_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+204  EPHA8_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+205  EPHAA_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+206  EPHB1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+207  EPHB6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+208  ERBB3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+209   ERN1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+210   ERN2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+211    FER_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+212  FGFR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+213  FGFR3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+214  FGFR4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+215    FGR_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+216   FLT3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+217    FRK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+218    FYN_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+219    GAK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+220   GRK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+221   GRK5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+222   GRK6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+223   GRK7_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+224  GSK3A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+225  GUC2C_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+226  GUC2D_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+227  GUC2F_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+228    GWL_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+229  HIPK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+230  HIPK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+231  HIPK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+232   HUNK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+233    ICK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+234   IKKE_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+235  INSRR_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+236  IRAK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+237  IRAK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+238  IRAK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+239  IRAK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+240   JAK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+241   JAK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+242  KALRN_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+243  KAPCB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+244  KAPCG_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+245  KC1AL_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+246   KC1A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+247  KC1G1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+248  KC1G3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+249  KCC1B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+250   KGP1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+251   KGP2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+252    KIT_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+253  KKCC1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+254  KKCC2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+255   KPCA_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+256   KPCB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+257  KPCD1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+258  KPCD2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+259  KPCD3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+260   KPCD_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+261   KPCE_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+262   KPCG_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+263   KPCI_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+264   KPCL_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+265   KPCT_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+266   KPCZ_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+267  KPSH1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+268  KPSH2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+269  KS6A1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+270  KS6A2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+271  KS6A2_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+272  KS6A3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+273  KS6A4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+274  KS6A4_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+275  KS6A5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+276  KS6A6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+277  KS6A6_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+278  KS6B1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+279  KS6B2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+280  KS6C1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+281   KSR1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+282   KSR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+283  LATS2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+284  LATS1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+285    LCK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+286  LIMK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+287  LIMK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+288  LMTK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+289  LMTK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+290  LMTK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+291  LRRK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+292  LRRK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+293    LTK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+294    LYN_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+295  M3K10_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+296  M3K11_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+297  M3K12_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+298  M3K13_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+299  M3K14_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+300  M3K15_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+301  M3K19_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+302   M3K1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+303   M3K2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+304   M3K3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+305   M3K4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+306   M3K6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+307   M3K8_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+308   M3K9_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+309  M3KL4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+310   M4K1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+311   M4K3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+312   M4K2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+313   M4K5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+314   M4K4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+315    MAK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+316  MAPK5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+317  MARK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+318  MARK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+319  MAST1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+320  MAST2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+321  MAST3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+322  MAST4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+323   MATK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+324  MERTK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+325  MINK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+326   MK04_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+327   MK15_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+328   MLTK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+329    MOK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+330    MOS_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+331  MP2K1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+332  MP2K3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+333  MP2K5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+334  MP2K7_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+335  MRCKB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+336  MRCKA_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+337  MRCKG_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+338   MUSK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+339  MYLK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+340  MYLK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+341  MYLK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+342   MYLK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+343  MYO3A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+344  MYO3B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+345  NEK10_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+346  NEK11_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+347   NEK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+348   NEK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+349   NEK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+350   NEK5_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+351   NEK6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+352   NEK9_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+353   NEK8_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+354   NIM1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+355    NLK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+356  NRBP2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+357   NRBP_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+358    NRK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+359   NTKL_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+360  NTRK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+361  NTRK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+362  NTRK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+363  NUAK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+364  NUAK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+365  OBSCN_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+366  OBSCN_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+367  PACE1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+368   PAK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+369   PAK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+370   PAN3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+371   PASK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+372  PDK1L_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+373  PDPK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+374  PEAK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+375  PGFRA_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+376  PGFRB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+377  PHKG1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+378  PI3R4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+379   PIM3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+380  PINK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+381  PKDCC_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+382   PKN1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+383   PKN2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+384   PKN3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+385   PLK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+386   PRKX_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+387   PRKY_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+388  PRP4B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+389   PRPK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+390   PTK6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+391    PXK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+392   RAF1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+393    RET_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+394  RIOK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+395  RIOK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+396  RIOK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+397  RIPK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+398  RIPK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+399  RIPK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+400  RIPK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+401     RK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+402   RN5A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+403  ROCK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+404  ROCK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+405    RON_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+406   ROR1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+407   ROR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+408   ROS1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+409  RPKL1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+410    RYK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+411   SBK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+412   SBK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+413   SBK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+414  SCYL2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+415  SG223_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+416  SG494_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+417   SGK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+418   SGK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+419   SGK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+420  SGK71_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+421   SIK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+422   SIK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+423   SIK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+424   SNRK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+425   SPEG_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+426   SPEG_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+427   SRMS_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+428  SRPK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+429  SRPK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+430  SRPK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+431  ST17A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+432  ST32A_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+433  ST32B_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+434  ST32C_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+435  ST38L_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+436  STK11_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+437  STK31_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+438  STK33_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+439  STK35_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+440  STK36_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+441  STK38_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+442  STK39_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+443  STK40_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+444  STRAB_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+445  STYK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+446   TAF1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+447   TAF1_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+448  TAOK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+449  TAOK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+450  TAOK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+451   TBCK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+452   TBK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+453    TEC_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+454  TESK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+455  TESK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+456  TEX14_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+457  TGFR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+458   TIE1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+459  TITIN_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+460   TLK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+461   TLK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+462  TNI3K_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+463   TNIK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+464   TNK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+465   TOPK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+466  TRIB1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+467  TRIB2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+468  TRIB3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+469   TRIO_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+470  TSSK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+471  TSSK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+472  TSSK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+473  TSSK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+474  TSSK6_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+475  TTBK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+476  TTBK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+477    TXK_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+478   TYK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+479   TYK2_HUMAN_D1                     NaN                         0             None                   None                       0                        None           None            None
+480  TYRO3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+481    UFO_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+482  UHMK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+483   ULK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+484   ULK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+485   ULK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+486   ULK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+487  VGFR2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+488  VGFR3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+489   WEE1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+490   WEE2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+491   WNK1_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+492   WNK2_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+493   WNK3_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+494   WNK4_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+495    YES_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+496  ZAP70_HUMAN_D0                     NaN                         0             None                   None                       0                        None           None            None
+497    ITK_HUMAN_D0                       0                         5           1SNU_A                   None                     -10            ESCHERICHIA COLI             53            45.7
