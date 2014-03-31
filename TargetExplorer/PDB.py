@@ -18,7 +18,6 @@ def retrieve_sifts(pdb_id):
     Also removes annoying namespace stuff.
     '''
     import re, gzip, StringIO
-    #sifts_download_base_url='http://www.ebi.ac.uk/pdbe-srv/view/files/sifts/'
     sifts_download_base_url='ftp://ftp.ebi.ac.uk/pub/databases/msd/sifts/xml/'
     url = sifts_download_base_url + pdb_id.lower() + '.xml.gz'
 
@@ -35,7 +34,7 @@ def retrieve_sifts(pdb_id):
     # Decompress string
     sifts_page = gzip.GzipFile(fileobj=StringIO.StringIO(sifts_page)).read()
 
-    # Remove all attribs from the entry tag, and the entire rdf tag and contents
+    # Remove all attribs from the entry tag, and the rdf tag and contents
     sifts_page_processed = ''
     skip_rdf_tag_flag = False
     for line in sifts_page.splitlines():
