@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Simple script to print kinDB_ids of kinases returned by a given xpath query
 #
 # Daniel L. Parton <partond@mskcc.org> - 7 May 2013

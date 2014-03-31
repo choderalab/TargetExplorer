@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Add bioassay data from BindingDB to database.
 #
 # Daniel L. Parton <partond@mskcc.org> - 25 Oct 2013

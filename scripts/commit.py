@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Commit data from database-stage.xml to database.xml
 #
 # Add datestamps and versionIDs

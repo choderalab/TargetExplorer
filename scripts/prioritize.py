@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Assign scores to each target domain in the DB, based on various properties such as
 # number of PDB structures, references, disease associations etc.
 #

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # For each PDB in database-stage.xml, download the SIFTS residue-mapping .xml file
 # Add experimental and resolved sequences to the DB (numbered according to the UniProt sequence)
 # Also add alignments of these sequences against the UniProt sequence

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Add mutation data from cBioPortal to database.
 #
 # Daniel L. Parton <partond@mskcc.org> - 29 Aug 2013

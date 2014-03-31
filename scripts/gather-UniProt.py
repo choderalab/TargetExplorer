@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Extract pertinent data from UniProt XML document and store as an XML database.
 #
 # PDB cross-refs are added if the structure is deemed to contain the PK domain.
@@ -51,8 +53,8 @@ uniprot_xml_out_filepath = os.path.join(uniprot_data_dir, 'uniprot-search.xml')
 DB_out_filename = 'database-%(run_mode)s.xml' % vars()
 DB_out_filepath = os.path.join(database_dir, DB_out_filename)
 
-uniprot_search_string = '(organism:9606 AND domain:"protein kinase") AND reviewed:yes'
-uniprot_search_string_query = '?query=%28organism%3A9606+AND+domain%3A%22protein+kinase%22%29+AND+reviewed%3Ayes&sort=score&format=xml' # a bit crude, but urllib.urlencode might not be much better
+uniprot_search_string = '(taxonomy:40674 AND domain:"protein kinase") AND reviewed:yes'
+uniprot_search_string_query = '?query=%28taxonomy%3A40674+AND+domain%3A%22protein+kinase%22%29+AND+reviewed%3Ayes&sort=score&format=xml' # a bit crude, but urllib.urlencode might not be much better
 # 1GQ5 is referenced by kinase P16234. The kinase is not in the actual structure.
 ignore_uniprot_pdbs = ['1GQ5']
 

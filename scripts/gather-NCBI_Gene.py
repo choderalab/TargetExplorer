@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Add data from NCBI Gene to database.
 #
 # New gene2pubmed.gz file downloaded from NCBI Gene only if existing one is > 7 days old, or if --forcedl flag is used.
