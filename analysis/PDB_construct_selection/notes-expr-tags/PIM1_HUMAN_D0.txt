@@ -1,1 +1,0 @@
-2O64: His-tag at C-term. Paper references 1YXX, same PDB construct sequence. 1YXX expression protocol matches PDB construct sequence! But note that they used the PIM1_HUMAN-2 isoform, not the UniProt canonical isoform PIM1_HUMAN-1. All PIM1 PDB construct sequences seem to have used this isoform.

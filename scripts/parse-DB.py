@@ -386,7 +386,7 @@ def print_kinases_expressed_in(expression_system):
 # Prints PDB info for a given DB entry
 # ==========================
 
-def print_pdbs_by_UniProt_entry_name(entry_name):
+def print_pdbs_by_UniProt_entry_name(entry_name, print_expr_data=False):
     DB_entry = DB_root.find('entry/UniProt[@entry_name="%s"]' % entry_name).getparent()
     pdb_structures = DB_entry.findall('PDB/structure')
     pdb_chains = DB_entry.findall('PDB/structure/chain')
@@ -395,18 +395,29 @@ def print_pdbs_by_UniProt_entry_name(entry_name):
     print 'PDB structures:'
     for pdb_structure in pdb_structures:
         PDB_ID = pdb_structure.get('ID')
-        print PDB_ID
+        print_str = PDB_ID
+
+        if print_expr_data != False:
+            expr_data = pdb_structure.find('expression_data')
+            if expr_data != None:
+                if print_expr_data == 'all':
+                    for key in expr_data.keys():
+                        print_str += '  ' + key + '=' + expr_data.get(key)
+                else:
+                    print_str += '  ' + print_expr_data + '=' + expr_data.get(print_expr_data)
+
+        print print_str
 
 # ==========================
 # Put function calls here
 # ==========================
 #print_attribs('kinase/pk_pdb/expression_data', 'EXPRESSION_SYSTEM')
-write_targets_prioritized()
+#write_targets_prioritized()
 #print_GeneIDs()
 #print_pubs()
 #print_bioassays_kinase('ABL1_HUMAN')
 #print_bioassay_types()
 #print_bioassay_seqs(['SRC_HUMAN'])
 #print_kinases_expressed_in('ESCHERICHIA')
-#print_pdbs_by_UniProt_entry_name('ABL1_HUMAN')
+print_pdbs_by_UniProt_entry_name('ABL1_HUMAN', print_expr_data='EXPRESSION_SYSTEM')
 

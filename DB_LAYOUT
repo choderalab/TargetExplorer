@@ -8,6 +8,9 @@
     <entry>
         <UniProt AC= entry_name= family= > (one)
             <recommended_name>
+            <gene_names>
+                <gene_name type="primary">
+                <gene_name type="synonym">
             <isoforms>
                 <canonical_isoform AC= > (one) Use this as reference protein seq for all work in this database
                     <sequence>

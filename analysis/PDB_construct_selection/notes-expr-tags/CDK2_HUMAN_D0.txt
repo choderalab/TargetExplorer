@@ -1,1 +1,0 @@
-3QXP: full-length sequence with some extraneous sequence at N-term - looks like linker for tag and cleavage site. Paper references 3PY1 - same PDB construct seq. 3PY1 paper describes expression of full sequence with GST-tag, followed by removal of GST-tag with GST-PreScission protease. Extraneous N-terminal sequence is presumably a remnant from GST removal.
