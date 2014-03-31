@@ -2,6 +2,54 @@ import os, textwrap
 #import choderalab
 from lxml.builder import E
 
+# =========
+# Project initialization
+# =========
+
+def init_project(project_toplevel_dir):
+    '''Initialize TargetExplorer project within a given directory. Creates
+    necessary subdirectories.
+    '''
+
+    # =========
+    # Parameters
+    # =========
+
+    project_dirnames = ['database', 'external-data', 'analysis']
+
+    # =========
+    # Create necessary project directories
+    # =========
+
+    os.chdir(project_toplevel_dir)
+
+    for dirname in project_dirnames:
+        try:
+            os.mkdir(dirname)
+            print 'Created directory "%s"' % dirname
+        except OSError as e:
+            if e.errno == 17:
+                print 'Directory "%s" already exists - will not overwrite' % dirname
+            else:
+                raise
+        
+    print 'Done.'
+
+
+
+
+
+
+
+
+
+
+
+
+#############
+# XXX OLD XXX
+#############
+
 # Look for the kinome root directory, which should be two below the pylib/choderalab directory
 # XXX kinome_rootdir is DEPRECATED, since we will eventually move to a setuptools-based installation, in which case the Python libraries will be separated from the database directories
 #two_dirs_below_choderalab = os.path.join(choderalab.__path__[0], '..', '..')
