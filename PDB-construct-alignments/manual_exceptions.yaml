@@ -76,6 +76,31 @@ KAPCA_HUMAN_D0:
     3VQH:
         comment: >
             Full-length sequence and E coli expression confirmed from paper.
+    2UZV:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Authors seem to have entered only observed residues in the SEQRES records.
+    2UZW:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 2UZV
+    2UZT:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 2UZV
+    2UZU:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 2UZV
+    2GU8:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Paper contains no information on expression construct. Sequence cannot be confirmed.
 
 MAPK2_HUMAN_D0:
     comment: >
@@ -205,4 +230,21 @@ TTK_HUMAN_D0:
     3H9F:
         comment: >
             Paper SI confirms E coli expression, expression tag (His tag and TEV protease cleavage site), and sequence.
+
+PHKG1_HUMAN_D0:
+    1PHK:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Automatic expr tag detection gives improper result
+    1QL6:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                As for 1PHK
+    2PHK:
+        authenticity_score:
+            behavior: downweight
+            comment: >
+                Authors seem to have entered only the observed residues in the SEQRES records.
 

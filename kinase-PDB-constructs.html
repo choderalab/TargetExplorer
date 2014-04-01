@@ -18,19 +18,19 @@
         <h2>Selection of kinase constructs from PDB data<a name="PDB construct alignments" class="anchor" href="#PDBalns"><span class="octicon octicon-link"/></a></h2>
         <h3>Information</h3>
         <p style="max-width: 1000px; text-align: justify;">The aim is to select 96 kinase catalytic domain constructs suitable for E coli expression, using the PDB as a source of construct sequences which have been expressed successfully. The results are shown in the table below. </p>
-        <li><strong>nreps: </strong>Number of replicates chosen for expression testing</li>
         <li><strong>targetID: </strong>[UniProt entry name]_[domain index], e.g. KS6A1 (aka RPS6KA1) has two kinase catalytic domains, which would be named KS6A1_HUMAN_D0 and KS6A1_HUMAN_D1. Click the targetID to see the PDB construct alignments</li>
         <li><strong>nPDBs: </strong>Number of PDBs which list E. coli as the expression system</li>
         <li><strong>top_PDB: </strong>Top-ranked PDB construct</li>
         <li><strong>expr_tag: </strong>Type of expression tag detected from the construct sequence</li>
         <li><strong>expr_tag_score: </strong>Arbitrary score assigned to the expression tag type. TEV-cleaved N-terminal tags are given the highest score</li>
         <li><strong>expr_sys: </strong>Expression system listed for the PDB construct</li>
+        <li><strong>construct_organism: </strong>Organism source of the PDB construct</li>
         <li><strong>DB_target_score: </strong>Score of kinase (subjective) importance based on metrics such as: number of disease associations; number of publications; percent mutations in a given cohort of sequenced tumor samples; number of bioassays listed in BindingDB</li>
         <li><strong>DB_target_rank: </strong>Ranking based on DB_target_score</li>
         <li><strong>UniProt_AC: </strong>Uniprot accession code</li>
         <br/>
         <p style="max-width: 1000px; text-align: justify;">For a given kinase target, all PDB constructs expressed in E coli are run through a multiple sequence alignment, along with the UniProt canonical isoform sequence, and the sequence from a plasmid library (we will be subcloning our constructs from this library). The alignments can be viewed by clicking on the targetIDs in the table below (the kinase catalytic domain is highlighted in red in the UniProt sequence). The PDB constructs are ranked firstly based on their expr_tag_score, which denotes whether an expression tag has been detected in the sequence. The reason for this is to avoid PDB entries with erroneously annotated SEQRES records, which often record the structurally resolved residues rather than the input sequence (as they should). We consider construct sequences which include expression tags more likely to be authentic. After expr_tag_score, the construct sequences are ranked by alignment score (to avoid constructs with mutations), and then again by their sequence length compared to the kinase catalytic domain (since we only want to express this isolated domain).</p>
-        <p style="max-width: 1000px; text-align: justify;">Kinase targets are ranked firstly by expr_tag_score for the top PDB construct, then by nPDBs. Only constructs for which an expression tag has been detected (expr_tag_score &gt; 0) are selected for expression testing. Currently this process results in 69 unique kinase constructs. For the remaining 27 well positions, replicate experiments will be run for the kinases with the highest DB_target_score. Running replicate experiments will help to allay cloning errors (error rate ~70%).</p>
+        <p style="max-width: 1000px; text-align: justify;">Kinase targets are ranked firstly by expr_tag_score for the top PDB construct, then by nPDBs. Only constructs for which an expression tag has been detected (expr_tag_score &gt; 0) are selected for expression testing.</p>
         <p/>
         <p style="max-width: 1000px; text-align: justify;">A series of <a href="PDB-construct-alignments/manual_exceptions.html">manual exceptions</a> have also been made to further refine the results, which can be badly affected by misannotated PDB entries.</p>
         <div>
@@ -38,9 +38,6 @@
             <tr>
               <th nowrap="">
                 <div>index</div>
-              </th>
-              <th nowrap="">
-                <div>nreps</div>
               </th>
               <th nowrap="">
                 <div>targetID</div>
@@ -61,6 +58,9 @@
                 <div>expr_sys</div>
               </th>
               <th nowrap="">
+                <div>construct_organism</div>
+              </th>
+              <th nowrap="">
                 <div>DB_target_score</div>
               </th>
               <th nowrap="">
@@ -75,9 +75,6 @@
                 <div>1</div>
               </td>
               <td nowrap="">
-                <div>2</div>
-              </td>
-              <td nowrap="">
                 <a href="PDB-construct-alignments/MK14_HUMAN_D0.html">MK14_HUMAN_D0</a>
               </td>
               <td nowrap="">
@@ -87,7 +84,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2Y8O">2Y8O_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -96,19 +93,19 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>61.3</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>61.2</div>
               </td>
               <td nowrap="">
                 <div>14</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q16539">Q16539</a>
+                <a href="http://www.uniprot.org/uniprot/MK14_HUMAN">MK14_HUMAN</a>
               </td>
             </tr>
             <tr>
-              <td nowrap="">
-                <div>2</div>
-              </td>
               <td nowrap="">
                 <div>2</div>
               </td>
@@ -116,13 +113,13 @@
                 <a href="PDB-construct-alignments/CDK2_HUMAN_D0.html">CDK2_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>162</div>
+                <div>164</div>
               </td>
               <td nowrap="">
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4BCP">4BCP_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -131,21 +128,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>53.7</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>53.6</div>
               </td>
               <td nowrap="">
                 <div>26</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P24941">P24941</a>
+                <a href="http://www.uniprot.org/uniprot/CDK2_HUMAN">CDK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
                 <div>3</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/AURKA_HUMAN_D0.html">AURKA_HUMAN_D0</a>
@@ -157,7 +154,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2NP8">2NP8_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -166,21 +163,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>47.9</div>
               </td>
               <td nowrap="">
-                <div>44</div>
+                <div>45</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O14965">O14965</a>
+                <a href="http://www.uniprot.org/uniprot/AURKA_HUMAN">AURKA_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
                 <div>4</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK01_HUMAN_D0.html">MK01_HUMAN_D0</a>
@@ -192,7 +189,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4FMQ">4FMQ_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -201,21 +198,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>59.0</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>58.9</div>
               </td>
               <td nowrap="">
                 <div>16</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P28482">P28482</a>
+                <a href="http://www.uniprot.org/uniprot/MK01_HUMAN">MK01_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
                 <div>5</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/DAPK1_HUMAN_D0.html">DAPK1_HUMAN_D0</a>
@@ -227,7 +224,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4B4L">4B4L_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -236,13 +233,16 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>33.0</div>
               </td>
               <td nowrap="">
-                <div>179</div>
+                <div>190</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P53355">P53355</a>
+                <a href="http://www.uniprot.org/uniprot/DAPK1_HUMAN">DAPK1_HUMAN</a>
               </td>
             </tr>
             <tr>
@@ -250,19 +250,16 @@
                 <div>6</div>
               </td>
               <td nowrap="">
-                <div>2</div>
-              </td>
-              <td nowrap="">
                 <a href="PDB-construct-alignments/MAPK2_HUMAN_D0.html">MAPK2_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>20</div>
+                <div>21</div>
               </td>
               <td nowrap="">
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2JBO">2JBO_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -271,13 +268,16 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>41.8</div>
               </td>
               <td nowrap="">
-                <div>74</div>
+                <div>77</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P49137">P49137</a>
+                <a href="http://www.uniprot.org/uniprot/MAPK2_HUMAN">MAPK2_HUMAN</a>
               </td>
             </tr>
             <tr>
@@ -285,19 +285,16 @@
                 <div>7</div>
               </td>
               <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
                 <a href="PDB-construct-alignments/PAK4_HUMAN_D0.html">PAK4_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>13</div>
+                <div>17</div>
               </td>
               <td nowrap="">
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2J0I">2J0I_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -306,21 +303,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>33.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>161</div>
+                <div>33.8</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O96013">O96013</a>
+                <div>172</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/PAK4_HUMAN">PAK4_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
                 <div>8</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/ABL1_HUMAN_D0.html">ABL1_HUMAN_D0</a>
@@ -332,7 +329,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3UE4">3UE4_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -341,21 +338,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>62.3</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>62.2</div>
               </td>
               <td nowrap="">
                 <div>12</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P00519">P00519</a>
+                <a href="http://www.uniprot.org/uniprot/ABL1_HUMAN">ABL1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
                 <div>9</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/BRAF_HUMAN_D0.html">BRAF_HUMAN_D0</a>
@@ -367,7 +364,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4JVG">4JVG_D</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -376,21 +373,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>75.1</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>75.2</div>
               </td>
               <td nowrap="">
                 <div>4</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P15056">P15056</a>
+                <a href="http://www.uniprot.org/uniprot/BRAF_HUMAN">BRAF_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
                 <div>10</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MST4_HUMAN_D0.html">MST4_HUMAN_D0</a>
@@ -402,7 +399,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4FZD">4FZD_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -411,13 +408,16 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>29.7</div>
               </td>
               <td nowrap="">
-                <div>307</div>
+                <div>330</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9P289">Q9P289</a>
+                <a href="http://www.uniprot.org/uniprot/MST4_HUMAN">MST4_HUMAN</a>
               </td>
             </tr>
             <tr>
@@ -425,19 +425,51 @@
                 <div>11</div>
               </td>
               <td nowrap="">
-                <div>1</div>
+                <a href="PDB-construct-alignments/SRC_HUMAN_D0.html">SRC_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <a href="PDB-construct-alignments/MKNK2_HUMAN_D0.html">MKNK2_HUMAN_D0</a>
+                <div>4</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=4MXO">4MXO_A</a>
+              </td>
+              <td nowrap="">
+                <div>Nterm_TEV_cleaved</div>
+              </td>
+              <td nowrap="">
+                <div>10</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>65.2</div>
+              </td>
+              <td nowrap="">
+                <div>10</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/SRC_HUMAN">SRC_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>12</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/AAPK2_HUMAN_D0.html">AAPK2_HUMAN_D0</a>
               </td>
               <td nowrap="">
                 <div>3</div>
               </td>
               <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2AC3">2AC3_A</a>
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2H6D">2H6D_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -446,21 +478,56 @@
                 <div>ESCHERICHIA COLI BL21</div>
               </td>
               <td nowrap="">
-                <div>30.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>246</div>
+                <div>32.0</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9HBH9">Q9HBH9</a>
+                <div>215</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/AAPK2_HUMAN">AAPK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>12</div>
+                <div>13</div>
               </td>
               <td nowrap="">
-                <div>2</div>
+                <a href="PDB-construct-alignments/MKNK2_HUMAN_D0.html">MKNK2_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>3</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2AC5">2AC5_A</a>
+              </td>
+              <td nowrap="">
+                <div>Nterm_TEV_cleaved</div>
+              </td>
+              <td nowrap="">
+                <div>10</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI BL21</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>30.9</div>
+              </td>
+              <td nowrap="">
+                <div>265</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MKNK2_HUMAN">MKNK2_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>14</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KC1D_HUMAN_D0.html">KC1D_HUMAN_D0</a>
@@ -472,7 +539,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4HNF">4HNF_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -481,21 +548,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>39.1</div>
               </td>
               <td nowrap="">
-                <div>92</div>
+                <div>96</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P48730">P48730</a>
+                <a href="http://www.uniprot.org/uniprot/KC1D_HUMAN">KC1D_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>13</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>15</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KC1E_HUMAN_D0.html">KC1E_HUMAN_D0</a>
@@ -507,7 +574,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4HNI">4HNI_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -516,21 +583,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>32.6</div>
               </td>
               <td nowrap="">
-                <div>183</div>
+                <div>198</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P49674">P49674</a>
+                <a href="http://www.uniprot.org/uniprot/KC1E_HUMAN">KC1E_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>14</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>16</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK07_HUMAN_D0.html">MK07_HUMAN_D0</a>
@@ -542,7 +609,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4IC7">4IC7_D</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -551,21 +618,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>32.7</div>
               </td>
               <td nowrap="">
-                <div>182</div>
+                <div>196</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13164">Q13164</a>
+                <a href="http://www.uniprot.org/uniprot/MK07_HUMAN">MK07_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>15</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>17</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STK3_HUMAN_D0.html">STK3_HUMAN_D0</a>
@@ -577,7 +644,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4LG4">4LG4_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -586,56 +653,126 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.5</div>
               </td>
               <td nowrap="">
-                <div>216</div>
+                <div>232</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13188">Q13188</a>
+                <a href="http://www.uniprot.org/uniprot/STK3_HUMAN">STK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>16</div>
+                <div>18</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/EPHB4_HUMAN_D0.html">EPHB4_HUMAN_D0</a>
               </td>
               <td nowrap="">
                 <div>1</div>
               </td>
               <td nowrap="">
-                <a href="PDB-construct-alignments/AAPK2_HUMAN_D0.html">AAPK2_HUMAN_D0</a>
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3ZEW">3ZEW_A</a>
               </td>
               <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2H6D">2H6D_A</a>
-              </td>
-              <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
               </td>
               <td nowrap="">
-                <div>ESCHERICHIA COLI BL21</div>
+                <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>32.1</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>200</div>
+                <div>38.8</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P54646">P54646</a>
+                <div>98</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/EPHB4_HUMAN">EPHB4_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>17</div>
+                <div>19</div>
               </td>
               <td nowrap="">
-                <div>2</div>
+                <a href="PDB-construct-alignments/EPHB2_HUMAN_D0.html">EPHB2_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>1</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3ZFM">3ZFM_A</a>
+              </td>
+              <td nowrap="">
+                <div>Nterm_TEV_cleaved</div>
+              </td>
+              <td nowrap="">
+                <div>10</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>39.5</div>
+              </td>
+              <td nowrap="">
+                <div>92</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/EPHB2_HUMAN">EPHB2_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>20</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/EPHB3_HUMAN_D0.html">EPHB3_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>1</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3ZFY">3ZFY_B</a>
+              </td>
+              <td nowrap="">
+                <div>Nterm_TEV_cleaved</div>
+              </td>
+              <td nowrap="">
+                <div>10</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>31.9</div>
+              </td>
+              <td nowrap="">
+                <div>218</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/EPHB3_HUMAN">EPHB3_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>21</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/FAK1_HUMAN_D0.html">FAK1_HUMAN_D0</a>
@@ -647,7 +784,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2IJM">2IJM_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -656,21 +793,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>51.7</div>
               </td>
               <td nowrap="">
                 <div>31</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q05397">Q05397</a>
+                <a href="http://www.uniprot.org/uniprot/FAK1_HUMAN">FAK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>18</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>22</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MKNK1_HUMAN_D0.html">MKNK1_HUMAN_D0</a>
@@ -682,7 +819,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2HW6">2HW6_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_cleaved_Nterm</div>
+                <div>Nterm_TEV_cleaved</div>
               </td>
               <td nowrap="">
                 <div>10</div>
@@ -691,68 +828,68 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.6</div>
               </td>
               <td nowrap="">
-                <div>214</div>
+                <div>230</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9BUB5">Q9BUB5</a>
+                <a href="http://www.uniprot.org/uniprot/MKNK1_HUMAN">MKNK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>19</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>23</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PIM1_HUMAN_D0.html">PIM1_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>78</div>
+                <div>81</div>
               </td>
               <td nowrap="">
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4A7C">4A7C_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
               </td>
               <td nowrap="">
                 <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
               </td>
               <td nowrap="">
                 <div>41.4</div>
               </td>
               <td nowrap="">
-                <div>76</div>
+                <div>79</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P11309">P11309</a>
+                <a href="http://www.uniprot.org/uniprot/PIM1_HUMAN">PIM1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>20</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>24</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/TTK_HUMAN_D0.html">TTK_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>12</div>
+                <div>18</div>
               </td>
               <td nowrap="">
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3H9F">3H9F_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -761,21 +898,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>34.3</div>
               </td>
               <td nowrap="">
-                <div>156</div>
+                <div>166</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P33981">P33981</a>
+                <a href="http://www.uniprot.org/uniprot/TTK_HUMAN">TTK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>21</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>25</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STK24_HUMAN_D0.html">STK24_HUMAN_D0</a>
@@ -787,7 +924,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3ZHP">3ZHP_C</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -796,21 +933,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.4</div>
               </td>
               <td nowrap="">
-                <div>267</div>
+                <div>287</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9Y6E0">Q9Y6E0</a>
+                <a href="http://www.uniprot.org/uniprot/STK24_HUMAN">STK24_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>22</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>26</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/HASP_HUMAN_D0.html">HASP_HUMAN_D0</a>
@@ -822,7 +959,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3E7V">3E7V_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -831,21 +968,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>21.5</div>
               </td>
               <td nowrap="">
-                <div>370</div>
+                <div>426</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q8TF76">Q8TF76</a>
+                <a href="http://www.uniprot.org/uniprot/HASP_HUMAN">HASP_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>23</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>27</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CLK3_HUMAN_D0.html">CLK3_HUMAN_D0</a>
@@ -857,7 +994,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2WU7">2WU7_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -866,21 +1003,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>31.4</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>227</div>
+                <div>31.3</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P49761">P49761</a>
+                <div>245</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/CLK3_HUMAN">CLK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>24</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>28</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/DAPK3_HUMAN_D0.html">DAPK3_HUMAN_D0</a>
@@ -892,7 +1029,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2J90">2J90_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -901,21 +1038,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>32.1</div>
               </td>
               <td nowrap="">
-                <div>195</div>
+                <div>210</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O43293">O43293</a>
+                <a href="http://www.uniprot.org/uniprot/DAPK3_HUMAN">DAPK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>25</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>29</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MAPK3_HUMAN_D0.html">MAPK3_HUMAN_D0</a>
@@ -927,7 +1064,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3FXW">3FXW_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -936,21 +1073,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>20.3</div>
               </td>
               <td nowrap="">
-                <div>371</div>
+                <div>430</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q16644">Q16644</a>
+                <a href="http://www.uniprot.org/uniprot/MAPK3_HUMAN">MAPK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>26</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>30</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/SLK_HUMAN_D0.html">SLK_HUMAN_D0</a>
@@ -962,7 +1099,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2JFL">2JFL_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -971,21 +1108,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>31.7</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>210</div>
+                <div>31.8</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9H2G2">Q9H2G2</a>
+                <div>224</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/SLK_HUMAN">SLK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>27</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>31</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/DYRK2_HUMAN_D0.html">DYRK2_HUMAN_D0</a>
@@ -997,7 +1134,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3KVW">3KVW_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1006,21 +1143,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.8</div>
               </td>
               <td nowrap="">
-                <div>248</div>
+                <div>269</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q92630">Q92630</a>
+                <a href="http://www.uniprot.org/uniprot/DYRK2_HUMAN">DYRK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>28</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>32</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PAK6_HUMAN_D0.html">PAK6_HUMAN_D0</a>
@@ -1032,7 +1169,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2C30">2C30_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1041,21 +1178,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.1</div>
               </td>
               <td nowrap="">
-                <div>283</div>
+                <div>307</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9NQU5">Q9NQU5</a>
+                <a href="http://www.uniprot.org/uniprot/PAK6_HUMAN">PAK6_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>29</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>33</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC2A_HUMAN_D0.html">KCC2A_HUMAN_D0</a>
@@ -1067,7 +1204,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2VZ6">2VZ6_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1076,21 +1213,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>17.3</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>376</div>
+                <div>17.2</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9UQM7">Q9UQM7</a>
+                <div>450</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/KCC2A_HUMAN">KCC2A_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>30</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>34</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/ST17B_HUMAN_D0.html">ST17B_HUMAN_D0</a>
@@ -1102,7 +1239,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3LM0">3LM0_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1111,21 +1248,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.2</div>
               </td>
               <td nowrap="">
-                <div>281</div>
+                <div>305</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O94768">O94768</a>
+                <a href="http://www.uniprot.org/uniprot/ST17B_HUMAN">ST17B_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>31</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>35</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC4_HUMAN_D0.html">KCC4_HUMAN_D0</a>
@@ -1137,7 +1274,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2W4O">2W4O_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1146,21 +1283,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.4</div>
               </td>
               <td nowrap="">
-                <div>230</div>
+                <div>244</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q16566">Q16566</a>
+                <a href="http://www.uniprot.org/uniprot/KCC4_HUMAN">KCC4_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>32</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>36</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CDKL1_HUMAN_D0.html">CDKL1_HUMAN_D0</a>
@@ -1172,7 +1309,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4AGU">4AGU_C</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1181,21 +1318,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>27.2</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>360</div>
+                <div>27.1</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q00532">Q00532</a>
+                <div>393</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/CDKL1_HUMAN">CDKL1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>33</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>37</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC2G_HUMAN_D0.html">KCC2G_HUMAN_D0</a>
@@ -1207,7 +1344,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2V7O">2V7O_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1216,21 +1353,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.4</div>
               </td>
               <td nowrap="">
-                <div>222</div>
+                <div>241</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13555">Q13555</a>
+                <a href="http://www.uniprot.org/uniprot/KCC2G_HUMAN">KCC2G_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>34</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>38</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PAK7_HUMAN_D0.html">PAK7_HUMAN_D0</a>
@@ -1242,7 +1379,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2F57">2F57_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1251,21 +1388,21 @@
                 <div>ESCHERICHIA COLI BL21(DE3)</div>
               </td>
               <td nowrap="">
-                <div>30.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>247</div>
+                <div>30.8</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9P286">Q9P286</a>
+                <div>267</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/PAK7_HUMAN">PAK7_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>35</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>39</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PHKG2_HUMAN_D0.html">PHKG2_HUMAN_D0</a>
@@ -1277,7 +1414,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2Y7J">2Y7J_D</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1286,21 +1423,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>35.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>136</div>
+                <div>35.8</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P15735">P15735</a>
+                <div>141</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/PHKG2_HUMAN">PHKG2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>36</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>40</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PMYT1_HUMAN_D0.html">PMYT1_HUMAN_D0</a>
@@ -1312,7 +1449,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3P1A">3P1A_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1321,21 +1458,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>29.8</div>
               </td>
               <td nowrap="">
-                <div>303</div>
+                <div>327</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q99640">Q99640</a>
+                <a href="http://www.uniprot.org/uniprot/PMYT1_HUMAN">PMYT1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>37</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>41</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STK16_HUMAN_D0.html">STK16_HUMAN_D0</a>
@@ -1347,7 +1484,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2BUJ">2BUJ_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1356,21 +1493,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>29.9</div>
               </td>
               <td nowrap="">
-                <div>299</div>
+                <div>322</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O75716">O75716</a>
+                <a href="http://www.uniprot.org/uniprot/STK16_HUMAN">STK16_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>38</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>42</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STRAA_HUMAN_D0.html">STRAA_HUMAN_D0</a>
@@ -1382,65 +1519,30 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3GNI">3GNI_B</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
               </td>
               <td nowrap="">
                 <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
               </td>
               <td nowrap="">
                 <div>11.5</div>
               </td>
               <td nowrap="">
-                <div>402</div>
+                <div>521</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q7RTN6">Q7RTN6</a>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap="">
-                <div>39</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
-                <a href="PDB-construct-alignments/VRK2_HUMAN_D0.html">VRK2_HUMAN_D0</a>
-              </td>
-              <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2V62">2V62_B</a>
-              </td>
-              <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
-              </td>
-              <td nowrap="">
-                <div>9</div>
-              </td>
-              <td nowrap="">
-                <div>ESCHERICHIA COLI</div>
-              </td>
-              <td nowrap="">
-                <div>27.4</div>
-              </td>
-              <td nowrap="">
-                <div>354</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q86Y07">Q86Y07</a>
+                <a href="http://www.uniprot.org/uniprot/STRAA_HUMAN">STRAA_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>40</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>43</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/VRK3_HUMAN_D0.html">VRK3_HUMAN_D0</a>
@@ -1452,7 +1554,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2JII">2JII_A</a>
               </td>
               <td nowrap="">
-                <div>TEV_uncleaved_Nterm</div>
+                <div>Nterm_TEV_uncleaved</div>
               </td>
               <td nowrap="">
                 <div>9</div>
@@ -1461,21 +1563,56 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>6.3</div>
               </td>
               <td nowrap="">
-                <div>444</div>
+                <div>655</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q8IV63">Q8IV63</a>
+                <a href="http://www.uniprot.org/uniprot/VRK3_HUMAN">VRK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>41</div>
+                <div>44</div>
               </td>
               <td nowrap="">
-                <div>2</div>
+                <a href="PDB-construct-alignments/VRK2_HUMAN_D0.html">VRK2_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>1</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2V62">2V62_B</a>
+              </td>
+              <td nowrap="">
+                <div>Nterm_TEV_uncleaved</div>
+              </td>
+              <td nowrap="">
+                <div>9</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>27.4</div>
+              </td>
+              <td nowrap="">
+                <div>387</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/VRK2_HUMAN">VRK2_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>45</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/EPHA3_HUMAN_D0.html">EPHA3_HUMAN_D0</a>
@@ -1487,42 +1624,42 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4GK2">4GK2_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
               </td>
               <td nowrap="">
                 <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
               </td>
               <td nowrap="">
                 <div>39.0</div>
               </td>
               <td nowrap="">
-                <div>93</div>
+                <div>97</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P29320">P29320</a>
+                <a href="http://www.uniprot.org/uniprot/EPHA3_HUMAN">EPHA3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>42</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>46</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/FGFR1_HUMAN_D0.html">FGFR1_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>10</div>
+                <div>13</div>
               </td>
               <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3GQL">3GQL_B</a>
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3KY2">3KY2_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
@@ -1531,21 +1668,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>62.4</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>62.3</div>
               </td>
               <td nowrap="">
                 <div>11</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P11362">P11362</a>
+                <a href="http://www.uniprot.org/uniprot/FGFR1_HUMAN">FGFR1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>43</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>47</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CSKP_HUMAN_D0.html">CSKP_HUMAN_D0</a>
@@ -1557,7 +1694,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3TAC">3TAC_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
@@ -1566,21 +1703,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>37.3</div>
               </td>
               <td nowrap="">
-                <div>108</div>
+                <div>112</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O14936">O14936</a>
+                <a href="http://www.uniprot.org/uniprot/CSKP_HUMAN">CSKP_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>44</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>48</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KS6A3_HUMAN_D1.html">KS6A3_HUMAN_D1</a>
@@ -1592,7 +1729,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4JG7">4JG7_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
@@ -1601,21 +1738,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>45.8</div>
               </td>
               <td nowrap="">
-                <div>51</div>
+                <div>52</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P51812">P51812</a>
+                <a href="http://www.uniprot.org/uniprot/KS6A3_HUMAN">KS6A3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>45</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>49</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MET_HUMAN_D0.html">MET_HUMAN_D0</a>
@@ -1627,7 +1764,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4EEV">4EEV_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
@@ -1636,21 +1773,56 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>68.4</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>68.5</div>
               </td>
               <td nowrap="">
                 <div>6</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P08581">P08581</a>
+                <a href="http://www.uniprot.org/uniprot/MET_HUMAN">MET_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>46</div>
+                <div>50</div>
               </td>
               <td nowrap="">
-                <div>1</div>
+                <a href="PDB-construct-alignments/PLK2_HUMAN_D0.html">PLK2_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>5</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=4I5P">4I5P_A</a>
+              </td>
+              <td nowrap="">
+                <div>Nterm_Histag</div>
+              </td>
+              <td nowrap="">
+                <div>7</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>32.5</div>
+              </td>
+              <td nowrap="">
+                <div>204</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/PLK2_HUMAN">PLK2_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>51</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK13_HUMAN_D0.html">MK13_HUMAN_D0</a>
@@ -1662,7 +1834,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4EYJ">4EYJ_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
@@ -1671,21 +1843,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.0</div>
               </td>
               <td nowrap="">
-                <div>241</div>
+                <div>255</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O15264">O15264</a>
+                <a href="http://www.uniprot.org/uniprot/MK13_HUMAN">MK13_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>47</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>52</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MP2K4_HUMAN_D0.html">MP2K4_HUMAN_D0</a>
@@ -1697,65 +1869,30 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3ALN">3ALN_C</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
               </td>
               <td nowrap="">
                 <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
               </td>
               <td nowrap="">
                 <div>33.0</div>
               </td>
               <td nowrap="">
-                <div>178</div>
+                <div>191</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P45985">P45985</a>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap="">
-                <div>48</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
-                <a href="PDB-construct-alignments/PLK2_HUMAN_D0.html">PLK2_HUMAN_D0</a>
-              </td>
-              <td nowrap="">
-                <div>2</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=4I6B">4I6B_A</a>
-              </td>
-              <td nowrap="">
-                <div>Histag_Nterm</div>
-              </td>
-              <td nowrap="">
-                <div>7</div>
-              </td>
-              <td nowrap="">
-                <div>ESCHERICHIA COLI</div>
-              </td>
-              <td nowrap="">
-                <div>32.5</div>
-              </td>
-              <td nowrap="">
-                <div>189</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9NYY3">Q9NYY3</a>
+                <a href="http://www.uniprot.org/uniprot/MP2K4_HUMAN">MP2K4_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>49</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>53</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KS6A1_HUMAN_D1.html">KS6A1_HUMAN_D1</a>
@@ -1767,7 +1904,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3RNY">3RNY_B</a>
               </td>
               <td nowrap="">
-                <div>Histag_Nterm</div>
+                <div>Nterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>7</div>
@@ -1776,33 +1913,33 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>36.2</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>131</div>
+                <div>36.1</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q15418">Q15418</a>
+                <div>137</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/KS6A1_HUMAN">KS6A1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>50</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>54</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK08_HUMAN_D0.html">MK08_HUMAN_D0</a>
               </td>
               <td nowrap="">
-                <div>25</div>
+                <div>26</div>
               </td>
               <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2NO3">2NO3_A</a>
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=1UKH">1UKH_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -1811,21 +1948,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>50.7</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>50.6</div>
               </td>
               <td nowrap="">
                 <div>35</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P45983">P45983</a>
+                <a href="http://www.uniprot.org/uniprot/MK08_HUMAN">MK08_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>51</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>55</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/NEK2_HUMAN_D0.html">NEK2_HUMAN_D0</a>
@@ -1837,7 +1974,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2XKE">2XKE_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -1846,21 +1983,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>34.1</div>
               </td>
               <td nowrap="">
-                <div>157</div>
+                <div>168</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P51955">P51955</a>
+                <a href="http://www.uniprot.org/uniprot/NEK2_HUMAN">NEK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>52</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>56</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PAK1_HUMAN_D0.html">PAK1_HUMAN_D0</a>
@@ -1872,7 +2009,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3Q52">3Q52_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -1881,21 +2018,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>34.4</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>154</div>
+                <div>34.3</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13153">Q13153</a>
+                <div>164</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/PAK1_HUMAN">PAK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>53</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>57</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/E2AK2_HUMAN_D0.html">E2AK2_HUMAN_D0</a>
@@ -1907,7 +2044,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3UIU">3UIU_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -1916,21 +2053,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>36.2</div>
               </td>
               <td nowrap="">
-                <div>128</div>
+                <div>134</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P19525">P19525</a>
+                <a href="http://www.uniprot.org/uniprot/E2AK2_HUMAN">E2AK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>54</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>58</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CDK6_HUMAN_D0.html">CDK6_HUMAN_D0</a>
@@ -1942,7 +2079,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4EZ5">4EZ5_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -1951,21 +2088,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>29.1</div>
               </td>
               <td nowrap="">
-                <div>314</div>
+                <div>340</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q00534">Q00534</a>
+                <a href="http://www.uniprot.org/uniprot/CDK6_HUMAN">CDK6_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>55</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>59</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MP2K6_HUMAN_D0.html">MP2K6_HUMAN_D0</a>
@@ -1977,7 +2114,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3VN9">3VN9_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -1986,21 +2123,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>31.6</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>215</div>
+                <div>31.5</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P52564">P52564</a>
+                <div>231</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MP2K6_HUMAN">MP2K6_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>56</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>60</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/NEK7_HUMAN_D0.html">NEK7_HUMAN_D0</a>
@@ -2012,7 +2149,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2WQN">2WQN_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -2021,21 +2158,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.0</div>
               </td>
               <td nowrap="">
-                <div>291</div>
+                <div>312</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q8TDX7">Q8TDX7</a>
+                <a href="http://www.uniprot.org/uniprot/NEK7_HUMAN">NEK7_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>57</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>61</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/BMPR2_HUMAN_D0.html">BMPR2_HUMAN_D0</a>
@@ -2047,7 +2184,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3G2F">3G2F_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -2056,21 +2193,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>41.2</div>
               </td>
               <td nowrap="">
-                <div>77</div>
+                <div>80</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13873">Q13873</a>
+                <a href="http://www.uniprot.org/uniprot/BMPR2_HUMAN">BMPR2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>58</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>62</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CDK16_HUMAN_D0.html">CDK16_HUMAN_D0</a>
@@ -2082,7 +2219,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3MTL">3MTL_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -2091,21 +2228,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.7</div>
               </td>
               <td nowrap="">
-                <div>254</div>
+                <div>276</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q00536">Q00536</a>
+                <a href="http://www.uniprot.org/uniprot/CDK16_HUMAN">CDK16_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>59</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>63</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MELK_HUMAN_D0.html">MELK_HUMAN_D0</a>
@@ -2117,7 +2254,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=4IXP">4IXP_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -2126,21 +2263,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>35.8</div>
               </td>
               <td nowrap="">
-                <div>138</div>
+                <div>143</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q14680">Q14680</a>
+                <a href="http://www.uniprot.org/uniprot/MELK_HUMAN">MELK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>60</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>64</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MP2K2_HUMAN_D0.html">MP2K2_HUMAN_D0</a>
@@ -2152,7 +2289,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=1S9I">1S9I_A</a>
               </td>
               <td nowrap="">
-                <div>Histag_Cterm</div>
+                <div>Cterm_Histag</div>
               </td>
               <td nowrap="">
                 <div>6</div>
@@ -2161,21 +2298,21 @@
                 <div>ESCHERICHIA COLI BL21(DE3)</div>
               </td>
               <td nowrap="">
-                <div>39.8</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>87</div>
+                <div>39.7</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P36507">P36507</a>
+                <div>90</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MP2K2_HUMAN">MP2K2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>61</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>65</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CSK21_HUMAN_D0.html">CSK21_HUMAN_D0</a>
@@ -2187,7 +2324,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3AXW">3AXW_A</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2196,21 +2333,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>43.5</div>
               </td>
               <td nowrap="">
-                <div>63</div>
+                <div>65</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P68400">P68400</a>
+                <a href="http://www.uniprot.org/uniprot/CSK21_HUMAN">CSK21_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>62</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>66</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CHK2_HUMAN_D0.html">CHK2_HUMAN_D0</a>
@@ -2222,7 +2359,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2CN5">2CN5_A</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2231,21 +2368,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>55.2</div>
               </td>
               <td nowrap="">
                 <div>24</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O96017">O96017</a>
+                <a href="http://www.uniprot.org/uniprot/CHK2_HUMAN">CHK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>63</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>67</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CSK_HUMAN_D0.html">CSK_HUMAN_D0</a>
@@ -2257,7 +2394,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3D7T">3D7T_A</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2266,21 +2403,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>35.0</div>
               </td>
               <td nowrap="">
-                <div>146</div>
+                <div>156</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P41240">P41240</a>
+                <a href="http://www.uniprot.org/uniprot/CSK_HUMAN">CSK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>64</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>68</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK11_HUMAN_D0.html">MK11_HUMAN_D0</a>
@@ -2292,7 +2429,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3GC8">3GC8_A</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2301,21 +2438,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>33.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>160</div>
+                <div>34.1</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q15759">Q15759</a>
+                <div>167</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MK11_HUMAN">MK11_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>65</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>69</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CSK22_HUMAN_D0.html">CSK22_HUMAN_D0</a>
@@ -2327,7 +2464,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3E3B">3E3B_X</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2336,21 +2473,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>34.7</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>150</div>
+                <div>34.6</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P19784">P19784</a>
+                <div>160</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/CSK22_HUMAN">CSK22_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>66</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>70</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MARK3_HUMAN_D0.html">MARK3_HUMAN_D0</a>
@@ -2362,7 +2499,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2QNJ">2QNJ_A</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2371,21 +2508,21 @@
                 <div>ESCHERICHIA COLI BL21(DE3)</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>25.5</div>
               </td>
               <td nowrap="">
-                <div>365</div>
+                <div>404</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P27448">P27448</a>
+                <a href="http://www.uniprot.org/uniprot/MARK3_HUMAN">MARK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>67</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>71</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MARK2_HUMAN_D0.html">MARK2_HUMAN_D0</a>
@@ -2397,7 +2534,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3IEC">3IEC_D</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2406,21 +2543,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.0</div>
               </td>
               <td nowrap="">
-                <div>238</div>
+                <div>256</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q7KZI7">Q7KZI7</a>
+                <a href="http://www.uniprot.org/uniprot/MARK2_HUMAN">MARK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>68</div>
-              </td>
-              <td nowrap="">
-                <div>2</div>
+                <div>72</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK03_HUMAN_D0.html">MK03_HUMAN_D0</a>
@@ -2432,7 +2569,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=2ZOQ">2ZOQ_B</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2441,21 +2578,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>46.0</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>49</div>
+                <div>45.9</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P27361">P27361</a>
+                <div>50</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MK03_HUMAN">MK03_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>69</div>
-              </td>
-              <td nowrap="">
-                <div>1</div>
+                <div>73</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/VRK1_HUMAN_D0.html">VRK1_HUMAN_D0</a>
@@ -2467,7 +2604,7 @@
                 <a href="http://www.rcsb.org/pdb/explore.do?structureId=3OP5">3OP5_D</a>
               </td>
               <td nowrap="">
-                <div>other_extra_seq_Nterm</div>
+                <div>Nterm_other_extra_seq</div>
               </td>
               <td nowrap="">
                 <div>4</div>
@@ -2476,21 +2613,56 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>15.4</div>
               </td>
               <td nowrap="">
-                <div>384</div>
+                <div>476</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q99986">Q99986</a>
+                <a href="http://www.uniprot.org/uniprot/VRK1_HUMAN">VRK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>70</div>
+                <div>74</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/KAPCA_HUMAN_D0.html">KAPCA_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>94</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=1XH8">1XH8_A</a>
+              </td>
+              <td nowrap="">
+                <div>None</div>
               </td>
               <td nowrap="">
                 <div>0</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI BL21(DE3)</div>
+              </td>
+              <td nowrap="">
+                <div>Bovine</div>
+              </td>
+              <td nowrap="">
+                <div>43.5</div>
+              </td>
+              <td nowrap="">
+                <div>64</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/KAPCA_HUMAN">KAPCA_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>75</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK10_HUMAN_D0.html">MK10_HUMAN_D0</a>
@@ -2511,56 +2683,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>48.0</div>
               </td>
               <td nowrap="">
-                <div>42</div>
+                <div>44</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P53779">P53779</a>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap="">
-                <div>71</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <a href="PDB-construct-alignments/KAPCA_HUMAN_D0.html">KAPCA_HUMAN_D0</a>
-              </td>
-              <td nowrap="">
-                <div>15</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3VQH">3VQH_A</a>
-              </td>
-              <td nowrap="">
-                <div>None</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <div>ESCHERICHIA COLI</div>
-              </td>
-              <td nowrap="">
-                <div>43.6</div>
-              </td>
-              <td nowrap="">
-                <div>62</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P17612">P17612</a>
+                <a href="http://www.uniprot.org/uniprot/MK10_HUMAN">MK10_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>72</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>76</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CHK1_HUMAN_D0.html">CHK1_HUMAN_D0</a>
@@ -2581,21 +2718,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>48.6</div>
               </td>
               <td nowrap="">
                 <div>40</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O14757">O14757</a>
+                <a href="http://www.uniprot.org/uniprot/CHK1_HUMAN">CHK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>73</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>77</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/DAPK2_HUMAN_D0.html">DAPK2_HUMAN_D0</a>
@@ -2604,7 +2741,7 @@
                 <div>6</div>
               </td>
               <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=1WMK">1WMK_C</a>
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=1ZWS">1ZWS_H</a>
               </td>
               <td nowrap="">
                 <div>None</div>
@@ -2616,21 +2753,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>29.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>295</div>
+                <div>30.0</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9UIK4">Q9UIK4</a>
+                <div>316</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/DAPK2_HUMAN">DAPK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>74</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>78</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/FES_HUMAN_D0.html">FES_HUMAN_D0</a>
@@ -2651,21 +2788,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>36.7</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>116</div>
+                <div>36.6</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P07332">P07332</a>
+                <div>121</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/FES_HUMAN">FES_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>75</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>79</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC1A_HUMAN_D0.html">KCC1A_HUMAN_D0</a>
@@ -2686,21 +2823,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.7</div>
               </td>
               <td nowrap="">
-                <div>253</div>
+                <div>274</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q14012">Q14012</a>
+                <a href="http://www.uniprot.org/uniprot/KCC1A_HUMAN">KCC1A_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>76</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>80</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STK10_HUMAN_D0.html">STK10_HUMAN_D0</a>
@@ -2721,21 +2858,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>36.3</div>
               </td>
               <td nowrap="">
-                <div>125</div>
+                <div>131</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O94804">O94804</a>
+                <a href="http://www.uniprot.org/uniprot/STK10_HUMAN">STK10_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>77</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>81</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/ILK_HUMAN_D0.html">ILK_HUMAN_D0</a>
@@ -2756,21 +2893,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>14.2</div>
               </td>
               <td nowrap="">
-                <div>389</div>
+                <div>492</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13418">Q13418</a>
+                <a href="http://www.uniprot.org/uniprot/ILK_HUMAN">ILK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>78</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>82</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KSYK_HUMAN_D0.html">KSYK_HUMAN_D0</a>
@@ -2791,21 +2928,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>42.6</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>70</div>
+                <div>42.5</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P43405">P43405</a>
+                <div>73</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/KSYK_HUMAN">KSYK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>79</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>83</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/TIE2_HUMAN_D0.html">TIE2_HUMAN_D0</a>
@@ -2826,21 +2963,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>50.4</div>
               </td>
               <td nowrap="">
                 <div>36</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q02763">Q02763</a>
+                <a href="http://www.uniprot.org/uniprot/TIE2_HUMAN">TIE2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>80</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>84</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/M3K5_HUMAN_D0.html">M3K5_HUMAN_D0</a>
@@ -2861,21 +2998,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>34.6</div>
               </td>
               <td nowrap="">
-                <div>151</div>
+                <div>161</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q99683">Q99683</a>
+                <a href="http://www.uniprot.org/uniprot/M3K5_HUMAN">M3K5_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>81</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>85</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CLK1_HUMAN_D0.html">CLK1_HUMAN_D0</a>
@@ -2896,21 +3033,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>33.5</div>
               </td>
               <td nowrap="">
-                <div>170</div>
+                <div>182</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P49759">P49759</a>
+                <a href="http://www.uniprot.org/uniprot/CLK1_HUMAN">CLK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>82</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>86</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/FAK2_HUMAN_D0.html">FAK2_HUMAN_D0</a>
@@ -2931,21 +3068,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>41.8</div>
               </td>
               <td nowrap="">
-                <div>75</div>
+                <div>78</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q14289">Q14289</a>
+                <a href="http://www.uniprot.org/uniprot/FAK2_HUMAN">FAK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>83</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>87</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/IGF1R_HUMAN_D0.html">IGF1R_HUMAN_D0</a>
@@ -2966,21 +3103,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>57.1</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>57.2</div>
               </td>
               <td nowrap="">
                 <div>18</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P08069">P08069</a>
+                <a href="http://www.uniprot.org/uniprot/IGF1R_HUMAN">IGF1R_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>84</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>88</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC2D_HUMAN_D0.html">KCC2D_HUMAN_D0</a>
@@ -3001,21 +3138,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>33.5</div>
               </td>
               <td nowrap="">
-                <div>174</div>
+                <div>184</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13557">Q13557</a>
+                <a href="http://www.uniprot.org/uniprot/KCC2D_HUMAN">KCC2D_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>85</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>89</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KS6A5_HUMAN_D1.html">KS6A5_HUMAN_D1</a>
@@ -3036,21 +3173,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>36.3</div>
               </td>
               <td nowrap="">
-                <div>127</div>
+                <div>133</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O75582">O75582</a>
+                <a href="http://www.uniprot.org/uniprot/KS6A5_HUMAN">KS6A5_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>86</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>90</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK09_HUMAN_D0.html">MK09_HUMAN_D0</a>
@@ -3059,7 +3196,7 @@
                 <div>2</div>
               </td>
               <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3NPC">3NPC_B</a>
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3E7O">3E7O_A</a>
               </td>
               <td nowrap="">
                 <div>None</div>
@@ -3071,21 +3208,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>41.2</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>79</div>
+                <div>41.1</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P45984">P45984</a>
+                <div>82</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MK09_HUMAN">MK09_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>87</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>91</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/OXSR1_HUMAN_D0.html">OXSR1_HUMAN_D0</a>
@@ -3106,21 +3243,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>27.7</div>
               </td>
               <td nowrap="">
-                <div>344</div>
+                <div>375</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O95747">O95747</a>
+                <a href="http://www.uniprot.org/uniprot/OXSR1_HUMAN">OXSR1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>88</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>92</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/AURKB_HUMAN_D0.html">AURKB_HUMAN_D0</a>
@@ -3141,21 +3278,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>50.0</div>
               </td>
               <td nowrap="">
                 <div>38</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q96GD4">Q96GD4</a>
+                <a href="http://www.uniprot.org/uniprot/AURKB_HUMAN">AURKB_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>89</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>93</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/BTK_HUMAN_D0.html">BTK_HUMAN_D0</a>
@@ -3176,21 +3313,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>45.4</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>55</div>
+                <div>45.3</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q06187">Q06187</a>
+                <div>56</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/BTK_HUMAN">BTK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>90</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>94</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/CLK2_HUMAN_D0.html">CLK2_HUMAN_D0</a>
@@ -3211,21 +3348,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>32.2</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>194</div>
+                <div>32.1</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P49760">P49760</a>
+                <div>209</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/CLK2_HUMAN">CLK2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>91</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>95</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/DMPK_HUMAN_D0.html">DMPK_HUMAN_D0</a>
@@ -3246,21 +3383,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>37.2</div>
               </td>
               <td nowrap="">
-                <div>109</div>
+                <div>113</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q09013">Q09013</a>
+                <a href="http://www.uniprot.org/uniprot/DMPK_HUMAN">DMPK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>92</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>96</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/HCK_HUMAN_D0.html">HCK_HUMAN_D0</a>
@@ -3281,21 +3418,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>45.3</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>56</div>
+                <div>45.2</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P08631">P08631</a>
+                <div>58</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/HCK_HUMAN">HCK_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>93</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>97</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/INSR_HUMAN_D0.html">INSR_HUMAN_D0</a>
@@ -3316,21 +3453,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
-                <div>60.9</div>
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>60.7</div>
               </td>
               <td nowrap="">
                 <div>15</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P06213">P06213</a>
+                <a href="http://www.uniprot.org/uniprot/INSR_HUMAN">INSR_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>94</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>98</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/JAK3_HUMAN_D0.html">JAK3_HUMAN_D0</a>
@@ -3351,21 +3488,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>46.8</div>
               </td>
               <td nowrap="">
-                <div>47</div>
+                <div>48</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P52333">P52333</a>
+                <a href="http://www.uniprot.org/uniprot/JAK3_HUMAN">JAK3_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>95</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>99</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KC1G2_HUMAN_D0.html">KC1G2_HUMAN_D0</a>
@@ -3386,56 +3523,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>31.1</div>
               </td>
               <td nowrap="">
-                <div>235</div>
+                <div>252</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P78368">P78368</a>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap="">
-                <div>96</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <a href="PDB-construct-alignments/KCC1G_HUMAN_D0.html">KCC1G_HUMAN_D0</a>
-              </td>
-              <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2JAM">2JAM_A</a>
-              </td>
-              <td nowrap="">
-                <div>None</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <div>ESCHERICHIA COLI</div>
-              </td>
-              <td nowrap="">
-                <div>29.6</div>
-              </td>
-              <td nowrap="">
-                <div>309</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q96NX5">Q96NX5</a>
+                <a href="http://www.uniprot.org/uniprot/KC1G2_HUMAN">KC1G2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>97</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>100</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC1D_HUMAN_D0.html">KCC1D_HUMAN_D0</a>
@@ -3456,21 +3558,56 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.8</div>
               </td>
               <td nowrap="">
-                <div>250</div>
+                <div>268</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q8IU85">Q8IU85</a>
+                <a href="http://www.uniprot.org/uniprot/KCC1D_HUMAN">KCC1D_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>98</div>
+                <div>101</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/KCC1G_HUMAN_D0.html">KCC1G_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>1</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=2JAM">2JAM_A</a>
+              </td>
+              <td nowrap="">
+                <div>None</div>
               </td>
               <td nowrap="">
                 <div>0</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>29.6</div>
+              </td>
+              <td nowrap="">
+                <div>333</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/KCC1G_HUMAN">KCC1G_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>102</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/KCC2B_HUMAN_D0.html">KCC2B_HUMAN_D0</a>
@@ -3491,21 +3628,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.9</div>
               </td>
               <td nowrap="">
-                <div>244</div>
+                <div>264</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13554">Q13554</a>
+                <a href="http://www.uniprot.org/uniprot/KCC2B_HUMAN">KCC2B_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>99</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>103</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK06_HUMAN_D0.html">MK06_HUMAN_D0</a>
@@ -3526,21 +3663,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>30.0</div>
               </td>
               <td nowrap="">
-                <div>287</div>
+                <div>311</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q16659">Q16659</a>
+                <a href="http://www.uniprot.org/uniprot/MK06_HUMAN">MK06_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>100</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>104</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/MK12_HUMAN_D0.html">MK12_HUMAN_D0</a>
@@ -3561,21 +3698,56 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>36.9</div>
               </td>
               <td nowrap="">
-                <div>111</div>
+                <div>115</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P53778">P53778</a>
+                <a href="http://www.uniprot.org/uniprot/MK12_HUMAN">MK12_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>101</div>
+                <div>105</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/MLKL_HUMAN_D0.html">MLKL_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>1</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=4M67">4M67_A</a>
+              </td>
+              <td nowrap="">
+                <div>None</div>
               </td>
               <td nowrap="">
                 <div>0</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>6.4</div>
+              </td>
+              <td nowrap="">
+                <div>626</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/MLKL_HUMAN">MLKL_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>106</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PDPK1_HUMAN_D0.html">PDPK1_HUMAN_D0</a>
@@ -3596,21 +3768,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>38.5</div>
               </td>
               <td nowrap="">
-                <div>96</div>
+                <div>100</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O15530">O15530</a>
+                <a href="http://www.uniprot.org/uniprot/PDPK1_HUMAN">PDPK1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>102</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>107</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PIM2_HUMAN_D0.html">PIM2_HUMAN_D0</a>
@@ -3631,56 +3803,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>37.4</div>
               </td>
               <td nowrap="">
-                <div>105</div>
+                <div>109</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q9P1W9">Q9P1W9</a>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap="">
-                <div>103</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <a href="PDB-construct-alignments/PLK1_HUMAN_D0.html">PLK1_HUMAN_D0</a>
-              </td>
-              <td nowrap="">
-                <div>1</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3THB">3THB_A</a>
-              </td>
-              <td nowrap="">
-                <div>None</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <div>ESCHERICHIA COLI</div>
-              </td>
-              <td nowrap="">
-                <div>52.2</div>
-              </td>
-              <td nowrap="">
-                <div>29</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P53350">P53350</a>
+                <a href="http://www.uniprot.org/uniprot/PIM2_HUMAN">PIM2_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>104</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>108</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/PLK4_HUMAN_D0.html">PLK4_HUMAN_D0</a>
@@ -3701,21 +3838,56 @@
                 <div>ESCHERICHIA COLI BL21(DE3)</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>32.0</div>
               </td>
               <td nowrap="">
-                <div>201</div>
+                <div>216</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O00444">O00444</a>
+                <a href="http://www.uniprot.org/uniprot/PLK4_HUMAN">PLK4_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>105</div>
+                <div>109</div>
+              </td>
+              <td nowrap="">
+                <a href="PDB-construct-alignments/PLK1_HUMAN_D0.html">PLK1_HUMAN_D0</a>
+              </td>
+              <td nowrap="">
+                <div>1</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.rcsb.org/pdb/explore.do?structureId=3THB">3THB_A</a>
+              </td>
+              <td nowrap="">
+                <div>None</div>
               </td>
               <td nowrap="">
                 <div>0</div>
+              </td>
+              <td nowrap="">
+                <div>ESCHERICHIA COLI</div>
+              </td>
+              <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
+                <div>52.2</div>
+              </td>
+              <td nowrap="">
+                <div>29</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/PLK1_HUMAN">PLK1_HUMAN</a>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap="">
+                <div>110</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STK25_HUMAN_D0.html">STK25_HUMAN_D0</a>
@@ -3736,21 +3908,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>29.9</div>
               </td>
               <td nowrap="">
-                <div>297</div>
+                <div>320</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/O00506">O00506</a>
+                <a href="http://www.uniprot.org/uniprot/STK25_HUMAN">STK25_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>106</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>111</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/STK4_HUMAN_D0.html">STK4_HUMAN_D0</a>
@@ -3771,21 +3943,21 @@
                 <div>ESCHERICHIA COLI BL21(DE3)</div>
               </td>
               <td nowrap="">
-                <div>36.9</div>
+                <div>Human</div>
               </td>
               <td nowrap="">
-                <div>112</div>
+                <div>36.8</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q13043">Q13043</a>
+                <div>116</div>
+              </td>
+              <td nowrap="">
+                <a href="http://www.uniprot.org/uniprot/STK4_HUMAN">STK4_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>107</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>112</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/TGFR1_HUMAN_D0.html">TGFR1_HUMAN_D0</a>
@@ -3806,21 +3978,21 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>56.4</div>
               </td>
               <td nowrap="">
                 <div>19</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P36897">P36897</a>
+                <a href="http://www.uniprot.org/uniprot/TGFR1_HUMAN">TGFR1_HUMAN</a>
               </td>
             </tr>
             <tr>
               <td nowrap="">
-                <div>108</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
+                <div>113</div>
               </td>
               <td nowrap="">
                 <a href="PDB-construct-alignments/VGFR1_HUMAN_D0.html">VGFR1_HUMAN_D0</a>
@@ -3841,48 +4013,16 @@
                 <div>ESCHERICHIA COLI</div>
               </td>
               <td nowrap="">
+                <div>Human</div>
+              </td>
+              <td nowrap="">
                 <div>56.4</div>
               </td>
               <td nowrap="">
                 <div>20</div>
               </td>
               <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/P17948">P17948</a>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap="">
-                <div>109</div>
-              </td>
-              <td nowrap="">
-                <div>0</div>
-              </td>
-              <td nowrap="">
-                <a href="PDB-construct-alignments/ITK_HUMAN_D0.html">ITK_HUMAN_D0</a>
-              </td>
-              <td nowrap="">
-                <div>5</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.rcsb.org/pdb/explore.do?structureId=1SNU">1SNU_A</a>
-              </td>
-              <td nowrap="">
-                <div>None</div>
-              </td>
-              <td nowrap="">
-                <div>-10</div>
-              </td>
-              <td nowrap="">
-                <div>ESCHERICHIA COLI</div>
-              </td>
-              <td nowrap="">
-                <div>45.7</div>
-              </td>
-              <td nowrap="">
-                <div>53</div>
-              </td>
-              <td nowrap="">
-                <a href="http://www.uniprot.org/uniprot/Q08881">Q08881</a>
+                <a href="http://www.uniprot.org/uniprot/VGFR1_HUMAN">VGFR1_HUMAN</a>
               </td>
             </tr>
           </table>
