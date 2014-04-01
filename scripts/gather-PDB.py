@@ -135,48 +135,87 @@ def gather_pdb(e):
         #if pdbid != '2ITN':
         #    continue
 
-        # Download PDB file if necessary
-        local_pdb_file_path = os.path.join(local_pdb_dir, pdbid+'.pdb')
-        if os.path.exists(local_pdb_file_path):
-            pass
-        else:
-            print 'Downloading PDB file and saving as:', local_pdb_file_path
-            page = clab.PDB.retrieve_pdb(pdbid, compressed='yes')
-            # download and write compressed file, read in and decompress with gzip package, write decompressed file, delete compressed file.
-            with open(local_pdb_file_path + '.gz', 'wb') as local_pdb_file:
-                local_pdb_file.write(page)
-            with gzip.open(local_pdb_file_path + '.gz', 'rb') as local_pdb_gz_file:
-                local_pdb_gz_contents = local_pdb_gz_file.read()
-                with open(local_pdb_file_path, 'w') as local_pdb_file:
-                    local_pdb_file.write(local_pdb_gz_contents)
-            os.remove(local_pdb_file_path + '.gz')
+        # ========
+        # Get PDB and SIFTS files
+        # ========
 
-        # Download SIFTS file if necessary, and parse the XML
-        local_sifts_file_path = os.path.join(local_sifts_dir, pdbid+'.xml.gz')
-        if os.path.exists(local_sifts_file_path):
-            sifts = etree.fromstring( gzip.open(local_sifts_file_path, 'r').read() )
-        else:
-            print 'Downloading SIFTS file (compressed) and saving as:', local_sifts_file_path
-            try:
-                page = clab.PDB.retrieve_sifts(pdbid)
-            except urllib2.URLError as urlerror:
-                if urlerror.reason == 'ftp error: [Errno ftp error] 550 Failed to change directory.':
-                    # Check the PDB file has definitely been downloaded. If so, then the problem is probably that the SIFTS people have not yet created the file for this PDB entry, or they have not added it to their server yet.
-                    if os.path.exists(local_pdb_file_path):
-                        # In this case, just add a message telling the script to delete this PDB structure from the DB. The continue clause skips to the end of the function.
-                        print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdbid
-                        structure_results_obj = Structure_Data(structureID=pdbid)
-                        structure_results_obj.exception_message='DELETE_ME - SIFTS file could not be downloaded'
-                        results_obj.add_structure_results(structure_results_obj)
-                        continue
+        # TODO define this via project metadata .yaml file.
+        structure_paths = ['/Users/partond/kinome-MSMSeeder/structures/pdb', '/Users/partond/kinome-MSMSeeder/structures/sifts']
+
+        local_pdb_filepath = os.path.join('external-data', 'PDB', pdbid + '.pdb')
+        local_sifts_filepath = os.path.join('external-data', 'SIFTS', pdbid + '.xml.gz')
+
+        # Check if PDB file/symlink already exists and is not empty
+        search_for_pdb = True
+        if os.path.exists(local_pdb_filepath):
+            if os.path.getsize(local_pdb_filepath) > 0:
+                search_for_pdb = False
+
+        # If not, search any user-defined paths and create a symlink if found
+        if search_for_pdb:
+            for structure_dir in structure_paths:
+                pdb_filepath = os.path.join(structure_dir, pdbid + '.pdb')
+                if os.path.exists(pdb_filepath):
+                    if os.path.getsize(pdb_filepath) > 0:
+                        if os.path.exists(local_pdb_filepath):
+                            os.remove(local_pdb_filepath)
+                        os.symlink(pdb_filepath, local_pdb_filepath)
+                        break
+
+            # If still not found, download the PDB file
+            if not os.path.exists(local_pdb_filepath):
+                print 'Downloading PDB file and saving as:', local_pdb_filepath
+                page = clab.PDB.retrieve_pdb(pdbid, compressed='yes')
+                # download and write compressed file, read in and decompress with gzip package, write decompressed file, delete compressed file.
+                with open(local_pdb_filepath + '.gz', 'wb') as local_pdb_file:
+                    local_pdb_file.write(page)
+                with gzip.open(local_pdb_filepath + '.gz', 'rb') as local_pdb_gz_file:
+                    local_pdb_gz_contents = local_pdb_gz_file.read()
+                    with open(local_pdb_filepath, 'w') as local_pdb_file:
+                        local_pdb_file.write(local_pdb_gz_contents)
+                os.remove(local_pdb_filepath + '.gz')
+
+        # Check if SIFTS file already exists and is not empty
+        search_for_sifts = True
+        if os.path.exists(local_sifts_filepath):
+            if os.path.getsize(local_sifts_filepath) > 0:
+                search_for_sifts = False
+
+        # If not, search any user-defined paths and create a symlink if found
+        if search_for_sifts:
+            for structure_dir in structure_paths:
+                sifts_filepath = os.path.join(structure_dir, pdbid + '.xml.gz')
+                if os.path.exists(sifts_filepath):
+                    if os.path.getsize(sifts_filepath) > 0:
+                        if os.path.exists(local_sifts_filepath):
+                            os.remove(local_sifts_filepath)
+                        os.symlink(sifts_filepath, local_sifts_filepath)
+                        break
+
+            # If still not found, download the SIFTS XML file
+            if not os.path.exists(local_sifts_filepath):
+                print 'Downloading SIFTS file (compressed) and saving as:', local_sifts_filepath
+                try:
+                    page = clab.PDB.retrieve_sifts(pdbid)
+                except urllib2.URLError as urlerror:
+                    if urlerror.reason == 'ftp error: [Errno ftp error] 550 Failed to change directory.':
+                        # Check the PDB file has definitely been downloaded. If so, then the problem is probably that the SIFTS people have not yet created the file for this PDB entry, or they have not added it to their server yet.
+                        if os.path.exists(local_pdb_filepath):
+                            # In this case, just add a message telling the script to delete this PDB structure from the DB. The continue clause skips to the end of the function.
+                            print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdbid
+                            structure_results_obj = Structure_Data(structureID=pdbid)
+                            structure_results_obj.exception_message='DELETE_ME - SIFTS file could not be downloaded'
+                            results_obj.add_structure_results(structure_results_obj)
+                            continue
+                        else:
+                            raise urlerror
                     else:
                         raise urlerror
-                else:
-                    raise urlerror
 
-            with gzip.open(local_sifts_file_path, 'wb') as local_sifts_file:
-                local_sifts_file.write(page)
-            sifts = etree.fromstring(page)
+                with gzip.open(local_sifts_filepath, 'wb') as local_sifts_file:
+                    local_sifts_file.write(page)
+
+        sifts = etree.fromstring( gzip.open(local_sifts_filepath, 'r').read() )
 
         # structure results will be added to this object
         structure_results_obj = Structure_Data(structureID=pdbid)
@@ -192,7 +231,7 @@ def gather_pdb(e):
 
         pdbparser = Bio.PDB.PDBParser(QUIET=True)
         #pdbparser = Bio.PDB.PDBParser(QUIET=False)
-        pdbdata = pdbparser.get_structure(pdbid, local_pdb_file_path)
+        pdbdata = pdbparser.get_structure(pdbid, local_pdb_filepath)
         pdbheader = pdbparser.get_header()
         # Bio PDB compound structure: {'compound': {'1': {'chain': 'a, b'}}}
         pdbcompounds = pdbheader['compound']
@@ -209,16 +248,16 @@ def gather_pdb(e):
                 print traceback.format_exc()
 
                 # XXX uncommenting this and the skip_structure commands means that the problematic PDB file will be deleted, and a new one downloaded. The script continues at this point without re-parsing the new PDB file, so the results will be wrong. But then can re-run the script with the proper PDB files.
-                #os.remove(local_pdb_file_path)
+                #os.remove(local_pdb_filepath)
                 #page = clab.PDB.retrieve_pdb(pdbid, compressed='yes')
                 ## download and write compressed file, read in and decompress with gzip package, write decompressed file, delete compressed file.
-                #with open(local_pdb_file_path + '.gz', 'wb') as local_pdb_file:
+                #with open(local_pdb_filepath + '.gz', 'wb') as local_pdb_file:
                 #    local_pdb_file.write(page)
-                #with gzip.open(local_pdb_file_path + '.gz', 'rb') as local_pdb_gz_file:
+                #with gzip.open(local_pdb_filepath + '.gz', 'rb') as local_pdb_gz_file:
                 #    local_pdb_gz_contents = local_pdb_gz_file.read()
-                #    with open(local_pdb_file_path, 'w') as local_pdb_file:
+                #    with open(local_pdb_filepath, 'w') as local_pdb_file:
                 #        local_pdb_file.write(local_pdb_gz_contents)
-                #os.remove(local_pdb_file_path + '.gz')
+                #os.remove(local_pdb_filepath + '.gz')
                 #skip_structure = True
 
                 raise e
@@ -390,11 +429,16 @@ def gather_pdb(e):
                     break
             ignore_excess_Nterm_residues_flag = False
             # If the experimental sequence includes the first residue of the full uniprot sequence
-            if first_exp_seq_uniprot_res_index == 0:
-                # And if the value of the first pdb resid is lower than that of the pdb resid corresponding to the first uniprot residue
-                if first_exp_seq_pdb_resid < corresponding_pdb_resid:
-                    # Then we will ignore the excess residues
-                    ignore_excess_Nterm_residues_flag = True
+            try:
+                if first_exp_seq_uniprot_res_index == 0:
+                    # And if the value of the first pdb resid is lower than that of the pdb resid corresponding to the first uniprot residue
+                    if first_exp_seq_pdb_resid < corresponding_pdb_resid:
+                        # Then we will ignore the excess residues
+                        ignore_excess_Nterm_residues_flag = True
+            except:
+                # XXX should do something better than this
+                # exception occurs with P27791 (KAPCA_RAT)
+                exception_message = 'DELETE_ME'
 
             # Now iterate through the residues in the experimental sequence and add residues which do not have a uniprot crossref, but are contiguous in terms of PDB numbering
 
@@ -509,7 +553,7 @@ if __name__ == '__main__':
     # Use multiprocessor pool to retrieve various data from the PDB, for each entry in the DB
     pool = Pool()
     results = pool.map(gather_pdb, entry_range)
-    #results = map(gather_pdb, entry_range)   # serial version, for debugging
+    # results = map(gather_pdb, entry_range)   # serial version, for debugging
 
     for result in results:
 

@@ -53,10 +53,11 @@ uniprot_xml_out_filepath = os.path.join(uniprot_data_dir, 'uniprot-search.xml')
 DB_out_filename = 'database-%(run_mode)s.xml' % vars()
 DB_out_filepath = os.path.join(database_dir, DB_out_filename)
 
-uniprot_search_string = '(taxonomy:40674 AND domain:"protein kinase") AND reviewed:yes'
-uniprot_search_string_query = '?query=%28taxonomy%3A40674+AND+domain%3A%22protein+kinase%22%29+AND+reviewed%3Ayes&sort=score&format=xml' # a bit crude, but urllib.urlencode might not be much better
+UniProt_query_string = '(taxonomy:40674 AND domain:"protein kinase") AND reviewed:yes'
+UniProt_query_string_url = '?query=%28taxonomy%3A40674+AND+domain%3A%22protein+kinase%22%29+AND+reviewed%3Ayes&sort=score&format=xml' # a bit crude, but urllib.urlencode might not be much better
 # 1GQ5 is referenced by kinase P16234. The kinase is not in the actual structure.
 ignore_uniprot_pdbs = ['1GQ5']
+UniProt_domain_regex = '^Protein kinase(?!; truncated)(?!; inactive)'
 
 if '--forcedl' in sys.argv:
     force_uniprot_download = True
@@ -81,7 +82,7 @@ if os.path.exists(uniprot_xml_out_filepath):
 else:
     print 'UniProt XML document not found.'
     print 'Retrieving new XML document from UniProt website.'
-    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(uniprot_search_string_query)
+    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(UniProt_query_string_url)
     print 'Saving new XML document as:', uniprot_xml_out_filepath
     with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_file:
         uniprot_xml_file.write(new_xml_text + '\n')
@@ -120,7 +121,7 @@ if (time_elapsed.days > days_elapsed_for_force_download) or (force_uniprot_downl
     if download_new_uniprot_xml:
         print 'Retrieving new XML document from UniProt...'
         old_xml = uniprot_xml
-        new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(uniprot_search_string_query)
+        new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(UniProt_query_string_url)
         new_xml = etree.fromstring(new_xml_text, parser)
 
         # Print some basic statistics on the differences between the new and old XML documents
@@ -178,6 +179,58 @@ print ''
 # Root node to which all data will be added
 DB_root = etree.Element('database')
 
+
+
+
+
+# =========
+# If the UniProt query string contained a domain selector, print the set of
+# unique UniProt domain names which would have been selected during the
+# UniProt search (case-insensitive). This should aid users in the
+# construction an appropriate regex for selecting an appropriate subset of
+# these domains.
+# =========
+
+if 'domain:' in UniProt_query_string:
+
+    # First extract the domain selection
+    # Example query string: 'domain:"Protein kinase" AND reviewed:yes'
+    # Can assume that the domain selection will be bounded by double-quotes
+    query_string_split = UniProt_query_string.split('"')
+    for q in range(len(query_string_split)):
+        if 'domain:' in query_string_split[q]:
+            query_string_domain_selection = query_string_split[q + 1]
+    print query_string_domain_selection
+
+    UniProt_query_string_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % query_string_domain_selection, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_insensitive })
+
+    UniProt_unique_domain_names = set([domain.get('description') for domain in UniProt_query_string_domains])
+    print 'Set of unique domain names selected by the domain selector \'%s\' during the initial UniProt search:\n%s' % (query_string_domain_selection, UniProt_unique_domain_names)
+    print ''
+
+else:
+    UniProt_domains = uniprot_xml.xpath('entry/feature[@type="domain"]')
+    UniProt_unique_domain_names = set([domain.get('description') for domain in UniProt_domains])
+    print 'Set of unique domain names returned from the initial UniProt search using the query string \'%s\':\n%s' % (UniProt_query_string, UniProt_unique_domain_names)
+    print ''
+
+# =========
+# Print subset of domains returned following filtering with the UniProt_domain_regex (case sensitive)
+# =========
+
+if UniProt_domain_regex != None:
+    regex_matched_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % UniProt_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+
+    regex_matched_domains_unique_names = set([domain.get('description') for domain in regex_matched_domains])
+    print 'Unique domain names selected after searching with the case-sensitive regex string \'%s\':\n%s' % (UniProt_domain_regex, regex_matched_domains_unique_names)
+    print ''
+
+
+
+
+
+
+
 # Iterate through each kinase from the UniProt XML document
 for k in range(nuniprot_entries):
 
@@ -210,6 +263,18 @@ for k in range(nuniprot_entries):
         print 'Removing kinase as it does not have protein kinase activity (instead acts as a mannose kinase):', AC
         DBentry.getparent().remove(DBentry)
         continue
+
+    # = Taxonomy =
+    uniprot_organism_node = uniprot_entries[k].find('organism')
+    NCBI_taxID = uniprot_organism_node.find('dbReference[@type="NCBI Taxonomy"]').get('id')
+    tax_name_scientific = uniprot_organism_node.findtext('name[@type="scientific"]')
+    tax_name_common = uniprot_organism_node.findtext('name[@type="common"]')
+    lineage = uniprot_organism_node.find('lineage')
+    DBentry_uniprot.set('NCBI_taxID', NCBI_taxID)
+    organism_node = etree.SubElement(DBentry_uniprot, 'organism')
+    etree.SubElement(organism_node, 'tax_name_scientific').text = tax_name_scientific
+    etree.SubElement(organism_node, 'tax_name_common').text = tax_name_common
+    organism_node.append(lineage)
 
     # = Functions, disease associations =
     functions_node = etree.SubElement(DBentry_uniprot, 'functions')
@@ -252,31 +317,37 @@ for k in range(nuniprot_entries):
     # = UniProt "Protein kinase" domain annotations =
     # XXX TODO Generalize
 
-    domains = uniprot_entries[k].xpath('./feature[@type="domain"][contains(@description,"Protein kinase")]')
+    if UniProt_domain_regex != None:
+        selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % UniProt_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+    else:
+        selected_domains = uniprot_entries[k].findall('feature[@type="domain"]')
+
+
+
 
     # XXX exceptions
     # These are the entries for which "Protein kinase" domains are known to be not found (case sensitive):
     # kinases_with_no_PK_domain = ['ALPK1_HUMAN', 'ALPK2_HUMAN', 'ALPK3_HUMAN', 'EF2K_HUMAN', 'TRPM6_HUMAN', 'TRPM7_HUMAN']
     # These are all alpha-kinases, which have no identity with typical protein kinases.
     # These kinases will therefore be deleted from the database.
-    if len(domains) < 1:
+    if len(selected_domains) < 1:
         print 'Removing kinase as it does not possess a domain annotation containing "Protein kinase":', AC
         DBentry.getparent().remove(DBentry)
         continue
     # In cases where > 1 PK domain is found, add a warning to the DB entry. In some cases, a pseudokinase is present - these domains are not added.
     warnings_node = etree.Element('warnings')
-    if len(domains) > 1:
+    if len(selected_domains) > 1:
         if uniprot_entries[k].findtext('name') == 'E2AK4_HUMAN':
             etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". "Protein kinase 1" is considered to be a pseudokinase domain. "Protein kinase 2" is considered active. Only the active PK domain is included in this DB.'
-            domains.pop(0)
+            selected_domains.pop(0)
         elif uniprot_entries[k].findtext('name') in ['JAK1_HUMAN','JAK2_HUMAN','JAK3_HUMAN']:
             etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Janus (Jak) tyrosine kinases (JAK1, JAK2 and JAK3) each contain a tyrosine kinase domain adjacent to a catalytically inactive pseudokinase domain. The pseudokinase domain interacts with and negatively regulates the active domain. The pseudokinase domain is the first one in the sequence. Only the active PK domain is included in this DB.'
-            domains.pop(0)
+            selected_domains.pop(0)
         elif uniprot_entries[k].findtext('name') in ['KS6A1_HUMAN','KS6A2_HUMAN','KS6A3_HUMAN','KS6A4_HUMAN','KS6A5_HUMAN','KS6A6_HUMAN']:
             etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Upon extracellular signal or mitogen stimulation, phosphorylated at Thr-573 in the C-terminal kinase domain (CTKD) by MAPK1/ERK2 and MAPK3/ERK1. The activated CTKD then autophosphorylates Ser-380, allowing binding of PDPK1, which in turn phosphorylates Ser-221 in the N-terminal kinase domain (NTKD) leading to the full activation of the protein and subsequent phosphorylation of the substrates by the NTKD. Both PK domains are included in this DB.'
         elif uniprot_entries[k].findtext('name') == 'KS6C1_HUMAN':
             etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". The first protein kinase domain appears to be a pseudokinase domain as it does not contain the classical characteristics, such as the ATP-binding motif, ATP-binding site and active site. Only "Protein kinase 2" is included in this DB.'
-            domains.pop(0)
+            selected_domains.pop(0)
         elif uniprot_entries[k].findtext('name') == 'OBSCN_HUMAN':
             etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Neither are described as pseudokinases, although are not specifically described as catalytically active either. Both PK domains are included in this DB.'
         elif uniprot_entries[k].findtext('name') == 'SPEG_HUMAN':
@@ -286,14 +357,15 @@ for k in range(nuniprot_entries):
         elif uniprot_entries[k].findtext('name') == 'TYK2_HUMAN':
             etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Neither are described as pseudokinases. Both PK domains are included in this DB.'
         else:
-            raise Exception, 'More than 1 domain found containing "Protein kinase". Please check the following kinase and adjust the script: %s' % entry_name
+            etree.SubElement(warnings_node,'warning').text = 'Kinase contains > 1 "Protein kinase*" domain. Not checked manually yet.'
+            #raise Exception, 'More than 1 domain found containing "Protein kinase". Please check the following kinase and adjust the script: %s' % entry_name
     # And a couple of cases with one PK domain which are considered inactive. These kinase entries are removed completely.
-    if domains[0].attrib['description'] == 'Protein kinase; truncated':
+    if selected_domains[0].attrib['description'] == 'Protein kinase; truncated':
         # PLK5_HUMAN. Kinase considered inactive. Protein kinase domain is truncated. Remove it.
         print 'Removing kinase as PK domain is truncated and considered inactive:', AC
         DBentry.getparent().remove(DBentry)
         continue
-    elif domains[0].attrib['description'] == 'Protein kinase; inactive':
+    elif selected_domains[0].attrib['description'] == 'Protein kinase; inactive':
         # PTK7_HUMAN. Kinase considered inactive. Remove it.
         print 'Removing kinase as PK domain is considered inactive:', AC
         DBentry.getparent().remove(DBentry)
@@ -301,7 +373,7 @@ for k in range(nuniprot_entries):
 
     # Finally, add the domains to the new database
     DBentry_domains_node = etree.SubElement(DBentry_uniprot, 'domains')
-    for x_iter,x in enumerate(domains):
+    for x_iter,x in enumerate(selected_domains):
         # First calculate the PK domain length and sequence
         pk_description = x.get('description')
         pk_begin = int( x.find('./location/begin').attrib['position'] )

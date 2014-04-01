@@ -38,6 +38,33 @@ def init_project(project_toplevel_dir):
 
 
 
+# =========
+# =========
+
+def xpath_match_regex_case_sensitive(context, attrib_values, xpath_argument):
+    ''' To be used as an lxml XPath extension, for regex searches of attrib values.
+    '''
+    import re
+    # If no attrib found
+    if len(attrib_values) == 0:
+        return False
+    # If attrib found, then run match against regex
+    else:
+        regex = re.compile(xpath_argument)
+        return bool( re.search(regex, attrib_values[0]) )
+
+def xpath_match_regex_case_insensitive(context, attrib_values, xpath_argument):
+    ''' To be used as an lxml XPath extension, for regex searches of attrib values.
+    '''
+    import re
+    # If no attrib found
+    if len(attrib_values) == 0:
+        return False
+    # If attrib found, then run match against regex
+    else:
+        regex = re.compile(xpath_argument, re.IGNORECASE)
+        return bool( re.search(regex, attrib_values[0]) )
+
 
 
 
