@@ -125,16 +125,16 @@ def retrieve_external_data(DB_script_ID, forcedl=False, uniprot_search_string=No
 def format_target_info(target_info_dict=None, include_pseudogene_data=False, return_format_string=False):
     if return_format_string:
         if include_pseudogene_data:
-            format_string = '{:<25}  {:<12}    {:<10}  {:<9}  {:<6}    {:<8}  {:<8}  {:<15}  {:<10}  {:<10}'.format('kinDB_id', 'target_score', 'family', 'pk_length', 'npubs', '%muts', 'npk_pdbs', 'ndisease_assocs', 'nbioassays', 'pseudogene')
+            format_string = '{:<25}  {:<12}    {:<10}  {:<9}  {:<6}    {:<8}  {:<8}  {:<15}  {:<10}  {:<10}'.format('targetID', 'target_score', 'family', 'pk_length', 'npubs', '%muts', 'npk_pdbs', 'ndisease_assocs', 'nbioassays', 'pseudogene')
         else:
-            format_string = '{:<25}  {:<12}    {:<10}  {:<9}  {:<6}    {:<8}  {:<8}  {:<15}  {:<10}'.format('kinDB_id', 'target_score', 'family', 'pk_length', 'npubs', '%muts', 'npk_pdbs', 'ndisease_assocs', 'nbioassays')
+            format_string = '{:<25}  {:<12}    {:<10}  {:<9}  {:<6}    {:<8}  {:<8}  {:<15}  {:<10}'.format('targetID', 'target_score', 'family', 'pk_length', 'npubs', '%muts', 'npk_pdbs', 'ndisease_assocs', 'nbioassays')
         return format_string
 
     else:
         if include_pseudogene_data:
-            target_info_string = '{0[kinDB_id]:<25}  {0[target_score]: 12.1f}    {0[family]:<10}  {0[pk_domain_length]:<9}  {0[pubs]:<6}    {0[muts]:<8}  {0[npk_pdbs]:<8}  {0[disease]:<15}  {0[nbioassays]:<10}  {0[pseudogene]:<10}'.format(target_info_dict)
+            target_info_string = '{0[targetID]:<25}  {0[target_score]: 12.1f}    {0[family]:<10}  {0[pk_domain_length]:<9}  {0[pubs]:<6}    {0[muts]:<8}  {0[npk_pdbs]:<8}  {0[disease]:<15}  {0[nbioassays]:<10}  {0[pseudogene]:<10}'.format(target_info_dict)
         else:
-            target_info_string = '{0[kinDB_id]:<25}  {0[target_score]: 12.1f}    {0[family]:<10}  {0[pk_domain_length]:<9}  {0[pubs]:<6}    {0[muts]:<8}  {0[npk_pdbs]:<8}  {0[disease]:<15}  {0[nbioassays]:<10}'.format(target_info_dict)
+            target_info_string = '{0[targetID]:<25}  {0[target_score]: 12.1f}    {0[family]:<10}  {0[pk_domain_length]:<9}  {0[pubs]:<6}    {0[muts]:<8}  {0[npk_pdbs]:<8}  {0[disease]:<15}  {0[nbioassays]:<10}'.format(target_info_dict)
         return target_info_string
 
 
@@ -142,7 +142,7 @@ def target_info_dict(pk_domain_node):
     '''
     Returns a list of target info dicts - one for each target domain within an entry node.
     '''
-    entry_node = pk_domain_node.getparent().getparent()
+    entry_node = pk_domain_node.getparent().getparent().getparent()
 
     # info for this protein entry
     target_score_node = entry_node.find('target_score')
@@ -152,9 +152,9 @@ def target_info_dict(pk_domain_node):
     nbioassays = len(entry_node.findall('bioassays/bioassay'))
 
     # domain specific info
-    kinDB_id = pk_domain_node.get('kinDB_id')
+    targetID = pk_domain_node.get('targetID')
     pk_domain_id = int(pk_domain_node.get('id'))
-    pk_domain_score_node = entry_node.find('target_score/pk_domain[@kinDB_id="%(kinDB_id)s"]' % vars())
+    pk_domain_score_node = entry_node.find('target_score/pk_domain[@targetID="%(targetID)s"]' % vars())
     target_score = float( pk_domain_score_node.get('target_score') )
     family = pk_domain_node.getparent().get('family')
     pk_domain_length = pk_domain_node.get('length')
@@ -167,7 +167,7 @@ def target_info_dict(pk_domain_node):
 
     # Add info the target_info dict
     target_info_dict = {}
-    target_info_dict['kinDB_id'] = kinDB_id
+    target_info_dict['targetID'] = targetID
     target_info_dict['pk_domain_id'] = pk_domain_id
     target_info_dict['target_score'] = target_score
     target_info_dict['family'] = family

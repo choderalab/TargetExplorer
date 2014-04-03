@@ -359,11 +359,11 @@ def print_bioassay_seqs(kinase_entry_names='all'):
 # ==========================
 
 def print_kinases_expressed_in(expression_system):
-    all_target_nodes = DB_root.findall('entry/UniProt/domains/domain[@target_id]')
+    all_target_nodes = DB_root.findall('entry/UniProt/domains/domain[@targetID]')
     target_nodes = []
     for t in all_target_nodes:
-        target_domain_id = t.get('id')
-        expression_data = t.xpath('../../../PDB/structure/chain[@domain_ID="%s"]/../expression_data[contains(@EXPRESSION_SYSTEM,"%s")]' % (target_domain_id, expression_system))
+        target_domain_id = t.get('domainID')
+        expression_data = t.xpath('../../../PDB/structure/chain[@domainID="%s"]/../expression_data[contains(@EXPRESSION_SYSTEM,"%s")]' % (target_domain_id, expression_system))
         if expression_data != []:
             target_nodes.append(t)
 
@@ -386,6 +386,21 @@ def print_kinases_expressed_in(expression_system):
     sorted_target_info = sorted(target_info_dicts, key=lambda x: x['target_score'], reverse=True)
     for t in sorted_target_info:
         print clab.DB.format_target_info(t), t['example_pdbs_string']
+
+# ==========================
+# Print number of kinases with PDB structures which were expressed in a given expression system
+# ==========================
+
+def print_nkinases_expressed_in(expression_systems):
+    expr_nodes = DB_root.xpath('entry/UniProt[@family="TK"]/../PDB/structure/expression_data[@EXPRESSION_SYSTEM]')
+    expr_systems = [node.get('EXPRESSION_SYSTEM') for node in expr_nodes]
+    set_expr_systems = set(expr_systems)
+
+    for expression_system in set_expr_systems:
+        expression_data = DB_root.xpath('entry/UniProt[@family="TK"]/../PDB/structure/expression_data[contains(@EXPRESSION_SYSTEM,"%s")]' % (expression_system))
+        print expression_system, len(expression_data)
+
+    # for expression_system in expression_systems:
 
 # ==========================
 # Prints PDB info for a given DB entry
@@ -417,12 +432,13 @@ def print_pdbs_by_UniProt_entry_name(entry_name, print_expr_data=False):
 # Put function calls here
 # ==========================
 #print_attribs('kinase/pk_pdb/expression_data', 'EXPRESSION_SYSTEM')
-write_targets_prioritized()
+#write_targets_prioritized()
 #print_GeneIDs()
 #print_pubs()
 #print_bioassays_kinase('ABL1_HUMAN')
 #print_bioassay_types()
 #print_bioassay_seqs(['SRC_HUMAN'])
 #print_kinases_expressed_in('ESCHERICHIA')
+print_nkinases_expressed_in(['ESCHERICHIA', 'SPODOPTERA'])
 #print_pdbs_by_UniProt_entry_name('ABL1_HUMAN', print_expr_data='EXPRESSION_SYSTEM')
 
