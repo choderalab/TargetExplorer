@@ -1,0 +1,10 @@
+db_entries
+==========
+_id INT PRIMARY KEY
+
+uniprot
+=======
+_id INT PRIMARY KEY
+db_entries_id INT
+ac VARCHAR
+entry_name VARCHAR
