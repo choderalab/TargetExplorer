@@ -23,6 +23,8 @@
             <domains>
                 <domain domainID= targetID= begin= end= length= target_score= > (multiple)
                     @targetID of the form ${UniProt_entry_name}_D${domainID}
+                    @begin first residue of the domain sequence in the coordinates of the UniProt canonical isoform (1-based)
+                    @end ditto for last residue
                     <sequence>
 
         <HGNC>
