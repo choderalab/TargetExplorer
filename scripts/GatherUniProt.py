@@ -22,6 +22,7 @@
 import sys, datetime, os, copy, yaml
 import TargetExplorer
 from lxml import etree
+import sqlite3
 
 #==============================================================================
 # PARAMETERS
@@ -61,6 +62,8 @@ datestamp = now.strftime(TargetExplorer.DB.datestamp_format_string)
 
 days_elapsed_for_force_download = 7
 
+parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
+
 with open('config.yaml') as config_file:
     config = yaml.load(config_file)
 
@@ -84,7 +87,6 @@ else:
 print 'Reading UniProt XML document:', uniprot_xml_out_filepath
 uniprot_xml = etree.parse(uniprot_xml_out_filepath, parser).getroot()
 
-sys.exit()
 
 
 uniprot_entries = uniprot_xml.findall('entry')
@@ -105,61 +107,18 @@ print 'Keeping only domains containing "Protein kinase"... (case sensitive)'
 
 print ''
 
-#==============================================================================
-# CREATE NEW DATABASE XML TREE FROM DOWNLOADED UNIPROT DATA
-#==============================================================================
-
-# Root node to which all data will be added
-DB_root = etree.Element('database')
 
 
 
 
+# ========
+# Open SQLite database connection and create uniprot table
+# ========
 
-# =========
-# If the UniProt query string contained a domain selector, print the set of
-# unique UniProt domain names which would have been selected during the
-# UniProt search (case-insensitive). This should aid users in the
-# construction an appropriate regex for selecting an appropriate subset of
-# these domains.
-# =========
+db_path = os.path.join('database', config.db_name + '.db')
 
-if 'domain:' in UniProt_query_string:
-
-    # First extract the domain selection
-    # Example query string: 'domain:"Protein kinase" AND reviewed:yes'
-    # Can assume that the domain selection will be bounded by double-quotes
-    query_string_split = UniProt_query_string.split('"')
-    for q in range(len(query_string_split)):
-        if 'domain:' in query_string_split[q]:
-            query_string_domain_selection = query_string_split[q + 1]
-    print query_string_domain_selection
-
-    UniProt_query_string_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % query_string_domain_selection, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_insensitive })
-
-    UniProt_unique_domain_names = set([domain.get('description') for domain in UniProt_query_string_domains])
-    print 'Set of unique domain names selected by the domain selector \'%s\' during the initial UniProt search:\n%s' % (query_string_domain_selection, UniProt_unique_domain_names)
-    print ''
-
-else:
-    UniProt_domains = uniprot_xml.xpath('entry/feature[@type="domain"]')
-    UniProt_unique_domain_names = set([domain.get('description') for domain in UniProt_domains])
-    print 'Set of unique domain names returned from the initial UniProt search using the query string \'%s\':\n%s' % (UniProt_query_string, UniProt_unique_domain_names)
-    print ''
-
-# =========
-# Print subset of domains returned following filtering with the UniProt_domain_regex (case sensitive)
-# =========
-
-if UniProt_domain_regex != None:
-    regex_matched_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % UniProt_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
-
-    regex_matched_domains_unique_names = set([domain.get('description') for domain in regex_matched_domains])
-    print 'Unique domain names selected after searching with the case-sensitive regex string \'%s\':\n%s' % (UniProt_domain_regex, regex_matched_domains_unique_names)
-    print ''
-
-
-
+with sqlite3.connect(db_path) as connection:
+    cursor = connection.cursor()
 
 
 
