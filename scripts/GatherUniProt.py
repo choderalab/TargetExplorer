@@ -19,11 +19,9 @@
 # IMPORTS
 #==============================================================================
 
-import sys, datetime, os, copy
+import sys, datetime, os, copy, yaml
 import TargetExplorer
 from lxml import etree
-
-TargetExplorer.core.check_correct_working_dir()
 
 #==============================================================================
 # PARAMETERS
@@ -39,19 +37,13 @@ else:
 print 'Running in mode: %s' % run_mode
 
 database_dir = 'database'
-external_data_dir = os.path.join('external-data')
-if not os.path.exists(external_data_dir):
-    os.mkdir(external_data_dir)
-external_data_metadata_filepath = os.path.join(external_data_dir, 'metadata.xml')
+external_data_dir = 'external-data'
 uniprot_data_dir = os.path.join(external_data_dir, 'UniProt')
 
 if not os.path.exists(uniprot_data_dir):
     os.mkdir(uniprot_data_dir)
 
 uniprot_xml_out_filepath = os.path.join(uniprot_data_dir, 'uniprot-search.xml')
-
-DB_out_filename = 'database-%(run_mode)s.xml' % vars()
-DB_out_filepath = os.path.join(database_dir, DB_out_filename)
 
 UniProt_query_string = '(taxonomy:40674 AND domain:"protein kinase") AND reviewed:yes'
 UniProt_query_string_url = '?query=%28taxonomy%3A40674+AND+domain%3A%22protein+kinase%22%29+AND+reviewed%3Ayes&sort=score&format=xml' # a bit crude, but urllib.urlencode might not be much better
@@ -67,19 +59,17 @@ else:
 now = datetime.datetime.utcnow()
 datestamp = now.strftime(TargetExplorer.DB.datestamp_format_string)
 
-parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
-
 days_elapsed_for_force_download = 7
+
+with open('config.yaml') as config_file:
+    config = yaml.load(config_file)
 
 #==============================================================================
 # RETRIEVE DATA FROM UNIPROT AND STORE TO LOCAL FILE
 #==============================================================================
 
-# First check if UniProt XML document already exists
-if os.path.exists(uniprot_xml_out_filepath):
-    print 'UniProt XML document found at:', uniprot_xml_out_filepath
-# if not, search the UniProt database and save an XML document
-else:
+# If the UniProt external data does not already exist, download it
+if not os.path.exists(uniprot_xml_out_filepath) or force_uniprot_download:
     print 'UniProt XML document not found.'
     print 'Retrieving new XML document from UniProt website.'
     new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(UniProt_query_string_url)
@@ -87,72 +77,15 @@ else:
     with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_file:
         uniprot_xml_file.write(new_xml_text + '\n')
     TargetExplorer.UniProt.update_metadata_uniprot_search(datestamp, uniprot_xml_out_filepath)
+else:
+    print 'UniProt XML document found at:', uniprot_xml_out_filepath
 
 # Read in the UniProt XML document
 print 'Reading UniProt XML document:', uniprot_xml_out_filepath
 uniprot_xml = etree.parse(uniprot_xml_out_filepath, parser).getroot()
 
-# Check when the UniProt XML document was retrieved and call retrieve_uniprot() if time elapsed is more than days_elapsed_for_force_download
-# TODO external_data_metadata_file may not exist yet - should handle this elegantly
-metadata_root = etree.parse(external_data_metadata_filepath, parser).getroot()
-retrieved = metadata_root.find('UniProt/uniprot_search').get('datestamp')
-retrieved = datetime.datetime.strptime(retrieved, TargetExplorer.DB.datestamp_format_string) # turn into datetime object
-now = datetime.datetime.now()
-time_elapsed = now - retrieved
-print 'UniProt XML document was retrieved: %s (%s days ago)' % (retrieved.strftime('%Y-%m-%d'), time_elapsed.days)
-if (time_elapsed.days > days_elapsed_for_force_download) or (force_uniprot_download == True):
-    if time_elapsed.days > days_elapsed_for_force_download:
-        print 'UniProt XML document more than %d days old.' % days_elapsed_for_force_download
-    if force_uniprot_download == True:
-        print 'Forcing retrieval of new UniProt XML document.'
-        download_new_uniprot_xml = True
-    else:
-        while True:
-            user_response = raw_input('Suggest retrieving new XML document from UniProt. Proceed? [y] ')
-            if user_response in ['y', '']:
-                download_new_uniprot_xml = True
-                break
-            elif user_response == 'n':
-                download_new_uniprot_xml = False
-                break
-            else:
-                print 'User input not understood. Please try again.'
+sys.exit()
 
-    if download_new_uniprot_xml:
-        print 'Retrieving new XML document from UniProt...'
-        old_xml = uniprot_xml
-        new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(UniProt_query_string_url)
-        new_xml = etree.fromstring(new_xml_text, parser)
-
-        # Print some basic statistics on the differences between the new and old XML documents
-        print '\n=== COMPARISON OF NEW AND OLD XML DOCUMENTS ==='
-        len_diff = TargetExplorer.UniProt.print_uniprot_xml_comparison(new_xml, old_xml)
-        print ''
-
-        # If no differences, continue (but update external-data/metadata.xml)
-        if len_diff == 0:
-            print 'No difference between new and old XML documents - continuing...'
-            TargetExplorer.UniProt.update_metadata_uniprot_search(datestamp, uniprot_xml_out_filepath)
-            pass
-
-        # Otherwise prompt as to whether or not to write to file
-        else:
-            while True:
-                user_response = raw_input('Write new XML document to %s? [y] ' % uniprot_xml_out_filepath)
-                if user_response in ['y', '']:
-                    print 'Saving new XML document as:', uniprot_xml_out_filepath
-                    with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_out_file:
-                        uniprot_xml_out_file.write(new_xml_text)
-                    TargetExplorer.UniProt.update_metadata_uniprot_search(datestamp, uniprot_xml_out_filepath)
-                    uniprot_xml = new_xml
-                    break
-                elif user_response in ['n']:
-                    print 'Continuing...'
-                    break
-                else:
-                    print 'User input not understood. Please try again.'
-
-print ''
 
 uniprot_entries = uniprot_xml.findall('entry')
 nuniprot_entries = len(uniprot_entries)
