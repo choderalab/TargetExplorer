@@ -6,4 +6,4 @@ class DBEntry(db.Model):
     entry_name = db.Column(db.String(120), index=True, unique=True)
 
     def __repr__(self):
-        return '<AC %r entry_name %r>' % (self.AC, self.entry_name)
+        return '<Entry AC %r entry_name %r>' % (self.ac, self.entry_name)
