@@ -11,7 +11,7 @@ print ''
 uniprot = models.UniProt.query.all()
 print 'UniProt'
 for u in uniprot:
-    print u
+    print u, u.taxonid
 
 print ''
 
