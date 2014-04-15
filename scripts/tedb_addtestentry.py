@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from app import db, models
 
 entry = models.DBEntry()
