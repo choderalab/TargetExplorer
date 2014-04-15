@@ -1,10 +1,20 @@
 db_entries
 ==========
-_id INT PRIMARY KEY
+id INT PRIMARY KEY
+uniprot RELATIONSHIP('uniprot', backref='dbentry')
+pdbs RELATIONSHIP('pdbs', backref='dbentry')
 
 uniprot
 =======
-_id INT PRIMARY KEY
-db_entries_id INT
+id INT PRIMARY KEY
 ac VARCHAR
 entry_name VARCHAR
+dbentry_id INT FOREIGNKEY
+dbentry BACKREF
+
+pdbs
+=======
+id INT PRIMARY KEY
+pdbid VARCHAR
+dbentry_id INT FOREIGNKEY
+dbentry BACKREF
