@@ -16,7 +16,7 @@ class UniProt(db.Model):
     taxonid = db.Column(db.String(64))
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
-        return '<UniProtData AC %r entry_name %r>' % (self.ac, self.entry_name)
+        return '<UniProt AC %r entry_name %r>' % (self.ac, self.entry_name)
 
 class PDB(db.Model):
     __tablename__ = 'pdb'
