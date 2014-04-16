@@ -145,47 +145,54 @@ for k in range(nuniprot_entries):
 
     # = Taxonomy =
     uniprot_organism_node = uniprot_entries[k].find('organism')
-    NCBI_taxonID = uniprot_organism_node.find('dbReference[@type="NCBI Taxonomy"]').get('id')
-    tax_name_scientific = uniprot_organism_node.findtext('name[@type="scientific"]')
-    tax_name_common = uniprot_organism_node.findtext('name[@type="common"]')
+    ncbi_taxonid = uniprot_organism_node.find('dbReference[@type="NCBI Taxonomy"]').get('id')
+    taxon_name_scientific = uniprot_organism_node.findtext('name[@type="scientific"]')
+    taxon_name_common = uniprot_organism_node.findtext('name[@type="common"]')
     lineage = uniprot_organism_node.find('lineage')
+    lineage_csv = ','.join([taxon.text for taxon in lineage.getchildren()])
 
-    # # = Functions, disease associations =
-    # functions_node = etree.SubElement(DBentry_uniprot, 'functions')
-    # disease_associations_node = etree.SubElement(DBentry_uniprot, 'disease_associations')
-    # for x in uniprot_entries[k].findall('./comment[@type="function"]'):
-    #     etree.SubElement(functions_node, 'function').text = TargetExplorer.core.twrap( x.findtext('./text') )
-    # for x in uniprot_entries[k].findall('./comment[@type="disease"]'):
-    #     etree.SubElement(disease_associations_node, 'disease_association').text = TargetExplorer.core.twrap( x.findtext('./text') )
-    #
-    # # = Isoforms =
-    # # Canonical isoform is given the attrib type="displayed", meaning that the sequence is displayed in the HTML version of the entry
-    # # Example alt isoform:
-    # #     <isoform>
-    # #         <id>P00519-2</id>
-    # #         <name>IB</name>
-    # #         <sequence type="described" ref="VSP_004957"/>
-    # #         <note>Contains a N-myristoyl glycine at position 2.</note>
-    # #     </isoform>
-    #
-    # DBentry_uniprot_isoforms_node = etree.SubElement(DBentry_uniprot, 'isoforms')
-    # DBentry_uniprot_canonical_isoform_node = etree.SubElement(DBentry_uniprot_isoforms_node, 'canonical_isoform')
-    # for uniprot_isoform_node in uniprot_entries[k].findall('isoform'):
-    #     isoform_AC = uniprot_isoform_node.findtext('id')
-    #     notes = uniprot_isoform_node.findall('note')
-    #     if uniprot_isoform_node.get('type') == 'displayed':
-    #         DB_isoform_node = DBentry_uniprot_canonical_isoform_node
-    #     else:
-    #         DB_isoform_node = etree.SubElement(DBentry_uniprot_isoforms_node, 'alt_isoform')
-    #
-    #     DB_isoform_node.set('AC', isoform_AC)
-    #     for note in notes:
-    #         DB_isoform_node.append(copy.deepcopy(note))
-    #
-    # = Canonical sequence =
+    # = Functions, disease associations =
+    functions = []
+    disease_associations = []
+    for x in uniprot_entries[k].findall('./comment[@type="function"]'):
+        functions.append( models.UniProtFunction(function=x.findtext('./text')) )
+    for x in uniprot_entries[k].findall('./comment[@type="disease"]'):
+        disease_associations.append( models.UniProtDiseaseAssociation(disease_association=x.findtext('./text')) )
+
+    # = Canonical isoform =
+
+    isoforms = []
+
     # Returned UniProt XML contains sequence data only for the canonical isoform
     uniprot_canonical_sequence_node = uniprot_entries[k].find('./sequence[@length][@mass]')
     canonical_sequence = ''.join(uniprot_canonical_sequence_node.text.split())
+    canseq_length = uniprot_canonical_sequence_node.get('length')
+    canseq_mass = uniprot_canonical_sequence_node.get('mass')
+    canseq_date_modified = uniprot_canonical_sequence_node.get('modified')
+    canseq_version = uniprot_canonical_sequence_node.get('version')
+    uniprotisoform = models.UniProtIsoform(ac=ac+'-1', canonical=True, length=canseq_length, mass=canseq_mass, date_modified=canseq_date_modified, version=canseq_version, sequence=canonical_sequence)
+    isoforms.append((uniprotisoform, [])) # empty list for notes (which do not exist for the canonical sequence)
+
+    # = Alternative isoforms =
+    # Canonical isoform is given the attrib type="displayed", meaning that the sequence is displayed in the HTML version of the entry
+    # Example alt isoform:
+    #     <comment>
+    #         <isoform>
+    #             <id>P00519-2</id>
+    #             <name>IB</name>
+    #             <sequence type="described" ref="VSP_004957"/>
+    #             <note>Contains a N-myristoyl glycine at position 2.</note>
+    #         </isoform>
+    #     </comment>
+
+    for uniprot_isoform_node in uniprot_entries[k].findall('comment/isoform'):
+        isoform_ac = uniprot_isoform_node.findtext('id')
+        seq_node = uniprot_isoform_node.find('sequence')
+        notes = [models.UniProtIsoformNote(note=node.text) for node in uniprot_isoform_node.findall('note')]
+        if seq_node.get('type') != 'displayed':
+            uniprotisoform = models.UniProtIsoform(ac=isoform_ac, canonical=False)
+
+        isoforms.append((uniprotisoform, notes))
 
     # = UniProt "Protein kinase" domain annotations =
     # XXX TODO Generalize
@@ -353,8 +360,25 @@ for k in range(nuniprot_entries):
 
     dbentry = models.DBEntry()
     db.session.add(dbentry)
-    uniprot = models.UniProt(ac=ac, entry_name=entry_name, taxonid=NCBI_taxonID, dbentry=dbentry, recommended_name=recommended_name, last_uniprot_update=last_uniprot_update)
+    uniprot = models.UniProt(ac=ac, entry_name=entry_name, last_uniprot_update=last_uniprot_update, ncbi_taxonid=ncbi_taxonid, dbentry=dbentry, recommended_name=recommended_name, taxon_name_scientific=taxon_name_scientific, taxon_name_common=taxon_name_common, lineage=lineage_csv)
     db.session.add(uniprot)
+    for function_obj in functions:
+        function_obj.dbentry = dbentry
+        function_obj.uniprotentry = uniprot
+        db.session.add(function_obj)
+    for disease_association_obj in disease_associations:
+        disease_association_obj.dbentry = dbentry
+        disease_association_obj.uniprotentry = uniprot
+        db.session.add(disease_association_obj)
+    for isoform_data in isoforms:
+        isoform_obj = isoform_data[0]
+        notes = isoform_data[1]
+        isoform_obj.dbentry = dbentry
+        isoform_obj.uniprotentry = uniprot
+        db.session.add(isoform_obj)
+        for note_obj in notes:
+            note_obj.uniprotisoform = isoform_obj
+            db.session.add(note_obj)
     for domain_obj in domains_data:
         domain_obj.dbentry = dbentry
         domain_obj.uniprotentry = uniprot
