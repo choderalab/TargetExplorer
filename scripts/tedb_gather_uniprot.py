@@ -261,56 +261,48 @@ for k in range(nuniprot_entries):
 
         domain_obj = models.UniProtDomain(targetid=targetid, description=description, begin=begin, end=end, length=length, sequence=domain_seq)
         domains_data.append(domain_obj)
-    #
-    # # = References to other DBs =
-    # # NCBI Gene
-    # GeneIDs = [x.get('id') for x in uniprot_entries[k].findall('./dbReference[@type="GeneID"]')]
-    # # XXX: exceptions for kinases which have no GeneIDs annotated; LMTK3 RefSeq status is PROVISIONAL; RIPK4 presumably RefSeq sequence is not an exact match; SIK3 RefSeq status is VALIDATED
-    # # Will add these manually, since we are mainly using GeneID to collect publications currently
-    # if entry_name == 'LMTK3_HUMAN':
-    #     GeneIDs = ['114783']
-    # if entry_name == 'RIPK4_HUMAN':
-    #     GeneIDs = ['54101']
-    # if entry_name == 'SIK3_HUMAN':
-    #     GeneIDs = ['23387']
-    # if len(GeneIDs) > 0:
-    #     NCBI_Gene_node = etree.SubElement(DBentry, 'NCBI_Gene')
-    # for GeneID in GeneIDs:
-    #     # XXX: exceptions for SGK3_HUMAN and TNI3K_HUMAN, which have two GeneIDs annotated; in each case, one is a readthrough fusion protein - ignore these GeneIDs
-    #     if GeneID in ['100533105', '100526835']:
-    #         continue
-    #     NCBI_Gene_entry_node = etree.SubElement(NCBI_Gene_node, 'entry')
-    #     NCBI_Gene_entry_node.set('ID', GeneID)
-    #
-    # # Ensembl
-    # EnsemblGeneIDs = uniprot_entries[k].findall('./dbReference[@type="Ensembl"]/property[@type="gene ID"]')
-    # EnsemblGeneIDs_set = set( [ id.attrib['value'] for id in EnsemblGeneIDs ] )
-    # DB_Ensembl_node = etree.SubElement(DBentry, 'Ensembl')
-    # for EnsemblGeneID in EnsemblGeneIDs_set:
-    #     etree.SubElement(DB_Ensembl_node, 'GeneID').text = EnsemblGeneID
-    #
-    # # HGNC
-    # HGNC_dbRefs = uniprot_entries[k].findall('./dbReference[@type="HGNC"]')
-    # if len(HGNC_dbRefs) > 0:
-    #     HGNC_element = etree.SubElement(DBentry, 'HGNC')
-    #     for HGNC_dbRef in HGNC_dbRefs:
-    #         ID = HGNC_dbRef.get('id')
-    #         Approved_Symbol = HGNC_dbRef.find('property[@type="gene designation"]').get('value')
-    #         HGNC_entry_element = etree.SubElement(HGNC_element, 'entry')
-    #         HGNC_entry_element.set('ID', ID)
-    #         HGNC_entry_element.set('Approved_Symbol', Approved_Symbol)
-    #
-    # # = Family information =
-    # similarity_comments = uniprot_entries[k].xpath('./comment[@type="similarity"]')
-    # family_found = False
-    # for s in similarity_comments:
-    #     for f in TargetExplorer.UniProt.kinase_family_uniprot_similarity_text.keys():
-    #         if f in s.findtext('text'):
-    #             DBentry_uniprot.set('family', TargetExplorer.UniProt.kinase_family_uniprot_similarity_text[f])
-    #             family_found = True
-    # if family_found == False:
-    #     DBentry_uniprot.set('family', '')
-    #
+
+    # = References to other DBs =
+    # NCBI Gene
+    ncbi_gene_entries = []
+    GeneIDs = [x.get('id') for x in uniprot_entries[k].findall('./dbReference[@type="GeneID"]')]
+    # XXX: exceptions for kinases which have no GeneIDs annotated; LMTK3 RefSeq status is PROVISIONAL; RIPK4 presumably RefSeq sequence is not an exact match; SIK3 RefSeq status is VALIDATED
+    # Will add these manually, since we are mainly using GeneID to collect publications currently
+    if entry_name == 'LMTK3_HUMAN':
+        GeneIDs = ['114783']
+    if entry_name == 'RIPK4_HUMAN':
+        GeneIDs = ['54101']
+    if entry_name == 'SIK3_HUMAN':
+        GeneIDs = ['23387']
+    for GeneID in GeneIDs:
+        # XXX: exceptions for SGK3_HUMAN and TNI3K_HUMAN, which have two GeneIDs annotated; in each case, one is a readthrough fusion protein - ignore these GeneIDs
+        if GeneID in ['100533105', '100526835']:
+            continue
+        ncbi_gene_entries.append( models.NCBIGeneEntry(gene_id=GeneID) )
+
+    # Ensembl
+    ensembl_gene_entries = []
+    ensembl_gene_ids = uniprot_entries[k].findall('./dbReference[@type="Ensembl"]/property[@type="gene ID"]')
+    ensembl_gene_ids_set = set( [ id.attrib['value'] for id in ensembl_gene_ids ] )
+    for ensembl_gene_id in ensembl_gene_ids_set:
+        ensembl_gene_entries.append( models.EnsemblGeneEntry(gene_id=ensembl_gene_id) )
+
+    # HGNC
+    hgnc_entries = []
+    hgnc_dbrefs = uniprot_entries[k].findall('./dbReference[@type="HGNC"]')
+    for hgnc_dbref in hgnc_dbrefs:
+        hgnc_gene_id = hgnc_dbref.get('id')
+        approved_symbol = hgnc_dbref.find('property[@type="gene designation"]').get('value')
+        hgnc_entries.append( models.HGNCEntry(gene_id=hgnc_gene_id, approved_symbol=approved_symbol) )
+
+    # = Family information =
+    similarity_comments = uniprot_entries[k].xpath('./comment[@type="similarity"]')
+    family = False
+    for s in similarity_comments:
+        for f in TargetExplorer.UniProt.kinase_family_uniprot_similarity_text.keys():
+            if f in s.findtext('text'):
+                family = TargetExplorer.UniProt.kinase_family_uniprot_similarity_text[f]
+
     # = PDB entries (from UniProt XML) =
     pdbs = uniprot_entries[k].findall('./dbReference[@type="PDB"]')
     pdb_data = []
@@ -347,8 +339,9 @@ for k in range(nuniprot_entries):
                 if chains_added > 0:
                     pdb_obj = models.PDB(pdbid=pdbid)
                     pdb_data.append(pdb_obj)
-    #
+
     # # = Add the warnings node last (only if it contains any warnings) = #
+    # TODO still need this?
     # if len(warnings_node) > 0:
     #     DBentry.append(warnings_node)
 
@@ -361,6 +354,8 @@ for k in range(nuniprot_entries):
     dbentry = models.DBEntry()
     db.session.add(dbentry)
     uniprot = models.UniProt(ac=ac, entry_name=entry_name, last_uniprot_update=last_uniprot_update, ncbi_taxonid=ncbi_taxonid, dbentry=dbentry, recommended_name=recommended_name, taxon_name_scientific=taxon_name_scientific, taxon_name_common=taxon_name_common, lineage=lineage_csv)
+    if family:
+        uniprot.family = family
     db.session.add(uniprot)
     for function_obj in functions:
         function_obj.dbentry = dbentry
@@ -389,6 +384,15 @@ for k in range(nuniprot_entries):
     for gene_name_obj in gene_name_data:
         gene_name_obj.dbentry = dbentry
         db.session.add(gene_name_obj)
+    for NCBIGeneEntry in ncbi_gene_entries:
+        NCBIGeneEntry.dbentry = dbentry
+        db.session.add(NCBIGeneEntry)
+    for EnsemblGeneEntry in ensembl_gene_entries:
+        EnsemblGeneEntry.dbentry = dbentry
+        db.session.add(EnsemblGeneEntry)
+    for HGNCEntry in hgnc_entries:
+        HGNCEntry.dbentry = dbentry
+        db.session.add(HGNCEntry)
 
 # update db UniProt datestamp
 version_row = models.Version.query.all()[0]

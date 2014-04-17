@@ -21,6 +21,9 @@ class DBEntry(db.Model):
     uniprotfunctions = db.relationship('UniProtFunction', backref='dbentry', lazy='dynamic')
     uniprotdiseaseassociations = db.relationship('UniProtDiseaseAssociation', backref='dbentry', lazy='dynamic')
     pdbs = db.relationship('PDB', backref='dbentry', lazy='dynamic')
+    ncbi_gene_entries = db.relationship('NCBIGeneEntry', backref='dbentry', lazy='dynamic')
+    ensembl_gene_entries = db.relationship('EnsemblGeneEntry', backref='dbentry', lazy='dynamic')
+    hgnc_entries = db.relationship('HGNCEntry', backref='dbentry', lazy='dynamic')
     def __repr__(self):
         return '<DBEntry %d>' % (self.id)
 
@@ -118,4 +121,29 @@ class PDB(db.Model):
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
         return '<PDB ID %r>' % (self.pdbid)
+
+class NCBIGeneEntry(db.Model):
+    __tablename__ = 'ncbi_gene_entry'
+    id = db.Column(db.Integer, primary_key=True)
+    gene_id = db.Column(db.Integer)
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    def __repr__(self):
+        return '<NCBIGeneEntry ID %r>' % (self.gene_id)
+
+class EnsemblGeneEntry(db.Model):
+    __tablename__ = 'ensembl_gene_entry'
+    id = db.Column(db.Integer, primary_key=True)
+    gene_id = db.Column(db.String(64))
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    def __repr__(self):
+        return '<EnsemblGeneEntry ID %r>' % (self.gene_id)
+
+class HGNCEntry(db.Model):
+    __tablename__ = 'hgnc_entry'
+    id = db.Column(db.Integer, primary_key=True)
+    gene_id = db.Column(db.String(64))
+    approved_symbol = db.Column(db.String(64))
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    def __repr__(self):
+        return '<HGNCEntry approved_symbol %r>' % (self.approved_symbol)
 
