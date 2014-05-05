@@ -432,13 +432,13 @@ def print_pdbs_by_UniProt_entry_name(entry_name, print_expr_data=False):
 # Put function calls here
 # ==========================
 #print_attribs('kinase/pk_pdb/expression_data', 'EXPRESSION_SYSTEM')
-#write_targets_prioritized()
+write_targets_prioritized()
 #print_GeneIDs()
 #print_pubs()
 #print_bioassays_kinase('ABL1_HUMAN')
 #print_bioassay_types()
 #print_bioassay_seqs(['SRC_HUMAN'])
 #print_kinases_expressed_in('ESCHERICHIA')
-print_nkinases_expressed_in(['ESCHERICHIA', 'SPODOPTERA'])
+#print_nkinases_expressed_in(['ESCHERICHIA', 'SPODOPTERA'])
 #print_pdbs_by_UniProt_entry_name('ABL1_HUMAN', print_expr_data='EXPRESSION_SYSTEM')
 

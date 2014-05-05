@@ -118,17 +118,22 @@ def overall_target_score_fn(pubs_score, pubs_score_max, cbioportal_mutations_sco
 # =================
 
 DB_root = etree.parse(DBstage_filepath, parser).getroot()
+selected_entries = DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/..')
 nentries = len(DB_root)
+nselected_entries = len(selected_entries)
 
 # ==============
 # Go through each target domain, conduct initial scoring, and store as attribs
 # ==============
 
-for e in range(len(DB_root)):
-    DBentry_node = DB_root[e]
+# for e in range(len(DB_root)):
+for DBentry_node in selected_entries:
+    # DBentry_node = DB_root[e]
     name = DBentry_node.find('UniProt').get('entry_name')
 
-    target_score_node = etree.SubElement(DBentry_node, 'target_score')
+    target_score_node = DBentry_node.find('target_score')
+    if target_score_node == None:
+        target_score_node = etree.SubElement(DBentry_node, 'target_score')
 
     target_domains = DBentry_node.findall('UniProt/domains/domain[@targetID]')
 
@@ -158,9 +163,11 @@ for e in range(len(DB_root)):
         targetID = target_domain.get('targetID')
 
         # Set up a target_score/domain node
-        target_domain_score_node = etree.SubElement(target_score_node, 'domain')
-        target_domain_score_node.set('domainID', target_domainID)
+        target_domain_score_node = target_score_node.find('domain[@targetID="%s"]' % targetID)
+        if target_domain_score_node == None:
+            target_domain_score_node = etree.SubElement(target_score_node, 'domain')
         target_domain_score_node.set('targetID', targetID)
+        target_domain_score_node.set('domainID', target_domainID)
 
         # Score for number of PDB structures including the pk_domain (only count the first chain)
         num_matching_PDBs = 0
@@ -185,22 +192,36 @@ for e in range(len(DB_root)):
 # Calculate score maxima (required for normalization)
 # ==============
 
-pubs_score_max = max( [float(x.get('publications')) for x in DB_root.findall('entry/target_score')] )
+# pubs_score_max = max( [float(x.get('publications')) for x in DB_root.findall('entry/target_score')] )
+#
+# cbioportal_mutations_score_max = max( [float(x.get('cBioPortal_mutations')) for x in DB_root.findall('entry/target_score') if x.get('cBioPortal_mutations') != 'No data'] )
+#
+# disease_score_max = max( [float(x.get('disease_association')) for x in DB_root.findall('entry/target_score')] )
+#
+# bioassays_score_max = max( [float(x.get('bioassays')) for x in DB_root.findall('entry/target_score')] )
+#
+# PDB_score_max = max( [float(x.get('PDBs')) for x in DB_root.findall('entry/target_score/domain')] )
 
-cbioportal_mutations_score_max = max( [float(x.get('cBioPortal_mutations')) for x in DB_root.findall('entry/target_score') if x.get('cBioPortal_mutations') != 'No data'] )
+selected_entries_target_scores = [x.find('target_score') for x in selected_entries]
+import itertools
+selected_entries_domains_target_scores = list(itertools.chain.from_iterable([x.findall('domain') for x in selected_entries_target_scores]))
 
-disease_score_max = max( [float(x.get('disease_association')) for x in DB_root.findall('entry/target_score')] )
+pubs_score_max = max( [float(x.get('publications')) for x in selected_entries_target_scores ])
 
-bioassays_score_max = max( [float(x.get('bioassays')) for x in DB_root.findall('entry/target_score')] )
+cbioportal_mutations_score_max = max( [float(x.get('cBioPortal_mutations')) for x in selected_entries_target_scores if x.get('cBioPortal_mutations') != 'No data'] )
 
-PDB_score_max = max( [float(x.get('PDBs')) for x in DB_root.findall('entry/target_score/domain')] )
+disease_score_max = max( [float(x.get('disease_association')) for x in selected_entries_target_scores] )
+
+bioassays_score_max = max( [float(x.get('bioassays')) for x in selected_entries_target_scores] )
+
+PDB_score_max = max( [float(x.get('PDBs')) for x in selected_entries_domains_target_scores] )
 
 # ==============
 # Iterate through kinases again, calculating overall target_scores
 # ==============
 
-for e in range(len(DB_root)):
-    DBentry_node = DB_root[e]
+for DBentry_node in selected_entries:
+    # DBentry_node = DB_root[e]
     name = DBentry_node.find('UniProt').get('entry_name')
 
     target_score_node = DBentry_node.find('target_score')
@@ -208,7 +229,7 @@ for e in range(len(DB_root)):
     target_domains = DBentry_node.findall('UniProt/domains/domain[@targetID]')
 
     for target_domain in target_domains:
-        target_domainID = target_domain.get('domainID') # TODO this will change to domainID at some point
+        target_domainID = target_domain.get('domainID')
         targetID = target_domain.get('targetID')
         target_domain_score_node = target_score_node.find('domain[@targetID="%s"]' % targetID)
 
@@ -234,27 +255,30 @@ for e in range(len(DB_root)):
 # Normalize the overall target scores and add ranks
 # ==============
 
-max_score = max([ float(t.get('target_score')) for t in DB_root.findall('entry/target_score/domain') ])
+max_score = max([ float(t.get('target_score')) for t in selected_entries_domains_target_scores ])
 
 # ranks will be generated by sorting this list of targetIDs
-all_targetIDs = [ t.get('targetID') for t in DB_root.findall('entry/target_score/domain') ]
-dict_for_sorting = { t.get('targetID') : t.get('target_score') for t in DB_root.findall('entry/target_score/domain') }
+all_targetIDs = [ t.get('targetID') for t in selected_entries_domains_target_scores ]
+dict_for_sorting = { t.get('targetID') : t.get('target_score') for t in selected_entries_domains_target_scores }
 all_targetIDs_sorted = sorted(all_targetIDs, key = lambda x: dict_for_sorting[x], reverse=True)
 
-for e in range(len(DB_root)):
-    DBentry_node = DB_root[e]
-    target_domains = DBentry_node.findall('UniProt/domains/domain[@targetID]')
-    for target_domain in target_domains:
-        targetID = target_domain.get('targetID')
-        target_domain_score_node = DBentry_node.find('target_score/domain[@targetID="%s"]' % targetID)
+# for e in range(len(DB_root)):
+#for DBentry_node in selected_entries:
+for target_domain_score_node in selected_entries_domains_target_scores:
+    # DBentry_node = DB_root[e]
+    #target_domains = DBentry_node.findall('UniProt/domains/domain[@targetID]')
+    #for target_domain in target_domains:
+    #targetID = target_domain.get('targetID')
+    #target_domain_score_node = DBentry_node.find('target_score/domain[@targetID="%s"]' % targetID)
+    targetID = target_domain_score_node.get('targetID')
 
-        overall_target_score = float(target_domain_score_node.get('target_score'))
-        normalized_target_score_percentage = overall_target_score / max_score * 100.
-        target_domain_score_node.set('target_score', '%.1f' % normalized_target_score_percentage)
+    overall_target_score = float(target_domain_score_node.get('target_score'))
+    normalized_target_score_percentage = overall_target_score / max_score * 100.
+    target_domain_score_node.set('target_score', '%.1f' % normalized_target_score_percentage)
 
-        # ranks
-        target_domain_rank = all_targetIDs_sorted.index(targetID) + 1
-        target_domain_score_node.set('target_rank', '%d' % target_domain_rank)
+    # ranks
+    target_domain_rank = all_targetIDs_sorted.index(targetID) + 1
+    target_domain_score_node.set('target_rank', '%d' % target_domain_rank)
 
 
 
@@ -276,9 +300,12 @@ if run_mode == 'stage':
     # Parse the old DB
     DBold_root = etree.parse(DB_out_filepath, parser).getroot()
 
+    DBold_selected_entries = DBold_root.findall('entry/UniProt[@NCBI_taxID="9606"]/..')
+    DBold_selected_entries_domain_target_scores = list( itertools.chain.from_iterable( [ x.findall('target_score/domain') for x in DBold_selected_entries ] ) )
+
     # Just check if the overall scores match
-    DB_target_scores = [float(score_node.get('target_score')) for score_node in DB_root.findall('entry/target_score/domain')]
-    DBold_target_scores = [float(score_node.get('target_score')) for score_node in DBold_root.findall('entry/target_score/domain')]
+    DB_target_scores = [float(score_node.get('target_score')) for score_node in selected_entries_domains_target_scores]
+    DBold_target_scores = [float(score_node.get('target_score')) for score_node in DBold_selected_entries_domain_target_scores]
     if DB_target_scores != DBold_target_scores:
         print 'Comparison of latest prioritization data with data in %s indicates changes. DB will be re-written with new data.' % DB_out_filepath
         data_modified = True
