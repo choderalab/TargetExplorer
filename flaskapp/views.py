@@ -1,7 +1,7 @@
 from flask import render_template, abort
 import config
 import re
-from app import app, db, models
+from flaskapp import app, db, models
 
 @app.route('/')
 @app.route('/index')

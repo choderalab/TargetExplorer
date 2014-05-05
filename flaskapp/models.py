@@ -1,4 +1,4 @@
-from app import db
+from flaskapp import db
 
 class Version(db.Model):
     __tablename__ = 'version'
