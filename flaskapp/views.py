@@ -81,5 +81,35 @@ def get_dbentry(leadingpath, ac):
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
-    response = make_response( jsonify( {'ac': uniprot.ac, 'entry_name': uniprot.entry_name, 'family': uniprot.family} ) )
+    dbentry = db.session.query(models.DBEntry).filter_by(id=uniprot.dbentry_id).first()
+
+    target_obj = {
+        'uniprot': {
+            'ac': uniprot.ac,
+            'entry_name': uniprot.entry_name,
+            'family': uniprot.family,
+        },
+        'pdb': [],
+        'hgnc': [],
+        'ensembl_gene': [],
+        'ncbi_gene': [],
+    }
+
+    # PDB
+    for pdb in dbentry.pdbs:
+        target_obj['pdb'].append({'pdbid': pdb.pdbid})
+
+    # HGNC
+    for entry in dbentry.hgnc_entries:
+        target_obj['hgnc'].append({'gene_id': entry.gene_id, 'approved_symbol': entry.approved_symbol})
+
+    # Ensembl Gene
+    for entry in dbentry.ensembl_gene_entries:
+        target_obj['ensembl_gene'].append({'gene_id': entry.gene_id})
+
+    # NCBI Gene
+    for entry in dbentry.ncbi_gene_entries:
+        target_obj['ncbi_gene'].append({'gene_id': entry.gene_id})
+
+    response = make_response( jsonify(target_obj) )
     return response
