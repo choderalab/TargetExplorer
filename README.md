@@ -23,7 +23,10 @@ database. Subsequent scripts add in data from various other databases such as
 the PDB, NCBI Gene, cBioPortal, and BindingDB.
 
 A Flask HTTP server is also provided, which serves database requests in JSON
-format. An example frontend client can be seen here:
+format.
+
+A [frontend web client](https://github.com/choderalab/kinomeDB-webclient) is
+currently in development, and an early working version can be seen here:
 
 http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDB/
 
