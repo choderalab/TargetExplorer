@@ -12,7 +12,7 @@ Overview
 
 _Note:_ The code is in the process of being migrated from an XML-based database
 to an SQLite implementation. The old, stable XML-based code can be found in the
-branch named "XML".
+branch _XML_.
 
 The database is generated using a series of scripts, which gather in data from
 various public web resources. The first script to run is tedb\_init.py, which
