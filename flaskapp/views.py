@@ -65,19 +65,40 @@ def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
 
 # ======
-# Get data for individual target
+# URL query handler
 # ======
 
-@app.route('/<path:leadingpath>/<string:ac>', methods = ['GET'])
-@crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
-def get_dbentry(leadingpath, ac):
-    # note: leadingpath is ignored
-    # check ac is in proper UniProt format
-    # XXX TODO UniProt AC format will be extended some time after June 11 2014!
-    try: assert (re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', ac) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', ac))
-    except AssertionError as e: e.message = 'Incorrect UniProt AC format'; raise e
+# Examples:
+# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/P00519
+# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/?query=family:"TK"
 
+@app.route('/<string:leadingpath>/<string:query_string>', methods = ['GET'])
+@crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
+def query_handler(leadingpath, query_string):
+    # note: leadingpath is ignored
+
+    db_response = None
+
+    # If query string is an individual UniProt AC
+    # XXX TODO UniProt AC format will be extended some time after June 11 2014!
+    if re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', query_string) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', query_string):
+        ac = query_string
+        db_response = get_dbentry(ac)
+
+    try: assert db_response != None
+    except AssertionError as e: e.message = 'Invalid query string'; raise e
+
+    response = make_response( jsonify(db_response) )
+    return response
+
+
+# ======
+# Get data from database for individual target
+# ======
+
+def get_dbentry(ac):
     uniprot = db.session.query(models.UniProt).filter_by(ac=ac).first()
+    print ac
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
@@ -111,5 +132,5 @@ def get_dbentry(leadingpath, ac):
     for entry in dbentry.ncbi_gene_entries:
         target_obj['ncbi_gene'].append({'gene_id': entry.gene_id})
 
-    response = make_response( jsonify(target_obj) )
-    return response
+    return target_obj
+
