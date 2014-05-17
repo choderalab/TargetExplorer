@@ -65,40 +65,27 @@ def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
 
 # ======
-# URL query handler
+# Get individual db entry
 # ======
 
 # Examples:
-# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/P00519
-# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/?query=family:"TK"
+# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/entry?ac=P00519
 
-@app.route('/<string:leadingpath>/<string:query_string>', methods = ['GET'])
+#@app.route('/<string:leadingpath>/<string:query_string>', methods = ['GET'])
+@app.route('/<string:leadingpath>/entry', methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
-def query_handler(leadingpath, query_string):
+#def get_dbentry(leadingpath, query_string):
+def get_dbentry(leadingpath):
     # note: leadingpath is ignored
 
-    db_response = None
-
-    # If query string is an individual UniProt AC
+    ac = request.args.get('ac')
+    if ac == None:
+        abort(404)
     # XXX TODO UniProt AC format will be extended some time after June 11 2014!
-    if re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', query_string) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', query_string):
-        ac = query_string
-        db_response = get_dbentry(ac)
+    elif not (re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', ac) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', ac)):
+        abort(404)
 
-    try: assert db_response != None
-    except AssertionError as e: e.message = 'Invalid query string'; raise e
-
-    response = make_response( jsonify(db_response) )
-    return response
-
-
-# ======
-# Get data from database for individual target
-# ======
-
-def get_dbentry(ac):
     uniprot = db.session.query(models.UniProt).filter_by(ac=ac).first()
-    print ac
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
@@ -132,5 +119,49 @@ def get_dbentry(ac):
     for entry in dbentry.ncbi_gene_entries:
         target_obj['ncbi_gene'].append({'gene_id': entry.gene_id})
 
-    return target_obj
+    response = make_response( jsonify(target_obj) )
+    return response
 
+
+# ======
+# Get multiple database entries given a query string
+# ======
+
+# Examples:
+# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?family=TK
+# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?query="family=TK+AND+db_target_rank<300"
+
+@app.route('/<string:leadingpath>/search', methods = ['GET'])
+@crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
+def query_db(leadingpath):
+    query = request.args.get('query')
+    query_statements = [query] # TODO split statements separated by ' AND ' and ' OR '
+    for query_statement in query_statements:
+        for comparator in ['!=', '!<', '!>', '<=', '>=', '<', '>', '=']:
+            if comparator in query_statement:
+                query_split = query_statement.split(comparator)
+                query_field = query_split[0]
+                query_value = query_split[1]
+                break
+        if query_field in models.UniProt.__dict__.keys():
+            sql_query = "%s%s'%s'" % (query_field, comparator, query_value)
+            uniprot_entries = db.session.query(models.UniProt).filter(sql_query)
+            db_entries = []
+            for uniprot_entry in uniprot_entries:
+                db_entry = db.session.query(models.DBEntry).filter_by(id=uniprot_entry.dbentry_id).first()
+                db_entries.append(db_entry)
+
+    targets_obj = {'results': []}
+
+    for db_entry in db_entries:
+        uniprot = db.session.query(models.UniProt).filter_by(dbentry_id=db_entry.id).first()
+        target_obj = {
+            'ac': uniprot.ac,
+            'entry_name': uniprot.entry_name,
+            'family': uniprot.family,
+            'npdbs': db_entry.pdbs.count(),
+        }
+        targets_obj['results'].append(target_obj)
+
+    response = make_response( jsonify(targets_obj) )
+    return response
