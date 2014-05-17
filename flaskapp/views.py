@@ -128,7 +128,6 @@ def get_dbentry(leadingpath):
 # ======
 
 # Examples:
-# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?family=TK
 # http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?query="family=TK+AND+db_target_rank<300"
 
 @app.route('/<string:leadingpath>/search', methods = ['GET'])
