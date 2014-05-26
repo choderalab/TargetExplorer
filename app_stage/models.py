@@ -1,13 +1,14 @@
-from flaskapp import db
+from app_stage import db
 
 class Version(db.Model):
     __tablename__ = 'version'
     id = db.Column(db.Integer, primary_key=True)
-    versionid = db.Column(db.Integer)
-    uniprotdatestamp = db.Column(db.DateTime)
+    version_id = db.Column(db.Integer)
+    uniprot_datestamp = db.Column(db.DateTime)
+    pdb_datestamp = db.Column(db.DateTime)
     def __repr__(self):
-        if self.versionid:
-            return '<DB Version %d>' % (self.versionid)
+        if self.version_id:
+            return '<DB Version %d>' % (self.version_id)
         else:
             return '<DB Version None>'
 

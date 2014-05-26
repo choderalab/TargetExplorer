@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import os.path, argparse
+import os, argparse
 argparser = argparse.ArgumentParser(description='Initialize TargetExplorer database')
-argparser.add_argument('--db_name', type=str, required=True)
+argparser.add_argument('--db_name', type=str, required=True, help='Database name, without extension')
 args = argparser.parse_args()
 
 print 'Initializing database project directory...'
@@ -27,31 +27,28 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 targetexplorer_install_dir = ''' + '\'%s\'' % tedb_basedir)
 
 # copy wsgi file (should not need to be edited)
-wsgi_filepath = args.db_name + '.wsgi'
+wsgi_filepath = args.db_name + '-wsgi.py'
 if not os.path.exists(wsgi_filepath):
-    wsgi_src_filepath = os.path.join(tedb_basedir, 'resources', 'db.wsgi')
+    wsgi_src_filepath = os.path.join(tedb_basedir, 'resources', 'template-wsgi.py')
     import shutil
     shutil.copy(wsgi_src_filepath, wsgi_filepath)
 
 from app_config import SQLALCHEMY_DATABASE_URI
 from app_config import SQLALCHEMY_MIGRATE_REPO
-from app import db, models
+import app_master, app_stage
 
 # create database
-db.create_all()
+app_master.db.create_all()
+app_stage.db.create_all()
 
 # add empty version data
-version_row = models.Version()
-db.session.add(version_row)
-db.session.commit()
+version_row = app_master.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
+app_master.db.session.add(version_row)
+app_master.db.session.commit()
 
-# TODO not certain yet whether using sqlalchemy-migrate; if not, will remove the following
-# from migrate.versioning import api as migapi
-# if not os.path.exists(SQLALCHEMY_MIGRATE_REPO):
-#     migapi.create(SQLALCHEMY_MIGRATE_REPO, 'database repository')
-#     migapi.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
-# else:
-#     migapi.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO, migapi.version(SQLALCHEMY_MIGRATE_REPO))
+version_row = app_stage.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
+app_stage.db.session.add(version_row)
+app_stage.db.session.commit()
 
 print 'Done.'
 print 'Please now edit the file config.py before running the database generation scripts.'

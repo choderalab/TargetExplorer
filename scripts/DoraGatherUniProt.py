@@ -23,20 +23,11 @@ import sys, datetime, os, copy, yaml, argparse
 import TargetExplorer
 import config
 from lxml import etree
-from app import models, db
+from app_stage import models, db
 
 #==============================================================================
 # PARAMETERS
 #==============================================================================
-
-# if '-stage' in sys.argv:
-#     run_mode = 'stage'
-# elif '-dev' in sys.argv:
-#     run_mode = 'dev'
-# else:
-#     run_mode = 'nowrite'
-
-# print 'Running in mode: %s' % run_mode
 
 database_dir = 'database'
 external_data_dir = 'external-data'
@@ -55,12 +46,8 @@ argparser.add_argument('--forcedl')
 args = argparser.parse_args()
 
 now = datetime.datetime.utcnow()
-# datestamp = now.strftime(TargetExplorer.DB.datestamp_format_string)
 
 parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
-
-# with open('config.yaml') as config_file:
-#     config = yaml.load(config_file)
 
 #==============================================================================
 # RETRIEVE DATA FROM UNIPROT AND STORE TO LOCAL FILE
@@ -81,13 +68,18 @@ else:
 print 'Reading UniProt XML document:', uniprot_xml_out_filepath
 uniprot_xml = etree.parse(uniprot_xml_out_filepath, parser).getroot()
 
-
-
 uniprot_entries = uniprot_xml.findall('entry')
 nuniprot_entries = len(uniprot_entries)
 # Note that xpath querying is case-sensitive
 print 'Number of entries in UniProt XML document:', nuniprot_entries
 print 'Number of domains:' , len( uniprot_xml.xpath('./entry/feature[@type="domain"]') )
+print 'Number of domains:'
+
+# TODO print: selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+
+
+print ''
+
 print 'Number of domains containing "kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"kinase")]') )
 print 'Number of domains containing "Kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"Kinase")]') )
 print 'Number of domains containing "Protein kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"Protein kinase")]') )
@@ -102,12 +94,8 @@ print 'Keeping only domains containing "Protein kinase"... (case sensitive)'
 print ''
 
 
-
-
-
-
 # ========
-# Remove all existing data from db
+# Remove all existing data from db, since all entries will have to be updated after GatherUniProt has been run
 # ========
 
 print 'Deleting all existing content in db-stage'
@@ -116,6 +104,7 @@ print 'Deleting %d UniProt rows...' % models.UniProt.query.delete()
 print 'Deleting %d UniProtDomain rows...' % models.UniProtDomain.query.delete()
 print 'Deleting %d PDB rows...' % models.PDB.query.delete()
 print ''
+
 
 # ========
 # Iterate through each kinase from the UniProt XML document
@@ -395,8 +384,8 @@ for k in range(nuniprot_entries):
         db.session.add(HGNCEntry)
 
 # update db UniProt datestamp
-version_row = models.Version.query.all()[0]
-version_row.uniprotdatestamp = now
+version_row = models.Version.query.first()
+version_row.uniprot_datestamp = now
 db.session.commit()
 print 'Done.'
 

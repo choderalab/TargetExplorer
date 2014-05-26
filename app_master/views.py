@@ -3,7 +3,7 @@ import config
 import re
 from datetime import timedelta
 from functools import update_wrapper
-from flaskapp import app, db, models
+from app_master import app, db, models
 
 # ======
 # HTTP access control decorator (CORS)
