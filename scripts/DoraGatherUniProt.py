@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 #
-# Extract pertinent data from UniProt XML document and store as an XML database.
+# Extract pertinent data from UniProt XML document and store in an SQLite database.
 #
 # PDB cross-refs are added if the structure is deemed to contain the PK domain.
 # This is determined from whether the PDB sequence span can include the span of
 # the PK domain less 30 residues at each end. Only PDB ID, chain ID, and resi
 # span are added. Use gather-pdb.py to add further info from sifts.
-#
-# New UniProt XML document downloaded only if existing one is > 7 days old, or
-# if --forcedl flag is used.
 #
 # Daniel L. Parton <partond@mskcc.org> - 7 Mar 2013
 #
@@ -38,11 +35,13 @@ if not os.path.exists(uniprot_data_dir):
 
 uniprot_xml_out_filepath = os.path.join(uniprot_data_dir, 'uniprot-search.xml')
 
+domain_names_filename = 'domain_names.txt'
+
 # 1GQ5 is referenced by kinase P16234. The kinase is not in the actual structure.
 ignore_uniprot_pdbs = ['1GQ5']
 
 argparser = argparse.ArgumentParser(description='Gather UniProt')
-argparser.add_argument('--forcedl')
+argparser.add_argument('--use_existing_uniprot', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true')
 args = argparser.parse_args()
 
 now = datetime.datetime.utcnow()
@@ -54,7 +53,7 @@ parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
 #==============================================================================
 
 # If the UniProt external data does not already exist, download it
-if not os.path.exists(uniprot_xml_out_filepath) or args.forcedl:
+if not os.path.exists(uniprot_xml_out_filepath) and not args.use_existing_uniprot:
     print 'UniProt XML document not found.'
     print 'Retrieving new XML document from UniProt website.'
     new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(config.uniprot_query_string_url)
@@ -68,29 +67,42 @@ else:
 print 'Reading UniProt XML document:', uniprot_xml_out_filepath
 uniprot_xml = etree.parse(uniprot_xml_out_filepath, parser).getroot()
 
+domain_names_str = 'Regex: %s\n' % config.uniprot_domain_regex
 uniprot_entries = uniprot_xml.findall('entry')
 nuniprot_entries = len(uniprot_entries)
 # Note that xpath querying is case-sensitive
-print 'Number of entries in UniProt XML document:', nuniprot_entries
-print 'Number of domains:' , len( uniprot_xml.xpath('./entry/feature[@type="domain"]') )
-print 'Number of domains:'
+domain_names_str += 'Number of entries in UniProt XML document: %d\n' % nuniprot_entries
+all_domains = uniprot_xml.xpath('./entry/feature[@type="domain"]')
+domain_names_str += 'Total number of domains: %d\n' % len(all_domains)
 
-# TODO print: selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+selected_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+domain_names_str += 'Number of domains matching regex: %d\n\n' % len(selected_domains)
 
+domain_names_str += '= Unique domain names which match regex =\n'
+selected_domain_names = list(set([ d.get('description') for d in selected_domains ]))
+selected_domain_name_populations = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in selected_domain_names ]
+for i in range(len(selected_domain_names)):
+    domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(selected_domain_names[i],
+        selected_domain_name_populations[i],
+        name_width=max([len(n)+4 for n in selected_domain_names]),
+        pop_width=max([len(str(p))+1 for p in selected_domain_name_populations])
+    )
+domain_names_str += '\n'
 
-print ''
-
-print 'Number of domains containing "kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"kinase")]') )
-print 'Number of domains containing "Kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"Kinase")]') )
-print 'Number of domains containing "Protein kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"Protein kinase")]') )
-print 'Number of domains which are (exactly) "Protein kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][@description="Protein kinase"]') )
-print '= Domains which contain "Protein kinase" but do not equal "Protein kinase" are of the following types: =\nProtein kinase 1\nProtein kinase 2\nProtein kinase; truncated\nProtein kinase; inactive'
-print '= Domains which contain "kinase" but do not equal "Protein kinase": ='
-print 'Number of domains containing "Alpha-type protein kinase":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"Alpha-type protein kinase")]') )
-print 'Number of domains containing "AGC-kinase C-terminal":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"AGC-kinase C-terminal")]') )
-print 'Number of domains containing "Guanylate kinase-like":' , len( uniprot_xml.xpath('./entry/feature[@type="domain"][contains(@description,"Guanylate kinase-like")]') )
-print 'Keeping only domains containing "Protein kinase"... (case sensitive)'
-
+domain_names_str += '= Unique domain names which do not match regex =\n'
+print domain_names_str,
+all_domain_names = list(set([ d.get('description') for d in all_domains ]))
+all_domain_name_populations = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in all_domain_names ]
+for i in range(len(all_domain_names)):
+    domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(all_domain_names[i],
+        all_domain_name_populations[i],
+        name_width=max([len(n)+4 for n in all_domain_names]),
+        pop_width=max([len(str(p))+1 for p in all_domain_name_populations])
+    )
+domain_names_str += '\n'
+with open(domain_names_filename, 'w') as domain_names_file:
+    domain_names_file.write(domain_names_str)
+print '(output to %s)' % domain_names_filename
 print ''
 
 
