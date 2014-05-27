@@ -14,11 +14,13 @@ DB_version = 'database.xml'
 DB_filepath = os.path.join('database', DB_version)
 DB_root = etree.parse(DB_filepath).getroot()
 nentries = len(DB_root)
+nhuman_entries = len(DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]'))
 print 'Number of entries:', nentries
+print 'Number of human entries:', nhuman_entries
 
 # XXX
-npdb_structures = len( DB_root.findall('entry/PDB/structure') )
-print 'Number of PDB structures:', npdb_structures
+npdb_structures = len( DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/../PDB/structure') )
+print 'Number of human PDB structures:', npdb_structures
 
 npdb=0
 nscop=0
@@ -30,6 +32,8 @@ nscop_no_pdb = 0
 ntargets = 0
 nfamily_kinases=0
 for i in range(nentries):
+    taxID = DB_root[i].find('UniProt').get('NCBI_taxID')
+    if taxID != '9606': continue
     AC = DB_root[i].find('UniProt').get('AC')
     entry_name = DB_root[i].find('UniProt').get('entry_name')
     pdb = DB_root[i].findall('PDB/structure')
@@ -57,22 +61,22 @@ for i in range(nentries):
         nfamily_kinases+=1
     #    print entry_name
 
-print 'Number of kinases belonging to one of the major families:', nfamily_kinases
-print 'Number of target sequences:', ntargets
+print 'Number of human kinases belonging to one of the major families:', nfamily_kinases
+print 'Number of human target domains:', ntargets
 #print 'Number of kinases with a disease association:', ndisease
 #print 'Number of kinases with a SCOP PK domain:', nscop
 #print 'Number of kinases with both a SCOP PK domain and a disease association:', nscop_disease
-print 'Number of kinases with a PDB structure which includes the PK domain:', npdb
+print 'Number of human kinases with a PDB structure which includes the PK domain:', npdb
 #print 'Number of kinases with both a PK domain PDB structure and a disease association:', npdb_disease
 #print 'Number of kinases with a PK domain PDB structure and no SCOP entry:', npdb_no_scop
 #print 'Number of kinases with a SCOP entry and no PK domain PDB structure:', nscop_no_pdb
 
-nmutants = len(DB_root.findall('entry/mutants/mutant'))
-nbioassays = len(DB_root.findall('entry/bioassays/bioassay'))
-npubs = len(DB_root.findall('entry/NCBI_Gene/entry/publications/publication'))
-print 'Total number of mutants:', nmutants
-print 'Total number of bioassays:', nbioassays
-print 'Total number of publications:', npubs
+nmutants = len(DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/../mutants/mutant'))
+nbioassays = len(DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/../bioassays/bioassay'))
+npubs = len(DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/../NCBI_Gene/entry/publications/publication'))
+print 'Total number of mutants (human):', nmutants
+print 'Total number of bioassays (human):', nbioassays
+print 'Total number of publications (human):', npubs
 
 print ''
 
@@ -431,7 +435,7 @@ def print_pdbs_by_UniProt_entry_name(entry_name, print_expr_data=False):
 # ==========================
 # Put function calls here
 # ==========================
-#print_attribs('kinase/pk_pdb/expression_data', 'EXPRESSION_SYSTEM')
+#print_attribs('entry/PDB/structure/expression_data', 'EXPRESSION_SYSTEM')
 #write_targets_prioritized()
 #print_GeneIDs()
 #print_pubs()
