@@ -2,6 +2,12 @@ import os, textwrap
 #import choderalab
 from lxml.builder import E
 
+# ========
+# Global package variables
+# ========
+
+datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
+
 # =========
 # Project initialization
 # =========

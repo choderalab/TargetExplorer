@@ -41,7 +41,7 @@ domain_names_filename = 'domain_names.txt'
 ignore_uniprot_pdbs = ['1GQ5']
 
 argparser = argparse.ArgumentParser(description='Gather UniProt')
-argparser.add_argument('--use_existing_uniprot', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true')
+argparser.add_argument('--use_existing_uniprot', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true', default=False)
 args = argparser.parse_args()
 
 now = datetime.datetime.utcnow()
@@ -53,8 +53,7 @@ parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
 #==============================================================================
 
 # If the UniProt external data does not already exist, download it
-if not os.path.exists(uniprot_xml_out_filepath) and not args.use_existing_uniprot:
-    print 'UniProt XML document not found.'
+if not os.path.exists(uniprot_xml_out_filepath) or args.use_existing_uniprot != True:
     print 'Retrieving new XML document from UniProt website.'
     new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(config.uniprot_query_string_url)
     print 'Saving new XML document as:', uniprot_xml_out_filepath
