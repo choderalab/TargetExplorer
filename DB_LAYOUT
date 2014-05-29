@@ -6,7 +6,7 @@
     @PDB_date_run etc.
 
     <entry>
-        <UniProt AC= entry_name= family= > (one)
+        <UniProt AC= entry_name= family= NCBI_taxID= > (one)
             <recommended_name>
             <gene_names>
                 <gene_name type="primary">
