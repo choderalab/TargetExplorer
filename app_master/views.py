@@ -71,17 +71,15 @@ def not_found(error):
 # Examples:
 # http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/entry?ac=P00519
 
-#@app.route('/<string:leadingpath>/<string:query_string>', methods = ['GET'])
 @app.route('/<string:leadingpath>/entry', methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
-#def get_dbentry(leadingpath, query_string):
 def get_dbentry(leadingpath):
     # note: leadingpath is ignored
 
     ac = request.args.get('ac')
     if ac == None:
         abort(404)
-    # XXX TODO UniProt AC format will be extended some time after June 11 2014!
+    # TODO UniProt AC format will be extended some time after June 11 2014!
     elif not (re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', ac) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', ac)):
         abort(404)
 
@@ -128,7 +126,7 @@ def get_dbentry(leadingpath):
 # ======
 
 # Examples:
-# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?query="family=TK+AND+db_target_rank<300"
+# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?query="family=TK AND db_target_rank<300"
 
 @app.route('/<string:leadingpath>/search', methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
