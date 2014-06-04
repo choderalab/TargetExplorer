@@ -102,7 +102,6 @@ if True:
 
 def extract_bindingdb(input_data):
     AC, grep_path, bindingdb_matches_filepath = input_data
-    print AC
     DB_entry_bindingdb_data_filepath = os.path.join(bindingdb_data_dir, AC + '.tab')
     subprocess.call('%(grep_path)s "%(AC)s" %(bindingdb_matches_filepath)s > %(DB_entry_bindingdb_data_filepath)s' % vars(), shell=True)
     bioassays_data = []

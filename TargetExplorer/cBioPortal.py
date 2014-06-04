@@ -235,7 +235,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
             returned_gene_id = words[1]
             aa_change_strings = words[2:]
 
-            if debug:
+            if verbose:
                 print returned_gene_id
 
             # Make a flat list of aa changes (with multiple-mutation aa_changes split into separate elements)

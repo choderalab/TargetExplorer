@@ -80,6 +80,7 @@ class Structure_Data(object):
         self.exception_message = exception_message
         self.chains = []
         self.expression_data = None
+        self.pdbcompoundID = None
     def add_chain_results(self, chain_results):
         self.chains.append(chain_results)
     def add_expression_data(self, expression_data):
@@ -236,6 +237,7 @@ def gather_pdb(e):
         # Bio PDB compound structure: {'compound': {'1': {'chain': 'a, b'}}}
         pdbcompounds = pdbheader['compound']
         #skip_structure = False
+        matching_pdbcompoundID = None
         for pdbcompoundID in pdbcompounds.keys():
             try:
                 for pdbchainID in pdbcompounds[pdbcompoundID]['chain'].split(', '):
@@ -266,12 +268,13 @@ def gather_pdb(e):
         #    continue
 
         expression_data = {}
-        # Bio PDB source structure: {'source': {'1': {'expression_system': 'escherichia coli'}}}
-        pdbexpression_data = pdbheader['source'][matching_pdbcompoundID]
-        for key in pdbexpression_data.keys():
-            if key[0:10] == 'expression':
-                # Make expression data upper-case again. I think it looks better for single-case text.
-                expression_data[key.upper()] = pdbexpression_data[key].upper()
+        if matching_pdbcompoundID != None:
+            # Bio PDB source structure: {'source': {'1': {'expression_system': 'escherichia coli'}}}
+            pdbexpression_data = pdbheader['source'][matching_pdbcompoundID]
+            for key in pdbexpression_data.keys():
+                if key[0:10] == 'expression':
+                    # Make expression data upper-case again. I think it looks better for single-case text.
+                    expression_data[key.upper()] = pdbexpression_data[key].upper()
 
         # ======
         # Iterate through chains
@@ -619,7 +622,7 @@ if __name__ == '__main__':
             for expression_data_key in expression_data.keys():
                 DB_expression_data_node.set(expression_data_key, expression_data[expression_data_key])
             DB_structure_node.insert(0, DB_expression_data_node)
-            DB_structure_node.set('pdbcompoundID', structure_result.pdbcompoundID)
+            DB_structure_node.set('pdbcompoundID', str(structure_result.pdbcompoundID))
 
     # =======================
     # Delete PDB structure and chain entries with @DELETE_ME attrib. These were cases where the sifts_uniprotAC did not match the uniprotAC in DB_root (derived from the UniProt entry by gather-uniprot.py), or where more than 90% of the experimental sequence was unobserved

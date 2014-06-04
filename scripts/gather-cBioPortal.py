@@ -46,7 +46,7 @@ if run_mode != 'nowrite':
 
 verbose = False
 
-download_cbioportal_data = False
+download_cbioportal_data = True
 
 now = datetime.datetime.utcnow()
 datestamp = now.strftime(clab.DB.datestamp_format_string)

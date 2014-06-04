@@ -39,6 +39,8 @@ datestamp = now.strftime(clab.DB.datestamp_format_string)
 
 parser = etree.XMLParser(remove_blank_text=True)
 
+target_taxID = 9606
+
 # ==============
 # Scoring functions
 # ==============
@@ -109,6 +111,7 @@ def target_domain_length_score_fn(target_domain):
     return target_domain_length_score
 
 def overall_target_score_fn(pubs_score, pubs_score_max, cbioportal_mutations_score, cbioportal_mutations_score_max, disease_score, disease_score_max, bioassays_score, bioassays_score_max, PDB_score, PDB_score_max, pseudogene_score, target_domain_length_score):
+    # print pubs_score_max, cbioportal_mutations_score_max, disease_score_max, bioassays_score_max, PDB_score_max
     target_score = (pubs_score / pubs_score_max) + (0.5 * (cbioportal_mutations_score / cbioportal_mutations_score_max)) + (0.5 * (disease_score / disease_score_max)) + (bioassays_score / bioassays_score_max) + (0.5 * (PDB_score / PDB_score_max)) + pseudogene_score + target_domain_length_score
     return target_score
 
@@ -119,13 +122,15 @@ def overall_target_score_fn(pubs_score, pubs_score_max, cbioportal_mutations_sco
 
 DB_root = etree.parse(DBstage_filepath, parser).getroot()
 nentries = len(DB_root)
+target_entries = DB_root.findall('entry/UniProt[@NCBI_taxID="%d"]/..' % target_taxID)
+ntarget_entries = len(target_entries)
 
 # ==============
 # Go through each target domain, conduct initial scoring, and store as attribs
 # ==============
 
-for e in range(len(DB_root)):
-    DBentry_node = DB_root[e]
+for e in range(ntarget_entries):
+    DBentry_node = target_entries[e]
     name = DBentry_node.find('UniProt').get('entry_name')
 
     target_score_node = etree.SubElement(DBentry_node, 'target_score')
@@ -199,8 +204,8 @@ PDB_score_max = max( [float(x.get('PDBs')) for x in DB_root.findall('entry/targe
 # Iterate through kinases again, calculating overall target_scores
 # ==============
 
-for e in range(len(DB_root)):
-    DBentry_node = DB_root[e]
+for e in range(ntarget_entries):
+    DBentry_node = target_entries[e]
     name = DBentry_node.find('UniProt').get('entry_name')
 
     target_score_node = DBentry_node.find('target_score')
@@ -241,8 +246,8 @@ all_targetIDs = [ t.get('targetID') for t in DB_root.findall('entry/target_score
 dict_for_sorting = { t.get('targetID') : t.get('target_score') for t in DB_root.findall('entry/target_score/domain') }
 all_targetIDs_sorted = sorted(all_targetIDs, key = lambda x: dict_for_sorting[x], reverse=True)
 
-for e in range(len(DB_root)):
-    DBentry_node = DB_root[e]
+for e in range(ntarget_entries):
+    DBentry_node = target_entries[e]
     target_domains = DBentry_node.findall('UniProt/domains/domain[@targetID]')
     for target_domain in target_domains:
         targetID = target_domain.get('targetID')

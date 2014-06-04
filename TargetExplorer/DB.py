@@ -153,12 +153,12 @@ def target_info_dict(pk_domain_node):
 
     # domain specific info
     targetID = pk_domain_node.get('targetID')
-    pk_domain_id = int(pk_domain_node.get('id'))
-    pk_domain_score_node = entry_node.find('target_score/pk_domain[@targetID="%(targetID)s"]' % vars())
+    pk_domain_id = int(pk_domain_node.get('domainID'))
+    pk_domain_score_node = entry_node.find('target_score/domain[@targetID="%(targetID)s"]' % vars())
     target_score = float( pk_domain_score_node.get('target_score') )
     family = pk_domain_node.getparent().get('family')
     pk_domain_length = pk_domain_node.get('length')
-    npk_pdbs = pk_domain_score_node.get('npk_pdbs')
+    npk_pdbs = pk_domain_score_node.get('nPDBs')
     pseudogene_score = float(pk_domain_score_node.get('pseudogene'))
     if pseudogene_score == 0.:
         pseudogene = ''

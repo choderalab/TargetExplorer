@@ -19,10 +19,13 @@ print 'Number of entries:', nentries
 print 'Number of human entries:', nhuman_entries
 
 # XXX
-npdb_structures = len( DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/../PDB/structure') )
-print 'Number of human PDB structures:', npdb_structures
+npdb_structures = len( DB_root.findall('entry/UniProt/../PDB/structure') )
+npdb_structures_hum = len( DB_root.findall('entry/UniProt[@NCBI_taxID="9606"]/../PDB/structure') )
+print 'Number of PDB structures:', npdb_structures
+print 'Number of human PDB structures:', npdb_structures_hum
 
 npdb=0
+npdbhum=0
 nscop=0
 ndisease=0
 npdb_disease = 0
@@ -33,7 +36,6 @@ ntargets = 0
 nfamily_kinases=0
 for i in range(nentries):
     taxID = DB_root[i].find('UniProt').get('NCBI_taxID')
-    if taxID != '9606': continue
     AC = DB_root[i].find('UniProt').get('AC')
     entry_name = DB_root[i].find('UniProt').get('entry_name')
     pdb = DB_root[i].findall('PDB/structure')
@@ -44,12 +46,11 @@ for i in range(nentries):
     family = DB_root[i].find('UniProt').get('family')
     if pdb != []:
         npdb+=1
-        #print entry_name
-    #if scop != []:
-    #    nscop+=1
-    if disease != []:
+        if taxID == '9606':
+            npdbhum+=1
+    if disease != [] and taxID == '9606':
         ndisease+=1
-    if (pdb != []) & (disease != []):
+    if (pdb != []) and (disease != []) and taxID == '9606':
         npdb_disease+=1
     #if (scop != []) & (disease != []):
     #    nscop_disease+=1
@@ -57,7 +58,7 @@ for i in range(nentries):
     #    npdb_no_scop+=1
     #if (len(pdb) == 0) & (len(scop) != 0):
     #    nscop_no_pdb+=1
-    if family in ['AGC','CAMK','CMGC','CK1','STE','TKL','TK']:
+    if family in ['AGC','CAMK','CMGC','CK1','STE','TKL','TK'] and taxID == '9606':
         nfamily_kinases+=1
     #    print entry_name
 
@@ -66,7 +67,8 @@ print 'Number of human target domains:', ntargets
 #print 'Number of kinases with a disease association:', ndisease
 #print 'Number of kinases with a SCOP PK domain:', nscop
 #print 'Number of kinases with both a SCOP PK domain and a disease association:', nscop_disease
-print 'Number of human kinases with a PDB structure which includes the PK domain:', npdb
+print 'Number of kinases with a PDB structure which includes the PK domain:', npdb
+print 'Number of human kinases with a PDB structure which includes the PK domain:', npdbhum
 #print 'Number of kinases with both a PK domain PDB structure and a disease association:', npdb_disease
 #print 'Number of kinases with a PK domain PDB structure and no SCOP entry:', npdb_no_scop
 #print 'Number of kinases with a SCOP entry and no PK domain PDB structure:', nscop_no_pdb
@@ -407,6 +409,16 @@ def print_nkinases_expressed_in(expression_systems):
     # for expression_system in expression_systems:
 
 # ==========================
+# Print non-human PDBs expressed in
+# ==========================
+
+def print_nonhuman_pdbs_expressed_in(expression_system):
+    PDBs = DB_root.xpath('entry/UniProt[@NCBI_taxID!="9606"]/../PDB/structure/expression_data[contains(@EXPRESSION_SYSTEM,"%s")]/..' % expression_system)
+   #  PDBs = DB_root.xpath('entry/PDB/structure/expression_data[contains(@EXPRESSION_SYSTEM,"%s")]' % expression_system)
+    pdbids = ['%20s  %s' % (pdb.getparent().getparent().find('UniProt').get('entry_name'), pdb.get('ID')) for pdb in PDBs]
+    print '\n'.join(pdbids)
+
+# ==========================
 # Prints PDB info for a given DB entry
 # ==========================
 
@@ -443,6 +455,7 @@ def print_pdbs_by_UniProt_entry_name(entry_name, print_expr_data=False):
 #print_bioassay_types()
 #print_bioassay_seqs(['SRC_HUMAN'])
 #print_kinases_expressed_in('ESCHERICHIA')
-print_nkinases_expressed_in(['ESCHERICHIA', 'SPODOPTERA'])
+#print_nkinases_expressed_in(['ESCHERICHIA', 'SPODOPTERA'])
+print_nonhuman_pdbs_expressed_in('ESCHERICHIA')
 #print_pdbs_by_UniProt_entry_name('ABL1_HUMAN', print_expr_data='EXPRESSION_SYSTEM')
 
