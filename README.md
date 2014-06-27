@@ -12,23 +12,24 @@ Overview
 
 _Note:_ The code is in the process of being migrated from an XML-based database
 to an SQLite implementation. The old, stable XML-based code can be found in the
-branch _XML_.
+_XML_ branch.
 
 The database is generated using a series of scripts which gather in data from
-various public web resources. The first script to run is tedb\_init.py, which
-initializes a new database. This should be followed by
-tedb\_gather\_uniprot.py, which retrieves a set of UniProt entries defined by a
-given search term. These UniProt entries define the top-level nodes of this
-database. Subsequent scripts add in data from various other databases such as
-the PDB, NCBI Gene, cBioPortal, and BindingDB.
+various public web resources. The first script to run is DoraCommit.py, which
+initializes the necessary files and directory structure for a new database.
+This should be followed by DoraGatherUniProt.py, which retrieves a set of
+UniProt entries defined by a given search term. Subsequent scripts (once they
+have been migrated over from the XML branch) add in data from various other
+databases such as the PDB, NCBI Gene, cBioPortal, and BindingDB.
 
-A Flask HTTP server is also provided, which serves database requests in JSON
-format.
+The above-mentioned scripts add data to the staging database. To commit this to
+the public-facing, master database, run DoraCommit.py. A Flask HTTP server is
+provided for the master database. It serves requests in JSON format.
 
 A [frontend web client](https://github.com/choderalab/kinomeDB-webclient) is
 currently in development, and an early working version can be seen here:
 
-http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDB/
+http://plfah2.mskcc.org/kinomeDB/
 
 Manifest
 --------
@@ -37,7 +38,9 @@ scripts/ - scripts for generating and analyzing the database
 
 TargetExplorer/ - main code library
 
-flaskapp/ - Flask HTTP server
+app\_master/ - data model and Flask HTTP server (master)
+
+app\_stage/ - data model (staging)
 
 resources/ - other miscellaneous files
 
