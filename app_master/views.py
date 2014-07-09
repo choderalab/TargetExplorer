@@ -69,7 +69,7 @@ def not_found(error):
 # ======
 
 # Examples:
-# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/entry?ac=P00519
+# http://.../kinomeDBAPI/entry?ac=P00519
 
 @app.route('/<string:leadingpath>/entry', methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
@@ -126,7 +126,7 @@ def get_dbentry(leadingpath):
 # ======
 
 # Examples:
-# http://ec2-54-227-62-182.compute-1.amazonaws.com/kinomeDBAPI/search?query="family=TK AND db_target_rank<300"
+# http://.../kinomeDBAPI/search?query=family=TK AND db_target_rank<300
 
 @app.route('/<string:leadingpath>/search', methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])

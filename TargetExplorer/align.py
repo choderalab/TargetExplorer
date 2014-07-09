@@ -99,7 +99,11 @@ Returns a list of aligned sequences
     nseq = len(sequence_ids)
     seq_string = ''
     for s in range(nseq):
-        seq_string += '>%s\n%s\n' % (sequence_ids[s], TargetExplorer.core.seqwrap(sequences[s]))
+        try:
+            seq_string += '>%s\n%s\n' % (sequence_ids[s], TargetExplorer.core.seqwrap(sequences[s]))
+        except:
+            print sequence_ids[s], sequences[s]
+            raise
 
     # Construct the command string
     command = '%(clustalo_binary)s -i - --outfmt=%(outfmt)s' % vars()
