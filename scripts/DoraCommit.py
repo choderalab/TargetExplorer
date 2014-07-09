@@ -41,7 +41,7 @@ app_master.db.drop_all()
 app_master.db.create_all()
 
 # copy data from stage db to master db
-for table_name in app_stage.models.class_names:
+for table_name in app_stage.models.table_class_names:
     stage_table = getattr(app_stage.models, table_name)
     stage_rows = stage_table.query.all()
     for stage_row in stage_rows:

@@ -71,9 +71,9 @@ def not_found(error):
 # Examples:
 # http://.../kinomeDBAPI/entry?ac=P00519
 
-@app.route('/<string:leadingpath>/entry', methods = ['GET'])
+@app.route('/%s/entry' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
-def get_dbentry(leadingpath):
+def get_dbentry():
     # note: leadingpath is ignored
 
     ac = request.args.get('ac')
@@ -128,25 +128,13 @@ def get_dbentry(leadingpath):
 # Examples:
 # http://.../kinomeDBAPI/search?query=family=TK AND db_target_rank<300
 
-@app.route('/<string:leadingpath>/search', methods = ['GET'])
+@app.route('/%s/search' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def query_db(leadingpath):
-    query = request.args.get('query')
-    query_statements = [query] # TODO split statements separated by ' AND ' and ' OR '
-    for query_statement in query_statements:
-        for comparator in ['!=', '!<', '!>', '<=', '>=', '<', '>', '=']:
-            if comparator in query_statement:
-                query_split = query_statement.split(comparator)
-                query_field = query_split[0]
-                query_value = query_split[1]
-                break
-        if query_field in models.UniProt.__dict__.keys():
-            sql_query = "%s%s'%s'" % (query_field, comparator, query_value)
-            uniprot_entries = db.session.query(models.UniProt).filter(sql_query)
-            db_entries = []
-            for uniprot_entry in uniprot_entries:
-                db_entry = db.session.query(models.DBEntry).filter_by(id=uniprot_entry.dbentry_id).first()
-                db_entries.append(db_entry)
+    frontend_query_string = request.args.get('query') # expecting SQLAlchemy syntax (wtih frontend-style field names)
+
+    sql_query_string = frontend_query_string
+    for frontend_field_name, backend_data_lists in models.frontend2backend_mappings.iteritems():
 
     targets_obj = {'results': []}
 
