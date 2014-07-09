@@ -69,7 +69,7 @@ def not_found(error):
 # ======
 
 # Examples:
-# http://.../kinomeDBAPI/entry?ac=P00519
+# http://.../[DB_NAME]DBAPI/entry?ac=P00519
 
 @app.route('/%s/entry' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
@@ -126,19 +126,38 @@ def get_dbentry():
 # ======
 
 # Examples:
-# http://.../kinomeDBAPI/search?query=family=TK AND db_target_rank<300
+# http://.../[DB_NAME]DBAPI/search?query=family=TK AND db_target_rank<300
 
 @app.route('/%s/search' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
-def query_db(leadingpath):
+def query_db():
     frontend_query_string = request.args.get('query') # expecting SQLAlchemy syntax (wtih frontend-style field names)
 
+    # Convert the frontend data fields to backend identifiers '[table].[column]'
+    # And determine which tables will need to be queried
     sql_query_string = frontend_query_string
-    for frontend_field_name, backend_data_lists in models.frontend2backend_mappings.iteritems():
+    query_tables = []
+    for frontend_field_name, backend_data_list in models.frontend2backend_mappings.iteritems():
+        sql_query_string = sql_query_string.replace(frontend_field_name, '.'.join(backend_data_list))
+        query_tables.append(backend_data_list[0])
+    query_tables = set(query_tables)
 
+    # Start with the DBEntry table, then carry out SQL joins with the other tables
+    query = db.session.query(models.DBEntry)
+    for query_table_name in query_tables:
+        query_table = models.__dict__[query_table_name]
+        if not hasattr(query_table, 'dbentry_id'):
+            raise Exception, 'ERROR: Cannot filter on table %s (no relationship to table DBEntry)' % query_table_name
+
+        query = query.join(query_table, models.DBEntry.id==query_table.dbentry_id)
+
+    # Use the query string to filter DBEntry rows
+    results = query.filter(sql_query_string)
+
+    # Build results object
     targets_obj = {'results': []}
 
-    for db_entry in db_entries:
+    for db_entry in results:
         uniprot = db.session.query(models.UniProt).filter_by(dbentry_id=db_entry.id).first()
         target_obj = {
             'ac': uniprot.ac,
@@ -148,5 +167,6 @@ def query_db(leadingpath):
         }
         targets_obj['results'].append(target_obj)
 
+    # Return results in JSON format
     response = make_response( jsonify(targets_obj) )
     return response

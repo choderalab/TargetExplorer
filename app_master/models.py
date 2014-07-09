@@ -15,6 +15,12 @@ class_names = [
     'EnsemblGeneEntry',
     'HGNCEntry']
 
+frontend2backend_mappings = {
+    'family': ['UniProt', 'family'],
+    'species': ['UniProt', 'taxon_name_common'],
+    'domain_length': ['UniProtDomain', 'length'],
+}
+
 
 class Version(db.Model):
     __tablename__ = 'version'
