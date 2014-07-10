@@ -23,6 +23,7 @@ uniprot_domain_regex = 'EXAMPLE... ^Protein kinase(?!; truncated)(?!; inactive)'
 
 # Don't edit this part
 DB_NAME = ''' + '\'%s\'' % (args.db_name) + '''
+dbapi_name = DB_NAME + 'DBAPI'
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 targetexplorer_install_dir = ''' + '\'%s\'' % tedb_basedir)
 
