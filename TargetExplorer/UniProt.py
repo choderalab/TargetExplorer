@@ -108,10 +108,10 @@ def retrieve_uniprot(search_string_query, maxreadlength=100000000):
     makes xpath searching annoying
     '''
 
-    url = 'http://www.uniprot.org/uniprot/'
-    response = urllib2.urlopen(url + search_string_query)
+    base_url = 'http://www.uniprot.org/uniprot/?query='
+    url_request_string = base_url + urllib.quote_plus(search_string_query) + '&force=yes&format=xml'
+    response = urllib2.urlopen(url_request_string)
     page = response.read(maxreadlength)
-    #page = page.replace('xmlns="http://uniprot.org/uniprot" ', 'retrieve_date="'+datestamp+'" ', 1)
     page = page.replace('xmlns="http://uniprot.org/uniprot" ', '', 1)
 
     return page
@@ -167,7 +167,6 @@ e.g. ACC+ID (from)
 
     url_query = urllib.urlencode(query_params)
     request = urllib2.Request(url,url_query)
-    #contact = 'partond@mskcc.org'
     request.add_header('User-Agent', 'Python contact')
     response = urllib2.urlopen(request)
     page = response.read(200000)
@@ -200,7 +199,6 @@ def retrieve_uniprotACs(query_data):
         
         url_query = urllib.urlencode(query_params)
         request = urllib2.Request(url,url_query)
-        #contact = 'partond@mskcc.org'
         request.add_header('User-Agent', 'Python contact')
         response = urllib2.urlopen(request)
         page = response.read(200000)
@@ -228,7 +226,6 @@ def query_uniprot_multiple(query_params):
         
         url_query = urllib.urlencode(q)
         request = urllib2.Request(url,url_query)
-        #contact = 'partond@mskcc.org'
         request.add_header('User-Agent', 'Python contact')
         response = urllib2.urlopen(request)
         page = response.read(200000)
@@ -251,7 +248,6 @@ def query_uniprot(query_params):
 
     url_query = urllib.urlencode(query_params)
     request = urllib2.Request(url,url_query)
-    #contact = 'partond@mskcc.org'
     request.add_header('User-Agent', 'Python contact')
     response = urllib2.urlopen(request)
     page = response.read(200000)

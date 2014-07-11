@@ -17,8 +17,7 @@ if not os.path.exists('config.py'):
     with open('config.py', 'w') as new_config_file:
         new_config_file.write('''import os
 # Edit this part
-uniprot_query_string = 'EXAMPLE... (taxonomy:9606 AND domain:"protein kinase") AND reviewed:yes'
-uniprot_query_string_url = 'EXAMPLE... ?query=%28taxonomy%3A9606+AND+domain%3A%22protein+kinase%22%29+AND+reviewed%3Ayes&sort=score&format=xml'
+uniprot_query_string = 'EXAMPLE... domain:"protein kinase" AND reviewed:yes'
 uniprot_domain_regex = 'EXAMPLE... ^Protein kinase(?!; truncated)(?!; inactive)'
 
 # Don't edit this part
@@ -34,8 +33,8 @@ if not os.path.exists(wsgi_filepath):
     import shutil
     shutil.copy(wsgi_src_filepath, wsgi_filepath)
 
-from app_config import SQLALCHEMY_DATABASE_URI
-from app_config import SQLALCHEMY_MIGRATE_REPO
+# from app_config import SQLALCHEMY_DATABASE_URI
+# from app_config import SQLALCHEMY_MIGRATE_REPO
 import app_master, app_stage
 
 # create database

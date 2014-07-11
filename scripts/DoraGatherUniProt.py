@@ -35,7 +35,7 @@ if not os.path.exists(uniprot_data_dir):
 
 uniprot_xml_out_filepath = os.path.join(uniprot_data_dir, 'uniprot-search.xml')
 
-domain_names_filename = 'domain_names.txt'
+domain_names_filename = 'selected_domain_names.txt'
 
 # 1GQ5 is referenced by kinase P16234. The kinase is not in the actual structure.
 ignore_uniprot_pdbs = ['1GQ5']
@@ -55,7 +55,7 @@ parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
 # If the UniProt external data does not already exist, download it
 if not os.path.exists(uniprot_xml_out_filepath) or args.use_existing_uniprot != True:
     print 'Retrieving new XML document from UniProt website.'
-    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(config.uniprot_query_string_url)
+    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(config.uniprot_query_string)
     print 'Saving new XML document as:', uniprot_xml_out_filepath
     with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_file:
         uniprot_xml_file.write(new_xml_text + '\n')
@@ -79,42 +79,43 @@ domain_names_str += 'Number of domains matching regex: %d\n\n' % len(selected_do
 
 domain_names_str += '= Unique domain names which match regex =\n'
 selected_domain_names = list(set([ d.get('description') for d in selected_domains ]))
-selected_domain_name_populations = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in selected_domain_names ]
+selected_domain_name_counts = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in selected_domain_names ]
 for i in range(len(selected_domain_names)):
     domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(selected_domain_names[i],
-        selected_domain_name_populations[i],
+        selected_domain_name_counts[i],
         name_width=max([len(n)+4 for n in selected_domain_names]),
-        pop_width=max([len(str(p))+1 for p in selected_domain_name_populations])
+        pop_width=max([len(str(p))+1 for p in selected_domain_name_counts])
     )
 domain_names_str += '\n'
+print domain_names_str,
+
+print '(Unique domain names which do not match regex will be output to %s)' % domain_names_filename
 
 domain_names_str += '= Unique domain names which do not match regex =\n'
-print domain_names_str,
-all_domain_names = list(set([ d.get('description') for d in all_domains ]))
-all_domain_name_populations = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in all_domain_names ]
-for i in range(len(all_domain_names)):
-    domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(all_domain_names[i],
-        all_domain_name_populations[i],
-        name_width=max([len(n)+4 for n in all_domain_names]),
-        pop_width=max([len(str(p))+1 for p in all_domain_name_populations])
+nonselected_domain_names = list(set([ d.get('description') for d in all_domains if d not in selected_domain_names ]))
+nonselected_domain_name_counts = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in nonselected_domain_names ]
+for i in range(len(nonselected_domain_names)):
+    domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(nonselected_domain_names[i],
+        nonselected_domain_name_counts[i],
+        name_width=max([len(n)+4 for n in nonselected_domain_names]),
+        pop_width=max([len(str(p))+1 for p in nonselected_domain_name_counts])
     )
 domain_names_str += '\n'
 with open(domain_names_filename, 'w') as domain_names_file:
     domain_names_file.write(domain_names_str)
-print '(output to %s)' % domain_names_filename
-print ''
 
 
 # ========
 # Remove all existing data from db, since all entries will have to be updated after GatherUniProt has been run
 # ========
 
-print 'Deleting all existing content in db-stage'
-print 'Deleting %d DBEntry rows...' % models.DBEntry.query.delete()
-print 'Deleting %d UniProt rows...' % models.UniProt.query.delete()
-print 'Deleting %d UniProtDomain rows...' % models.UniProtDomain.query.delete()
-print 'Deleting %d PDB rows...' % models.PDB.query.delete()
-print ''
+if models.DBEntry.query.count() > 0:
+    print 'Deleting all existing content in db-stage'
+    print 'Deleting %d DBEntry rows...' % models.DBEntry.query.delete()
+    print 'Deleting %d UniProt rows...' % models.UniProt.query.delete()
+    print 'Deleting %d UniProtDomain rows...' % models.UniProtDomain.query.delete()
+    print 'Deleting %d PDB rows...' % models.PDB.query.delete()
+    print ''
 
 
 # ========
@@ -137,11 +138,6 @@ for k in range(nuniprot_entries):
 
     # = Date entry was last modified in UniProt =
     last_uniprot_update = uniprot_entries[k].attrib['modified']
-
-    # XXX exception for SG196_HUMAN, which does not have protein kinase activity, and acts as a mannose kinase instead
-    if entry_name == 'SG196_HUMAN':
-        print 'Skipping kinase as it does not have protein kinase activity (instead acts as a mannose kinase):', ac
-        continue
 
     # = Taxonomy =
     uniprot_organism_node = uniprot_entries[k].find('organism')
@@ -205,14 +201,17 @@ for k in range(nuniprot_entries):
 
 
 
-    # XXX exceptions
-    # These are the entries for which "Protein kinase" domains are known to be not found (case sensitive):
-    # kinases_with_no_PK_domain = ['ALPK1_HUMAN', 'ALPK2_HUMAN', 'ALPK3_HUMAN', 'EF2K_HUMAN', 'TRPM6_HUMAN', 'TRPM7_HUMAN']
-    # These are all alpha-kinases, which have no identity with typical protein kinases.
-    # These kinases will therefore be deleted from the database.
+    # = Exceptions =
+
+    # Skip if no matcing domains found
     if len(selected_domains) < 1:
-        print 'Skipping kinase as it does not possess a domain annotation containing "Protein kinase":', ac
         continue
+
+    # XXX exception for SG196_HUMAN, which does not have protein kinase activity, and acts as a mannose kinase instead
+    if entry_name == 'SG196_HUMAN':
+        print 'Skipping kinase as it does not have protein kinase activity (instead acts as a mannose kinase):', ac
+        continue
+
     # In cases where > 1 PK domain is found, add a warning to the DB entry. In some cases, a pseudokinase is present - these domains are not added.
     warnings_node = etree.Element('warnings')
     if len(selected_domains) > 1:

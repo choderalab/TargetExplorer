@@ -1,4 +1,4 @@
-from app_master import db
+from app_stage import db
 
 class_names = [
     'Version',
@@ -19,6 +19,7 @@ frontend2backend_mappings = {
     'family': ['UniProt', 'family'],
     'species': ['UniProt', 'taxon_name_common'],
     'domain_length': ['UniProtDomain', 'length'],
+   #  'pseudodomain': ['UniProtDomain', 'pseudodomain'],
 }
 
 
@@ -114,6 +115,7 @@ class UniProtDomain(db.Model):
     end = db.Column(db.Integer)
     length = db.Column(db.Integer)
     sequence = db.Column(db.Text)
+    # pseudodomain = db.Column(db.Boolean)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
