@@ -142,8 +142,6 @@ def query_db():
         if frontend_field_name in frontend_query_string:
             query_tables.append(backend_data_list[0])
     query_tables = set(query_tables)
-    print sql_query_string
-    print query_tables
 
     # Start with the DBEntry table, then carry out SQL joins with the other tables
     query = db.session.query(models.DBEntry)
