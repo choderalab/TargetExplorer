@@ -137,7 +137,7 @@ for k in range(nuniprot_entries):
         gene_name_data.append(gene_name_obj)
 
     # = Date entry was last modified in UniProt =
-    last_uniprot_update = uniprot_entries[k].attrib['modified']
+    last_uniprot_update = uniprot_entries[k].get('modified')
 
     # = Taxonomy =
     uniprot_organism_node = uniprot_entries[k].find('organism')
@@ -147,13 +147,16 @@ for k in range(nuniprot_entries):
     lineage = uniprot_organism_node.find('lineage')
     lineage_csv = ','.join([taxon.text for taxon in lineage.getchildren()])
 
-    # = Functions, disease associations =
+    # = Functions, disease associations, subcellular locations =
     functions = []
     disease_associations = []
+    subcellular_locations = []
     for x in uniprot_entries[k].findall('./comment[@type="function"]'):
         functions.append( models.UniProtFunction(function=x.findtext('./text')) )
     for x in uniprot_entries[k].findall('./comment[@type="disease"]'):
         disease_associations.append( models.UniProtDiseaseAssociation(disease_association=x.findtext('./text')) )
+    for x in uniprot_entries[k].findall('./comment[@type="subcellular location"]'):
+        subcellular_locations.append( models.UniProtSubcellularLocation(subcellular_location=x.findtext('./subcellularLocation/location')) )
 
     # = Canonical isoform =
 
@@ -238,11 +241,11 @@ for k in range(nuniprot_entries):
             etree.SubElement(warnings_node,'warning').text = 'Kinase contains > 1 "Protein kinase*" domain. Not checked manually yet.'
             #raise Exception, 'More than 1 domain found containing "Protein kinase". Please check the following kinase and adjust the script: %s' % entry_name
     # And a couple of cases with one PK domain which are considered inactive. These kinase entries are removed completely.
-    if selected_domains[0].attrib['description'] == 'Protein kinase; truncated':
+    if selected_domains[0].get('description') == 'Protein kinase; truncated':
         # PLK5_HUMAN. Kinase considered inactive. Protein kinase domain is truncated. Remove it.
         print 'Skipping kinase as PK domain is truncated and considered inactive:', ac
         continue
-    elif selected_domains[0].attrib['description'] == 'Protein kinase; inactive':
+    elif selected_domains[0].get('description') == 'Protein kinase; inactive':
         # PTK7_HUMAN. Kinase considered inactive. Remove it.
         print 'Skipping kinase as PK domain is considered inactive:', ac
         continue
@@ -252,8 +255,8 @@ for k in range(nuniprot_entries):
     for x_iter,x in enumerate(selected_domains):
         # First calculate the PK domain length and sequence
         description = x.get('description')
-        begin = int( x.find('./location/begin').attrib['position'] )
-        end = int( x.find('./location/end').attrib['position'] )
+        begin = int( x.find('./location/begin').get('position') )
+        end = int( x.find('./location/end').get('position') )
         length = end - begin + 1
         targetid = entry_name + '_D' + str(x_iter)
         domain_seq = canonical_sequence[begin-1:end]
@@ -282,7 +285,7 @@ for k in range(nuniprot_entries):
     # Ensembl
     ensembl_gene_entries = []
     ensembl_gene_ids = uniprot_entries[k].findall('./dbReference[@type="Ensembl"]/property[@type="gene ID"]')
-    ensembl_gene_ids_set = set( [ id.attrib['value'] for id in ensembl_gene_ids ] )
+    ensembl_gene_ids_set = set( [ id.get('value') for id in ensembl_gene_ids ] )
     for ensembl_gene_id in ensembl_gene_ids_set:
         ensembl_gene_entries.append( models.EnsemblGeneEntry(gene_id=ensembl_gene_id) )
 
@@ -303,41 +306,39 @@ for k in range(nuniprot_entries):
                 family = TargetExplorer.UniProt.kinase_family_uniprot_similarity_text[f]
 
     # = PDB entries (from UniProt XML) =
-    pdbs = uniprot_entries[k].findall('./dbReference[@type="PDB"]')
+    # keep X-ray and NMR structures (not "Model")
+    pdbs = uniprot_entries[k].xpath('./dbReference[@type="PDB"]/property[@type="method"][@value="X-ray" or @value="NMR"]/..')
     pdb_data = []
     for p in pdbs:
-        # Only keep XRC structures (no NMR or Model) TODO should keep NMR models
-        if p.find('property[@type="method"]') == None:
-            if p.attrib['id'] == '2LV6':
-                continue  # 2LV6 has no method listed - it is actually an NMR structure, including only a very short fragment of the kinase, outside the PK domain
-        elif p.find('property[@type="method"]').attrib['value'] == 'X-ray':
-            pdbid = p.attrib['id']
-            if pdbid in ignore_uniprot_pdbs:
-                continue
-            resolution = p.find('property[@type="resolution"]').attrib['value']
-            chains_span_str = p.find('property[@type="chains"]').attrib['value']
-            chains_span = TargetExplorer.UniProt.parse_uniprot_pdbref_chains(chains_span_str)
-            chains_added = 0
-            for c in chains_span.keys():
-                chainID = c
-                pdb_begin = chains_span[c][0]
-                pdb_end = chains_span[c][1]
-                # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
-                # Have to check against each PK domain
-                for d,domain in enumerate(domains_data):
-                    pk_begin = domain.begin
-                    pk_end = domain.end
-                    if (pdb_begin < pk_begin+30) & (pdb_end > pk_end-30):
-                        domainID = str(d)
-                        pdb_begin = str(pdb_begin)
-                        pdb_end = str(pdb_end)
-                        chains_added += 1
-                    else:
-                        continue
+        pdbid = p.get('id')
+        if pdbid in ignore_uniprot_pdbs:
+            continue
+        pdb_method = p.find('property[@type="method"]').get('value')
+        resolution_node = p.find('property[@type="resolution"]')
+        resolution = resolution_node.get('value') if resolution_node != None else None
+        chains_span_str = p.find('property[@type="chains"]').get('value')
+        chains_span = TargetExplorer.UniProt.parse_uniprot_pdbref_chains(chains_span_str)
+        chains_added = 0
+        for c in chains_span.keys():
+            chainID = c
+            pdb_begin = chains_span[c][0]
+            pdb_end = chains_span[c][1]
+            # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
+            # Have to check against each PK domain
+            for d,domain in enumerate(domains_data):
+                pk_begin = domain.begin
+                pk_end = domain.end
+                if (pdb_begin < pk_begin+30) & (pdb_end > pk_end-30):
+                    domainID = str(d)
+                    pdb_begin = str(pdb_begin)
+                    pdb_end = str(pdb_end)
+                    chains_added += 1
+                else:
+                    continue
 
-                if chains_added > 0:
-                    pdb_obj = models.PDB(pdbid=pdbid)
-                    pdb_data.append(pdb_obj)
+        if chains_added > 0:
+            pdb_obj = models.PDB(pdbid=pdbid, method=pdb_method, resolution=resolution)
+            pdb_data.append(pdb_obj)
 
     # # = Add the warnings node last (only if it contains any warnings) = #
     # TODO still need this?
@@ -350,7 +351,7 @@ for k in range(nuniprot_entries):
     # Construct data objects and add to db
     # ========
 
-    dbentry = models.DBEntry()
+    dbentry = models.DBEntry(npdbs=len(pdb_data), ndomains=len(domains_data), nisoforms=len(isoforms), nfunctions=len(functions), ndiseaseassociations=len(disease_associations))
     db.session.add(dbentry)
     uniprot = models.UniProt(ac=ac, entry_name=entry_name, last_uniprot_update=last_uniprot_update, ncbi_taxonid=ncbi_taxonid, dbentry=dbentry, recommended_name=recommended_name, taxon_name_scientific=taxon_name_scientific, taxon_name_common=taxon_name_common, lineage=lineage_csv)
     if family:
@@ -358,24 +359,28 @@ for k in range(nuniprot_entries):
     db.session.add(uniprot)
     for function_obj in functions:
         function_obj.dbentry = dbentry
-        function_obj.uniprotentry = uniprot
+        function_obj.uniprot_entry = uniprot
         db.session.add(function_obj)
     for disease_association_obj in disease_associations:
         disease_association_obj.dbentry = dbentry
-        disease_association_obj.uniprotentry = uniprot
+        disease_association_obj.uniprot_entry = uniprot
         db.session.add(disease_association_obj)
+    for subcellular_location_obj in subcellular_locations:
+        subcellular_location_obj.dbentry = dbentry
+        subcellular_location_obj.uniprot_entry = uniprot
+        db.session.add(subcellular_location_obj)
     for isoform_data in isoforms:
         isoform_obj = isoform_data[0]
         notes = isoform_data[1]
         isoform_obj.dbentry = dbentry
-        isoform_obj.uniprotentry = uniprot
+        isoform_obj.uniprot_entry = uniprot
         db.session.add(isoform_obj)
         for note_obj in notes:
             note_obj.uniprotisoform = isoform_obj
             db.session.add(note_obj)
     for domain_obj in domains_data:
         domain_obj.dbentry = dbentry
-        domain_obj.uniprotentry = uniprot
+        domain_obj.uniprot_entry = uniprot
         db.session.add(domain_obj)
     for pdb_obj in pdb_data:
         pdb_obj.dbentry = dbentry

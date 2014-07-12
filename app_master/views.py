@@ -139,17 +139,20 @@ def query_db():
     query_tables = []
     for frontend_field_name, backend_data_list in models.frontend2backend_mappings.iteritems():
         sql_query_string = sql_query_string.replace(frontend_field_name, '.'.join(backend_data_list))
-        query_tables.append(backend_data_list[0])
+        if frontend_field_name in frontend_query_string:
+            query_tables.append(backend_data_list[0])
     query_tables = set(query_tables)
+    print sql_query_string
+    print query_tables
 
     # Start with the DBEntry table, then carry out SQL joins with the other tables
     query = db.session.query(models.DBEntry)
     for query_table_name in query_tables:
-        query_table = models.__dict__[query_table_name]
-        if not hasattr(query_table, 'dbentry_id'):
-            raise Exception, 'ERROR: Cannot filter on table %s (no relationship to table DBEntry)' % query_table_name
-
-        query = query.join(query_table, models.DBEntry.id==query_table.dbentry_id)
+        if query_table_name != 'DBEntry':
+            query_table = models.__dict__[query_table_name]
+            if not hasattr(query_table, 'dbentry_id'):
+                raise Exception, 'ERROR: Cannot filter on table %s (no relationship to table DBEntry)' % query_table_name
+            query = query.join(query_table, models.DBEntry.id==query_table.dbentry_id)
 
     # Use the query string to filter DBEntry rows
     results = query.filter(sql_query_string)

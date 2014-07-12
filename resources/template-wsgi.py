@@ -8,5 +8,6 @@ sys.path.insert(0, targetexplorer_install_dir)
 from app_master import app
 
 if __name__ == '__main__':
+    import app_master
     app_master.app.debug = True
     app_master.app.run()

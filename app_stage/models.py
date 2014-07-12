@@ -1,6 +1,6 @@
 from app_stage import db
 
-class_names = [
+table_class_names = [
     'Version',
     'DBEntry',
     'UniProt',
@@ -16,9 +16,15 @@ class_names = [
     'HGNCEntry']
 
 frontend2backend_mappings = {
+    'npdbs': ['DBEntry', 'npdbs'],
+    'ndomains': ['DBEntry', 'ndomains'],
+    'nisoforms': ['DBEntry', 'nisoforms'],
+    'nfunctions': ['DBEntry', 'nfunctions'],
+    'ndiseaseassociations': ['DBEntry', 'ndiseaseassociations'],
     'family': ['UniProt', 'family'],
     'species': ['UniProt', 'taxon_name_common'],
     'domain_length': ['UniProtDomain', 'length'],
+    'subcellular_location': ['UniProtSubcellularLocation', 'subcellular_location'],
    #  'pseudodomain': ['UniProtDomain', 'pseudodomain'],
 }
 
@@ -38,12 +44,18 @@ class Version(db.Model):
 class DBEntry(db.Model):
     __tablename__ = 'dbentry'
     id = db.Column(db.Integer, primary_key=True)
+    npdbs = db.Column(db.Integer)
+    ndomains = db.Column(db.Integer)
+    nisoforms = db.Column(db.Integer)
+    nfunctions = db.Column(db.Integer)
+    ndiseaseassociations = db.Column(db.Integer)
     uniprot = db.relationship('UniProt', backref='dbentry', lazy='dynamic')
     uniprotdomains = db.relationship('UniProtDomain', backref='dbentry', lazy='dynamic')
     uniprotgenenames = db.relationship('UniProtGeneName', backref='dbentry', lazy='dynamic')
     uniprotisoforms = db.relationship('UniProtIsoform', backref='dbentry', lazy='dynamic')
     uniprotfunctions = db.relationship('UniProtFunction', backref='dbentry', lazy='dynamic')
     uniprotdiseaseassociations = db.relationship('UniProtDiseaseAssociation', backref='dbentry', lazy='dynamic')
+    uniprotsubcellularlocations = db.relationship('UniProtSubcellularLocation', backref='dbentry', lazy='dynamic')
     pdbs = db.relationship('PDB', backref='dbentry', lazy='dynamic')
     ncbi_gene_entries = db.relationship('NCBIGeneEntry', backref='dbentry', lazy='dynamic')
     ensembl_gene_entries = db.relationship('EnsemblGeneEntry', backref='dbentry', lazy='dynamic')
@@ -68,6 +80,7 @@ class UniProt(db.Model):
     genenames = db.relationship('UniProtGeneName', backref='uniprot_entry', lazy='dynamic')
     functions = db.relationship('UniProtFunction', backref='uniprot_entry', lazy='dynamic')
     disease_associations = db.relationship('UniProtDiseaseAssociation', backref='uniprot_entry', lazy='dynamic')
+    subcellular_locations = db.relationship('UniProtSubcellularLocation', backref='uniprot_entry', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
         return '<UniProt AC %r entry_name %r>' % (self.ac, self.entry_name)
@@ -139,13 +152,27 @@ class UniProtDiseaseAssociation(db.Model):
     def __repr__(self):
         return '<UniProtDiseaseAssociation %r>' % (self.disease_association)
 
+class UniProtSubcellularLocation(db.Model):
+    __tablename__ = 'uniprotsubcellularlocation'
+    id = db.Column(db.Integer, primary_key=True)
+    subcellular_location = db.Column(db.Text)
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
+    def __repr__(self):
+        return '<UniProtSubcellularLocation %r>' % (self.subcellular_location)
+
 class PDB(db.Model):
     __tablename__ = 'pdb'
     id = db.Column(db.Integer, primary_key=True)
     pdbid = db.Column(db.String(64))
+    method = db.Column(db.Text)
+    resolution = db.Column(db.Float)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
         return '<PDB ID %r>' % (self.pdbid)
+
+# TODO
+# class PDBChain(db.Model):
 
 class NCBIGeneEntry(db.Model):
     __tablename__ = 'ncbi_gene_entry'
