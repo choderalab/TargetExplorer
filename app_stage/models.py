@@ -10,6 +10,7 @@ table_class_names = [
     'UniProtDomain',
     'UniProtFunction',
     'UniProtDiseaseAssociation',
+    'UniProtSubcellularLocation',
     'PDB',
     'NCBIGeneEntry',
     'EnsemblGeneEntry',
