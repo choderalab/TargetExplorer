@@ -35,20 +35,15 @@ if not os.path.exists(wsgi_filepath):
 
 # from app_config import SQLALCHEMY_DATABASE_URI
 # from app_config import SQLALCHEMY_MIGRATE_REPO
-import app_master, app_stage
+import app_master
 
 # create database
 app_master.db.create_all()
-app_stage.db.create_all()
 
 # add empty version data
 version_row = app_master.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
 app_master.db.session.add(version_row)
 app_master.db.session.commit()
-
-version_row = app_stage.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
-app_stage.db.session.add(version_row)
-app_stage.db.session.commit()
 
 print 'Done.'
 print 'Please now edit the file config.py before running the database generation scripts.'
