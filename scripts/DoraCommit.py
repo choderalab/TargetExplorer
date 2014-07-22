@@ -3,20 +3,16 @@ import TargetExplorer
 import re
 import app_master, app_stage
 
-# sanity check on stage db - make sure each gather script has been run since the last commit
 stage_version_row = app_stage.models.Version.query.first()
 master_version_row = app_master.models.Version.query.first()
 
 data_problem = False
 
+# Test whether each of the scripts have been run, and whether they have been updated in the correct order
 for data_type in ['uniprot']:
     datestamp_type = data_type+'_datestamp'
     stage_datestamp = getattr(stage_version_row, datestamp_type)
     master_datestamp = getattr(master_version_row, datestamp_type)
-    # print stage_datestamp , master_datestamp
-    # print stage_datestamp > master_datestamp
-    # print stage_datestamp < master_datestamp
-    # print stage_datestamp == master_datestamp
     if stage_datestamp == None:
         print 'data_type "%s" FAIL: no data in stage db' % data_type
         data_problem = True
