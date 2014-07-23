@@ -1,9 +1,9 @@
 from flask import abort, jsonify, request, make_response, current_app
-import config
 import re
 from datetime import timedelta
 from functools import update_wrapper
-from app_master import app, db, models
+from flaskapp import app, db, models
+import flaskapp_config
 
 # ======
 # HTTP access control decorator (CORS)
@@ -71,7 +71,7 @@ def not_found(error):
 # Examples:
 # http://.../[DB_NAME]DBAPI/entry?ac=P00519
 
-@app.route('/%s/entry' % config.dbapi_name, methods = ['GET'])
+@app.route('/%s/entry' % flaskapp_config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def get_dbentry():
     # note: leadingpath is ignored
@@ -128,7 +128,7 @@ def get_dbentry():
 # Examples:
 # http://.../[DB_NAME]DBAPI/search?query=family=TK AND db_target_rank<300
 
-@app.route('/%s/search' % config.dbapi_name, methods = ['GET'])
+@app.route('/%s/search' % flaskapp_config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def query_db():
     frontend_query_string = request.args.get('query') # expecting SQLAlchemy syntax (wtih frontend-style field names)

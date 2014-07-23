@@ -9,39 +9,10 @@ from lxml.builder import E
 datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 
 # =========
-# Project initialization
 # =========
 
-def init_project(project_toplevel_dir):
-    '''Initialize TargetExplorer project within a given directory. Creates
-    necessary subdirectories.
-    '''
-
-    # =========
-    # Parameters
-    # =========
-
-    project_dirnames = ['database', 'external-data', 'analysis']
-
-    # =========
-    # Create necessary project directories
-    # =========
-
-    os.chdir(project_toplevel_dir)
-
-    for dirname in project_dirnames:
-        try:
-            os.mkdir(dirname)
-            print 'Created directory "%s"' % dirname
-        except OSError as e:
-            if e.errno == 17:
-                print 'Directory "%s" already exists - will not overwrite' % dirname
-            else:
-                raise
-        
-    print 'Done.'
-
-
+gen_db_stage_path(basedir, db_name):
+    return 'sqlite:///' + basedir, db_name + '-stage.db'
 
 
 # =========

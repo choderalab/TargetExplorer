@@ -13,17 +13,16 @@ if not os.path.exists('external-data'):
     os.mkdir('external-data')
 
 # make user-editable config file
-if not os.path.exists('config.py'):
-    with open('config.py', 'w') as new_config_file:
+if not os.path.exists('project_config.py'):
+    with open('project_config.py', 'w') as new_config_file:
         new_config_file.write('''import os
 # Edit this part
 uniprot_query_string = 'EXAMPLE... domain:"protein kinase" AND reviewed:yes'
 uniprot_domain_regex = 'EXAMPLE... ^Protein kinase(?!; truncated)(?!; inactive)'
 
 # Don't edit this part
-DB_NAME = ''' + '\'%s\'' % (args.db_name) + '''
-dbapi_name = DB_NAME + 'DBAPI'
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+db_name = ''' + '\'%s\'' % (args.db_name) + '''
+project_basedir = os.path.abspath(os.path.dirname(__file__))
 targetexplorer_install_dir = ''' + '\'%s\'' % tedb_basedir)
 
 # copy wsgi file (should not need to be edited)
@@ -33,18 +32,21 @@ if not os.path.exists(wsgi_filepath):
     import shutil
     shutil.copy(wsgi_src_filepath, wsgi_filepath)
 
-# from app_config import SQLALCHEMY_DATABASE_URI
-# from app_config import SQLALCHEMY_MIGRATE_REPO
-import app_master
+import flaskapp
+import flaskapp_config
+flaskapp.app.config['SQLALCHEMY_DATABASE_URI'] = flaskapp_config.sqlite_db_stage_path
 
 # create database
-app_master.db.create_all()
+flaskapp.db.create_all()
 
 # add empty version data
-version_row = app_master.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
-app_master.db.session.add(version_row)
-app_master.db.session.commit()
+version_row = flaskapp.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
+flaskapp.db.session.add(version_row)
+flaskapp.db.session.commit()
+
+# TODO
+# copy db_stage to db
 
 print 'Done.'
-print 'Please now edit the file config.py before running the database generation scripts.'
+print 'Please now edit the file project_config.py before running the database generation scripts.'
 

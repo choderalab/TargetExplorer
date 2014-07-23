@@ -1,4 +1,4 @@
-from app_master import db
+from flaskapp import db
 
 table_class_names = [
     'Version',
