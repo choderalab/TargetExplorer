@@ -11,7 +11,7 @@ datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 # =========
 # =========
 
-gen_db_stage_path(basedir, db_name):
+def gen_db_stage_path(basedir, db_name):
     return 'sqlite:///' + basedir, db_name + '-stage.db'
 
 
