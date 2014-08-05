@@ -18,13 +18,15 @@
 
 import sys, datetime, os, copy, yaml, argparse
 import TargetExplorer
-import config
+import project_config
 from lxml import etree
-from app_stage import models, db
+from flaskapp import models, db
 
 #==============================================================================
 # PARAMETERS
 #==============================================================================
+
+TargetExplorer.core.select_stage_db()
 
 database_dir = 'database'
 external_data_dir = 'external-data'
@@ -55,7 +57,7 @@ parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
 # If the UniProt external data does not already exist, download it
 if not os.path.exists(uniprot_xml_out_filepath) or args.use_existing_uniprot != True:
     print 'Retrieving new XML document from UniProt website.'
-    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(config.uniprot_query_string)
+    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(project_config.uniprot_query_string)
     print 'Saving new XML document as:', uniprot_xml_out_filepath
     with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_file:
         uniprot_xml_file.write(new_xml_text + '\n')
@@ -66,7 +68,7 @@ else:
 print 'Reading UniProt XML document:', uniprot_xml_out_filepath
 uniprot_xml = etree.parse(uniprot_xml_out_filepath, parser).getroot()
 
-domain_names_str = 'Regex: %s\n' % config.uniprot_domain_regex
+domain_names_str = 'Regex: %s\n' % project_config.uniprot_domain_regex
 uniprot_entries = uniprot_xml.findall('entry')
 nuniprot_entries = len(uniprot_entries)
 # Note that xpath querying is case-sensitive
@@ -74,7 +76,7 @@ domain_names_str += 'Number of entries in UniProt XML document: %d\n' % nuniprot
 all_domains = uniprot_xml.xpath('./entry/feature[@type="domain"]')
 domain_names_str += 'Total number of domains: %d\n' % len(all_domains)
 
-selected_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+selected_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
 domain_names_str += 'Number of domains matching regex: %d\n\n' % len(selected_domains)
 
 domain_names_str += '= Unique domain names which match regex =\n'
@@ -196,8 +198,8 @@ for k in range(nuniprot_entries):
     # = UniProt "Protein kinase" domain annotations =
     # XXX TODO Generalize
 
-    if config.uniprot_domain_regex != None:
-        selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+    if project_config.uniprot_domain_regex != None:
+        selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
     else:
         selected_domains = uniprot_entries[k].findall('feature[@type="domain"]')
 

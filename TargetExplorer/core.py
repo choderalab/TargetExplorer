@@ -11,12 +11,9 @@ datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 # =========
 # =========
 
-def gen_db_stage_path(basedir, db_name):
-    return 'sqlite:///' + basedir, db_name + '-stage.db'
-
-
-# =========
-# =========
+def select_stage_db():
+    import flaskapp, flaskapp_config
+    flaskapp.app.config['SQLALCHEMY_DATABASE_URI'] = flaskapp_config.sqlite_db_stage_path
 
 def xpath_match_regex_case_sensitive(context, attrib_values, xpath_argument):
     ''' To be used as an lxml XPath extension, for regex searches of attrib values.

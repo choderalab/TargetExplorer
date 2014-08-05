@@ -1,10 +1,29 @@
 #!/usr/bin/env python
 import TargetExplorer
 import re
-import app_master, app_stage
+import flaskapp as flaskapp_master
 
-stage_version_row = app_stage.models.Version.query.first()
-master_version_row = app_master.models.Version.query.first()
+# master_version_row = flaskapp.models.Version.query.first()
+print flaskapp_master.models.Version.query.first().uniprot_datestamp
+# flaskapp.models.Version.__table__.info['bind_key'] = 'stage'
+# # print flaskapp.models.Version.__table__.__dict__
+# print flaskapp.db
+# master_db = flaskapp.db.session
+# print master_db.query(flaskapp.models.Version).first()
+# import flaskapp
+import flaskapp
+TargetExplorer.core.select_stage_db()
+reload(flaskapp)
+TargetExplorer.core.select_stage_db()
+# stage_db = flaskapp.db.session
+# print flaskapp.db
+# print stage_db.query(flaskapp.models.Version).first()
+print flaskapp.models.Version.query.first().uniprot_datestamp
+# stage_version_row = flaskapp.models.Version.query.first()
+# print master_version_row.uniprot_datestamp
+# print stage_version_row.uniprot_datestamp
+
+import sys; sys.exit()
 
 data_problem = False
 
