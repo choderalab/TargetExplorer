@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, argparse, shutil
+import os, argparse, shutil, datetime
 argparser = argparse.ArgumentParser(description='Initialize TargetExplorer database')
 argparser.add_argument('--db_name', type=str, required=True, help='Database name, without extension')
 args = argparser.parse_args()
@@ -34,19 +34,14 @@ if not os.path.exists(wsgi_filepath):
 import flaskapp, flaskapp_config
 import TargetExplorer
 
-# flaskapp.app.config['SQLALCHEMY_DATABASE_URI'] = flaskapp_config.sqlite_db_stage_path
-TargetExplorer.core.select_stage_db()
-
 # create database
 flaskapp.db.create_all()
 
-# add empty version data
-version_row = flaskapp.models.Version(version_id=0, uniprot_datestamp=None, pdb_datestamp=None)
-flaskapp.db.session.add(version_row)
+# add empty metadata row
+now = datetime.datetime.utcnow()
+metadata_row = flaskapp.models.MetaData(current_crawl_number=0, safe_crawl_number=-1, safe_crawl_datestamp=now)
+flaskapp.db.session.add(metadata_row)
 flaskapp.db.session.commit()
-
-# copy db_stage to db
-shutil.copy(flaskapp_config.sqlite_db_stage_filename, flaskapp_config.sqlite_db_filename)
 
 print 'Done.'
 print 'Please now edit the file project_config.py before running the database generation scripts.'

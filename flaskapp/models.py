@@ -30,21 +30,22 @@ frontend2backend_mappings = {
 }
 
 
-class Version(db.Model):
-    __tablename__ = 'version'
+class MetaData(db.Model):
+    __tablename__ = 'metadata'
     id = db.Column(db.Integer, primary_key=True)
-    version_id = db.Column(db.Integer)
-    uniprot_datestamp = db.Column(db.DateTime)
-    pdb_datestamp = db.Column(db.DateTime)
+    current_crawl_number = db.Column(db.Integer)
+    safe_crawl_number = db.Column(db.Integer)
+    # version_id = db.Column(db.Integer)
+    current_uniprot_datestamp = db.Column(db.DateTime)
+    current_pdb_datestamp = db.Column(db.DateTime)
+    safe_crawl_datestamp = db.Column(db.DateTime)
     def __repr__(self):
-        if self.version_id:
-            return '<DB Version %d>' % (self.version_id)
-        else:
-            return '<DB Version None>'
+        return '<DB MetaData current crawl number %d safe crawl number %d>' % (self.current_crawl_number, self.safe_crawl_number)
 
 class DBEntry(db.Model):
     __tablename__ = 'dbentry'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     npdbs = db.Column(db.Integer)
     ndomains = db.Column(db.Integer)
     nisoforms = db.Column(db.Integer)
@@ -67,6 +68,7 @@ class DBEntry(db.Model):
 class UniProt(db.Model):
     __tablename__ = 'uniprot'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     ac = db.Column(db.String(64), unique=True)
     entry_name = db.Column(db.String(64), unique=True)
     family = db.Column(db.String(64))
@@ -89,6 +91,7 @@ class UniProt(db.Model):
 class UniProtGeneName(db.Model):
     __tablename__ = 'uniprotgenename'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     gene_name = db.Column(db.String(64))
     gene_name_type = db.Column(db.String(64))
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
@@ -99,6 +102,7 @@ class UniProtGeneName(db.Model):
 class UniProtIsoform(db.Model):
     __tablename__ = 'uniprotisoform'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     ac = db.Column(db.String(64))
     canonical = db.Column(db.Boolean)
     length = db.Column(db.Integer)
@@ -115,6 +119,7 @@ class UniProtIsoform(db.Model):
 class UniProtIsoformNote(db.Model):
     __tablename__ = 'uniprotisoformnote'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     note = db.Column(db.Text)
     uniprotisoformid = db.Column(db.Integer, db.ForeignKey('uniprotisoform.id'))
     def __repr__(self):
@@ -123,6 +128,7 @@ class UniProtIsoformNote(db.Model):
 class UniProtDomain(db.Model):
     __tablename__ = 'uniprotdomain'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     targetid = db.Column(db.String(64), unique=True)
     description = db.Column(db.Text())
     begin = db.Column(db.Integer)
@@ -138,6 +144,7 @@ class UniProtDomain(db.Model):
 class UniProtFunction(db.Model):
     __tablename__ = 'uniprotfunction'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     function = db.Column(db.Text)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
@@ -147,6 +154,7 @@ class UniProtFunction(db.Model):
 class UniProtDiseaseAssociation(db.Model):
     __tablename__ = 'uniprotdiseaseassociation'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     disease_association = db.Column(db.Text)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
@@ -156,6 +164,7 @@ class UniProtDiseaseAssociation(db.Model):
 class UniProtSubcellularLocation(db.Model):
     __tablename__ = 'uniprotsubcellularlocation'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     subcellular_location = db.Column(db.Text)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
@@ -165,6 +174,7 @@ class UniProtSubcellularLocation(db.Model):
 class PDB(db.Model):
     __tablename__ = 'pdb'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     pdbid = db.Column(db.String(64))
     method = db.Column(db.Text)
     resolution = db.Column(db.Float)
@@ -178,6 +188,7 @@ class PDB(db.Model):
 class NCBIGeneEntry(db.Model):
     __tablename__ = 'ncbi_gene_entry'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     gene_id = db.Column(db.Integer)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
@@ -186,6 +197,7 @@ class NCBIGeneEntry(db.Model):
 class EnsemblGeneEntry(db.Model):
     __tablename__ = 'ensembl_gene_entry'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     gene_id = db.Column(db.String(64))
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
@@ -194,6 +206,7 @@ class EnsemblGeneEntry(db.Model):
 class HGNCEntry(db.Model):
     __tablename__ = 'hgnc_entry'
     id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
     gene_id = db.Column(db.String(64))
     approved_symbol = db.Column(db.String(64))
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))

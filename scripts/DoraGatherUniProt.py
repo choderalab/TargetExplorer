@@ -26,8 +26,6 @@ from flaskapp import models, db
 # PARAMETERS
 #==============================================================================
 
-TargetExplorer.core.select_stage_db()
-
 database_dir = 'database'
 external_data_dir = 'external-data'
 uniprot_data_dir = os.path.join(external_data_dir, 'UniProt')
@@ -49,6 +47,10 @@ args = argparser.parse_args()
 now = datetime.datetime.utcnow()
 
 parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
+
+# get current crawl number
+metadata_row = models.MetaData.query.first()
+current_crawl_number = metadata_row.current_crawl_number
 
 #==============================================================================
 # RETRIEVE DATA FROM UNIPROT AND STORE TO LOCAL FILE
@@ -91,33 +93,20 @@ for i in range(len(selected_domain_names)):
 domain_names_str += '\n'
 print domain_names_str,
 
-print '(Unique domain names which do not match regex will be output to %s)' % domain_names_filename
-
-domain_names_str += '= Unique domain names which do not match regex =\n'
-nonselected_domain_names = list(set([ d.get('description') for d in all_domains if d not in selected_domain_names ]))
-nonselected_domain_name_counts = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in nonselected_domain_names ]
-for i in range(len(nonselected_domain_names)):
-    domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(nonselected_domain_names[i],
-        nonselected_domain_name_counts[i],
-        name_width=max([len(n)+4 for n in nonselected_domain_names]),
-        pop_width=max([len(str(p))+1 for p in nonselected_domain_name_counts])
-    )
-domain_names_str += '\n'
-with open(domain_names_filename, 'w') as domain_names_file:
-    domain_names_file.write(domain_names_str)
-
-
-# ========
-# Remove all existing data from db, since all entries will have to be updated after GatherUniProt has been run
-# ========
-
-if models.DBEntry.query.count() > 0:
-    print 'Deleting all existing content in db-stage'
-    print 'Deleting %d DBEntry rows...' % models.DBEntry.query.delete()
-    print 'Deleting %d UniProt rows...' % models.UniProt.query.delete()
-    print 'Deleting %d UniProtDomain rows...' % models.UniProtDomain.query.delete()
-    print 'Deleting %d PDB rows...' % models.PDB.query.delete()
-    print ''
+# print '(Unique domain names which do not match regex will be output to %s)' % domain_names_filename
+#
+# domain_names_str += '= Unique domain names which do not match regex =\n'
+# nonselected_domain_names = list(set([ d.get('description') for d in all_domains if d not in selected_domain_names ]))
+# nonselected_domain_name_counts = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in nonselected_domain_names ]
+# for i in range(len(nonselected_domain_names)):
+#     domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(nonselected_domain_names[i],
+#         nonselected_domain_name_counts[i],
+#         name_width=max([len(n)+4 for n in nonselected_domain_names]),
+#         pop_width=max([len(str(p))+1 for p in nonselected_domain_name_counts])
+#     )
+# domain_names_str += '\n'
+# with open(domain_names_filename, 'w') as domain_names_file:
+#     domain_names_file.write(domain_names_str)
 
 
 # ========
@@ -135,7 +124,7 @@ for k in range(nuniprot_entries):
     for gene_name_node in gene_name_nodes:
         gene_name = gene_name_node.text
         gene_name_type = gene_name_node.get('type')
-        gene_name_obj = models.UniProtGeneName(gene_name=gene_name, gene_name_type=gene_name_type)
+        gene_name_obj = models.UniProtGeneName(crawl_number=current_crawl_number, gene_name=gene_name, gene_name_type=gene_name_type)
         gene_name_data.append(gene_name_obj)
 
     # = Date entry was last modified in UniProt =
@@ -154,11 +143,11 @@ for k in range(nuniprot_entries):
     disease_associations = []
     subcellular_locations = []
     for x in uniprot_entries[k].findall('./comment[@type="function"]'):
-        functions.append( models.UniProtFunction(function=x.findtext('./text')) )
+        functions.append( models.UniProtFunction(crawl_number=current_crawl_number, function=x.findtext('./text')) )
     for x in uniprot_entries[k].findall('./comment[@type="disease"]'):
-        disease_associations.append( models.UniProtDiseaseAssociation(disease_association=x.findtext('./text')) )
+        disease_associations.append( models.UniProtDiseaseAssociation(crawl_number=current_crawl_number, disease_association=x.findtext('./text')) )
     for x in uniprot_entries[k].findall('./comment[@type="subcellular location"]'):
-        subcellular_locations.append( models.UniProtSubcellularLocation(subcellular_location=x.findtext('./subcellularLocation/location')) )
+        subcellular_locations.append( models.UniProtSubcellularLocation(crawl_number=current_crawl_number, subcellular_location=x.findtext('./subcellularLocation/location')) )
 
     # = Canonical isoform =
 
@@ -171,7 +160,7 @@ for k in range(nuniprot_entries):
     canseq_mass = uniprot_canonical_sequence_node.get('mass')
     canseq_date_modified = uniprot_canonical_sequence_node.get('modified')
     canseq_version = uniprot_canonical_sequence_node.get('version')
-    uniprotisoform = models.UniProtIsoform(ac=ac+'-1', canonical=True, length=canseq_length, mass=canseq_mass, date_modified=canseq_date_modified, version=canseq_version, sequence=canonical_sequence)
+    uniprotisoform = models.UniProtIsoform(crawl_number=current_crawl_number, ac=ac+'-1', canonical=True, length=canseq_length, mass=canseq_mass, date_modified=canseq_date_modified, version=canseq_version, sequence=canonical_sequence)
     isoforms.append((uniprotisoform, [])) # empty list for notes (which do not exist for the canonical sequence)
 
     # = Alternative isoforms =
@@ -189,9 +178,9 @@ for k in range(nuniprot_entries):
     for uniprot_isoform_node in uniprot_entries[k].findall('comment/isoform'):
         isoform_ac = uniprot_isoform_node.findtext('id')
         seq_node = uniprot_isoform_node.find('sequence')
-        notes = [models.UniProtIsoformNote(note=node.text) for node in uniprot_isoform_node.findall('note')]
+        notes = [models.UniProtIsoformNote(crawl_number=current_crawl_number, note=node.text) for node in uniprot_isoform_node.findall('note')]
         if seq_node.get('type') != 'displayed':
-            uniprotisoform = models.UniProtIsoform(ac=isoform_ac, canonical=False)
+            uniprotisoform = models.UniProtIsoform(crawl_number=current_crawl_number, ac=isoform_ac, canonical=False)
 
         isoforms.append((uniprotisoform, notes))
 
@@ -263,7 +252,7 @@ for k in range(nuniprot_entries):
         targetid = entry_name + '_D' + str(x_iter)
         domain_seq = canonical_sequence[begin-1:end]
 
-        domain_obj = models.UniProtDomain(targetid=targetid, description=description, begin=begin, end=end, length=length, sequence=domain_seq)
+        domain_obj = models.UniProtDomain(crawl_number=current_crawl_number, targetid=targetid, description=description, begin=begin, end=end, length=length, sequence=domain_seq)
         domains_data.append(domain_obj)
 
     # = References to other DBs =
@@ -282,14 +271,14 @@ for k in range(nuniprot_entries):
         # XXX: exceptions for SGK3_HUMAN and TNI3K_HUMAN, which have two GeneIDs annotated; in each case, one is a readthrough fusion protein - ignore these GeneIDs
         if GeneID in ['100533105', '100526835']:
             continue
-        ncbi_gene_entries.append( models.NCBIGeneEntry(gene_id=GeneID) )
+        ncbi_gene_entries.append( models.NCBIGeneEntry(crawl_number=current_crawl_number, gene_id=GeneID) )
 
     # Ensembl
     ensembl_gene_entries = []
     ensembl_gene_ids = uniprot_entries[k].findall('./dbReference[@type="Ensembl"]/property[@type="gene ID"]')
     ensembl_gene_ids_set = set( [ id.get('value') for id in ensembl_gene_ids ] )
     for ensembl_gene_id in ensembl_gene_ids_set:
-        ensembl_gene_entries.append( models.EnsemblGeneEntry(gene_id=ensembl_gene_id) )
+        ensembl_gene_entries.append( models.EnsemblGeneEntry(crawl_number=current_crawl_number, gene_id=ensembl_gene_id) )
 
     # HGNC
     hgnc_entries = []
@@ -297,7 +286,7 @@ for k in range(nuniprot_entries):
     for hgnc_dbref in hgnc_dbrefs:
         hgnc_gene_id = hgnc_dbref.get('id')
         approved_symbol = hgnc_dbref.find('property[@type="gene designation"]').get('value')
-        hgnc_entries.append( models.HGNCEntry(gene_id=hgnc_gene_id, approved_symbol=approved_symbol) )
+        hgnc_entries.append( models.HGNCEntry(crawl_number=current_crawl_number, gene_id=hgnc_gene_id, approved_symbol=approved_symbol) )
 
     # = Family information =
     similarity_comments = uniprot_entries[k].xpath('./comment[@type="similarity"]')
@@ -339,7 +328,7 @@ for k in range(nuniprot_entries):
                     continue
 
         if chains_added > 0:
-            pdb_obj = models.PDB(pdbid=pdbid, method=pdb_method, resolution=resolution)
+            pdb_obj = models.PDB(crawl_number=current_crawl_number, pdbid=pdbid, method=pdb_method, resolution=resolution)
             pdb_data.append(pdb_obj)
 
     # # = Add the warnings node last (only if it contains any warnings) = #
@@ -353,9 +342,9 @@ for k in range(nuniprot_entries):
     # Construct data objects and add to db
     # ========
 
-    dbentry = models.DBEntry(npdbs=len(pdb_data), ndomains=len(domains_data), nisoforms=len(isoforms), nfunctions=len(functions), ndiseaseassociations=len(disease_associations))
+    dbentry = models.DBEntry(crawl_number=current_crawl_number, npdbs=len(pdb_data), ndomains=len(domains_data), nisoforms=len(isoforms), nfunctions=len(functions), ndiseaseassociations=len(disease_associations))
     db.session.add(dbentry)
-    uniprot = models.UniProt(ac=ac, entry_name=entry_name, last_uniprot_update=last_uniprot_update, ncbi_taxonid=ncbi_taxonid, dbentry=dbentry, recommended_name=recommended_name, taxon_name_scientific=taxon_name_scientific, taxon_name_common=taxon_name_common, lineage=lineage_csv)
+    uniprot = models.UniProt(crawl_number=current_crawl_number, ac=ac, entry_name=entry_name, last_uniprot_update=last_uniprot_update, ncbi_taxonid=ncbi_taxonid, dbentry=dbentry, recommended_name=recommended_name, taxon_name_scientific=taxon_name_scientific, taxon_name_common=taxon_name_common, lineage=lineage_csv)
     if family:
         uniprot.family = family
     db.session.add(uniprot)
@@ -401,8 +390,7 @@ for k in range(nuniprot_entries):
         db.session.add(HGNCEntry)
 
 # update db UniProt datestamp
-version_row = models.Version.query.first()
-version_row.uniprot_datestamp = now
+metadata_row.current_uniprot_datestamp = now
 db.session.commit()
 print 'Done.'
 
