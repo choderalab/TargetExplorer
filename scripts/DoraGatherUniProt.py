@@ -42,6 +42,7 @@ ignore_uniprot_pdbs = ['1GQ5']
 
 argparser = argparse.ArgumentParser(description='Gather UniProt')
 argparser.add_argument('--use_existing_uniprot', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true', default=False)
+argparser.add_argument('--count_nonselected_domain_names', help='Count the number of occurrences of domain names which are not selected by the regex and write to the "selected_domain_names.txt" file (may take a little while)', action='store_true', default=False)
 args = argparser.parse_args()
 
 now = datetime.datetime.utcnow()
@@ -49,8 +50,9 @@ now = datetime.datetime.utcnow()
 parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
 
 # get current crawl number
-metadata_row = models.MetaData.query.first()
-current_crawl_number = metadata_row.current_crawl_number
+crawldata_row = models.CrawlData.query.first()
+current_crawl_number = crawldata_row.current_crawl_number
+print 'Current crawl number: %d' %  current_crawl_number
 
 #==============================================================================
 # RETRIEVE DATA FROM UNIPROT AND STORE TO LOCAL FILE
@@ -75,7 +77,7 @@ uniprot_entries = uniprot_xml.findall('entry')
 nuniprot_entries = len(uniprot_entries)
 # Note that xpath querying is case-sensitive
 domain_names_str += 'Number of entries in UniProt XML document: %d\n' % nuniprot_entries
-all_domains = uniprot_xml.xpath('./entry/feature[@type="domain"]')
+all_domains = uniprot_xml.findall('./entry/feature[@type="domain"]')
 domain_names_str += 'Total number of domains: %d\n' % len(all_domains)
 
 selected_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
@@ -93,20 +95,28 @@ for i in range(len(selected_domain_names)):
 domain_names_str += '\n'
 print domain_names_str,
 
-# print '(Unique domain names which do not match regex will be output to %s)' % domain_names_filename
-#
-# domain_names_str += '= Unique domain names which do not match regex =\n'
-# nonselected_domain_names = list(set([ d.get('description') for d in all_domains if d not in selected_domain_names ]))
-# nonselected_domain_name_counts = [ len( uniprot_xml.findall('entry/feature[@type="domain"][@description="%s"]' % name) ) for name in nonselected_domain_names ]
-# for i in range(len(nonselected_domain_names)):
-#     domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(nonselected_domain_names[i],
-#         nonselected_domain_name_counts[i],
-#         name_width=max([len(n)+4 for n in nonselected_domain_names]),
-#         pop_width=max([len(str(p))+1 for p in nonselected_domain_name_counts])
-#     )
-# domain_names_str += '\n'
-# with open(domain_names_filename, 'w') as domain_names_file:
-#     domain_names_file.write(domain_names_str)
+print '(Unique domain names which do not match regex will be output to %s)' % domain_names_filename
+
+domain_names_str += '= Unique domain names which do not match regex =\n'
+nonselected_domain_names = list(set([ d.get('description') for d in all_domains if d.get('description') not in selected_domain_names ]))
+
+if args.count_nonselected_domain_names:
+    nonselected_domain_name_counts = [ int( uniprot_xml.xpath('count(entry/feature[@type="domain"][@description="%s"])' % name) ) for name in nonselected_domain_names ]
+    for i in range(len(nonselected_domain_names)):
+        domain_names_str += '{:^{name_width}s} : {:>{pop_width}d}\n'.format(nonselected_domain_names[i],
+            nonselected_domain_name_counts[i],
+            name_width=max([len(n)+4 for n in nonselected_domain_names]),
+            pop_width=max([len(str(p))+1 for p in nonselected_domain_name_counts]),
+        )
+else:
+    for i in range(len(nonselected_domain_names)):
+        domain_names_str += '{:^{name_width}s}\n'.format(nonselected_domain_names[i],
+            name_width=max([len(n)+4 for n in nonselected_domain_names]),
+        )
+
+domain_names_str += '\n'
+with open(domain_names_filename, 'w') as domain_names_file:
+    domain_names_file.write(domain_names_str)
 
 
 # ========
@@ -390,7 +400,8 @@ for k in range(nuniprot_entries):
         db.session.add(HGNCEntry)
 
 # update db UniProt datestamp
-metadata_row.current_uniprot_datestamp = now
+current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()
+current_crawl_datestamp_row.uniprot_datestamp = now
 db.session.commit()
 print 'Done.'
 

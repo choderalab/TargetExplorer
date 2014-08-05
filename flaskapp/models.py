@@ -1,7 +1,8 @@
 from flaskapp import db
 
 table_class_names = [
-    'Version',
+    'CrawlData',
+    'DateStamps',
     'DBEntry',
     'UniProt',
     'UniProtGeneName',
@@ -30,17 +31,24 @@ frontend2backend_mappings = {
 }
 
 
-class MetaData(db.Model):
-    __tablename__ = 'metadata'
+class CrawlData(db.Model):
+    __tablename__ = 'crawldata'
     id = db.Column(db.Integer, primary_key=True)
     current_crawl_number = db.Column(db.Integer)
     safe_crawl_number = db.Column(db.Integer)
-    # version_id = db.Column(db.Integer)
-    current_uniprot_datestamp = db.Column(db.DateTime)
-    current_pdb_datestamp = db.Column(db.DateTime)
     safe_crawl_datestamp = db.Column(db.DateTime)
     def __repr__(self):
-        return '<DB MetaData current crawl number %d safe crawl number %d>' % (self.current_crawl_number, self.safe_crawl_number)
+        return '<DB CrawlData current crawl number %d safe crawl number %d>' % (self.current_crawl_number, self.safe_crawl_number)
+
+class DateStamps(db.Model):
+    __tablename__ = 'datestamps'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    uniprot_datestamp = db.Column(db.DateTime)
+    pdb_datestamp = db.Column(db.DateTime)
+    commit_datestamp = db.Column(db.DateTime)
+    def __repr__(self):
+        return '<DB DateStamps crawl number %d>' % self.crawl_number
 
 class DBEntry(db.Model):
     __tablename__ = 'dbentry'
@@ -69,8 +77,8 @@ class UniProt(db.Model):
     __tablename__ = 'uniprot'
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
-    ac = db.Column(db.String(64), unique=True)
-    entry_name = db.Column(db.String(64), unique=True)
+    ac = db.Column(db.String(64))
+    entry_name = db.Column(db.String(64))
     family = db.Column(db.String(64))
     recommended_name = db.Column(db.Text)
     ncbi_taxonid = db.Column(db.String(64))
@@ -129,7 +137,7 @@ class UniProtDomain(db.Model):
     __tablename__ = 'uniprotdomain'
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
-    targetid = db.Column(db.String(64), unique=True)
+    targetid = db.Column(db.String(64))
     description = db.Column(db.Text())
     begin = db.Column(db.Integer)
     end = db.Column(db.Integer)

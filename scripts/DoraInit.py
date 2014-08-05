@@ -37,10 +37,14 @@ import TargetExplorer
 # create database
 flaskapp.db.create_all()
 
-# add empty metadata row
+# add crawldata and empty datestamps row
+current_crawl_number = 0
+safe_crawl_number = -1
 now = datetime.datetime.utcnow()
-metadata_row = flaskapp.models.MetaData(current_crawl_number=0, safe_crawl_number=-1, safe_crawl_datestamp=now)
-flaskapp.db.session.add(metadata_row)
+crawldata_row = flaskapp.models.CrawlData(current_crawl_number=current_crawl_number, safe_crawl_number=safe_crawl_number, safe_crawl_datestamp=now)
+flaskapp.db.session.add(crawldata_row)
+datestamps_row = flaskapp.models.DateStamps(crawl_number=current_crawl_number)
+flaskapp.db.session.add(datestamps_row)
 flaskapp.db.session.commit()
 
 print 'Done.'
