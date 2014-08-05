@@ -83,11 +83,15 @@ def get_dbentry():
     elif not (re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', ac) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', ac)):
         abort(404)
 
-    uniprot = db.session.query(models.UniProt).filter_by(ac=ac).first()
+    # = Get safe crawl number =
+    crawldata = models.CrawlData.query.first()
+    safe_crawl_number = crawldata.safe_crawl_number
+
+    uniprot = models.UniProt.query.filter_by(ac=ac, crawl_number=safe_crawl_number).first()
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
-    dbentry = db.session.query(models.DBEntry).filter_by(id=uniprot.dbentry_id).first()
+    dbentry = db.session.query(models.DBEntry).filter_by(id=uniprot.dbentry_id, crawl_number=safe_crawl_number).first()
 
     target_obj = {
         'uniprot': {
@@ -126,13 +130,18 @@ def get_dbentry():
 # ======
 
 # Examples:
-# http://.../[DB_NAME]DBAPI/search?query=family=TK AND db_target_rank<300
+# http://.../[DB_NAME]DBAPI/search?query=family="TK" AND db_target_rank<300
 
 @app.route('/%s/search' % flaskapp_config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def query_db():
     frontend_query_string = request.args.get('query') # expecting SQLAlchemy syntax (wtih frontend-style field names)
 
+    # = Get safe crawl number =
+    crawldata = models.CrawlData.query.first()
+    safe_crawl_number = crawldata.safe_crawl_number
+
+    # = Use the query string to query the db =
     # Convert the frontend data fields to backend identifiers '[table].[column]'
     # And determine which tables will need to be queried
     sql_query_string = frontend_query_string
@@ -144,7 +153,8 @@ def query_db():
     query_tables = set(query_tables)
 
     # Start with the DBEntry table, then carry out SQL joins with the other tables
-    query = db.session.query(models.DBEntry)
+    # (note that we only need to filter by crawl_number for the DBEntry rows)
+    query = db.session.query(models.DBEntry).filter_by(crawl_number=safe_crawl_number)
     for query_table_name in query_tables:
         if query_table_name != 'DBEntry':
             query_table = models.__dict__[query_table_name]
