@@ -10,21 +10,21 @@ Authors
 Overview
 --------
 
-_Note:_ The code is in the process of being migrated from an XML-based database
-to an SQLite implementation. The old, stable XML-based code can be found in the
-_XML_ branch.
+Database framework for storing genomic, structural and functional data for a
+given protein family, with RESTful API.
+
+The code is built on Flask (a Python web framework) and SQLAlchemy (an
+object-relational mapper which maps between SQL databases and Python objects).
 
 The database is generated using a series of scripts which gather in data from
 various public web resources. The first script to run is DoraCommit.py, which
 initializes the necessary files and directory structure for a new database.
 This should be followed by DoraGatherUniProt.py, which retrieves a set of
 UniProt entries defined by a given search term. Subsequent scripts (once they
-have been migrated over from the XML branch) add in data from various other
-databases such as the PDB, NCBI Gene, cBioPortal, and BindingDB.
-
-The above-mentioned scripts add data to the staging database. To commit this to
-the public-facing, master database, run DoraCommit.py. A Flask HTTP server is
-provided for the master database. It serves requests in JSON format.
+have been migrated over from the old _XML_ branch) add in data from various
+other databases such as the PDB, NCBI Gene, cBioPortal, and BindingDB. Finally,
+DoraCommit.py is used to carry out a sanity check on the new data; if this
+passes, the new data will be exposed through the API.
 
 A [frontend web client](https://github.com/choderalab/kinomeDB-webclient) is
 currently in development, and an early working version can be seen here:
@@ -38,9 +38,7 @@ scripts/ - scripts for generating and analyzing the database
 
 TargetExplorer/ - main code library
 
-app\_master/ - data model and Flask HTTP server (master)
-
-app\_stage/ - data model (staging)
+flask\_app/ - data model and Flask HTTP server (master)
 
 resources/ - other miscellaneous files
 
