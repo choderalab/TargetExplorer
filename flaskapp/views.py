@@ -9,6 +9,9 @@ import flaskapp_config
 # HTTP access control decorator - for cross-origin resource sharing (CORS)
 # ======
 
+class DatabaseError(Exception):
+    pass
+
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
                 automatic_options=True):
@@ -89,8 +92,8 @@ def get_dbentry():
 
     # = Search the UniProt table using the query AC =
     uniprot = models.UniProt.query.filter_by(ac=ac, crawl_number=safe_crawl_number).first()
-    try: assert uniprot != None
-    except AssertionError as e: e.message = 'Database entry not found'; raise e
+    if uniprot is None:
+        raise DatabaseError('Database entry not found')
 
     # = Retrieve the corresponding DBEntry rows =
     dbentry = db.session.query(models.DBEntry).filter_by(id=uniprot.dbentry_id, crawl_number=safe_crawl_number).first()
