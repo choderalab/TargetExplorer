@@ -13,18 +13,22 @@ Overview
 Database framework for storing genomic, structural and functional data for a
 given protein family, with RESTful API.
 
-The code is built on Flask (a Python web framework) and SQLAlchemy (an
-object-relational mapper which maps between SQL databases and Python objects).
+The code is built on [Flask](http://flask.pocoo.org/) (a Python web framework)
+and [SQLAlchemy](http://www.sqlalchemy.org/) (an object-relational mapper which
+maps between SQL databases and Python objects).
 
 The database is generated using a series of scripts which gather in data from
 various public web resources. The first script to run is DoraCommit.py, which
 initializes the necessary files and directory structure for a new database.
 This should be followed by DoraGatherUniProt.py, which retrieves a set of
-UniProt entries defined by a given search term. Subsequent scripts (once they
-have been migrated over from the old _XML_ branch) add in data from various
-other databases such as the PDB, NCBI Gene, cBioPortal, and BindingDB. Finally,
-DoraCommit.py is used to carry out a sanity check on the new data; if this
-passes, the new data will be exposed through the API.
+[UniProt](http://www.uniprot.org/) entries defined by a given search term.
+Subsequent scripts (once they have been migrated over from the old _XML_
+branch) add in data from various other databases such as the
+[PDB](http://www.rcsb.org), [NCBI Gene](http://www.ncbi.nlm.nih.gov/gene),
+[cBioPortal](http://www.cbioportal.org), and
+[BindingDB](http://www.bindingdb.org/bind/index.jsp). Finally, DoraCommit.py is
+used to carry out a sanity check on the new data; if this passes, the new data
+will be exposed through the API.
 
 A [frontend web client](https://github.com/choderalab/kinomeDB-webclient) is
 currently in development, and an early working version can be seen here:
