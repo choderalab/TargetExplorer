@@ -47,3 +47,13 @@ Dependencies
 
 * BioPython, v1.62 or higher
 * Various other Python packages commonly used in scientific computing. Recommended aproach is to install either Continuum Anaconda (https://store.continuum.io/) or Enthought Canopy (https://www.enthought.com/products/canopy/)
+
+Notes on database generation process
+------------------------------------
+
+A "crawl number" is iteratively assigned for each pass through the database
+generation process, from DoraGatherUniProt.py to DoraCommit.py. If the process
+is completed successfully, DoraCommit.py will update the "safe crawl number",
+which tells the API to work with only the data corresponding to that crawl
+number. The number of crawls to store in the database can be defined by the
+user, and is set by default to 5. Older crawls are deleted by DoraCommit.py.
