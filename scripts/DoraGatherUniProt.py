@@ -16,7 +16,7 @@
 # IMPORTS
 #==============================================================================
 
-import sys, datetime, os, copy, yaml, argparse
+import os, datetime, argparse
 import TargetExplorer
 import project_config
 from lxml import etree
@@ -26,7 +26,6 @@ from flaskapp import models, db
 # PARAMETERS
 #==============================================================================
 
-database_dir = 'database'
 external_data_dir = 'external-data'
 uniprot_data_dir = os.path.join(external_data_dir, 'UniProt')
 
