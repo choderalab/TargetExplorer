@@ -6,7 +6,7 @@ from flaskapp import app, db, models
 import flaskapp_config
 
 # ======
-# HTTP access control decorator (CORS)
+# HTTP access control decorator - for cross-origin resource sharing (CORS)
 # ======
 
 def crossdomain(origin=None, methods=None, headers=None,
@@ -87,12 +87,15 @@ def get_dbentry():
     crawldata = models.CrawlData.query.first()
     safe_crawl_number = crawldata.safe_crawl_number
 
+    # = Search the UniProt table using the query AC =
     uniprot = models.UniProt.query.filter_by(ac=ac, crawl_number=safe_crawl_number).first()
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
+    # = Retrieve the corresponding DBEntry rows =
     dbentry = db.session.query(models.DBEntry).filter_by(id=uniprot.dbentry_id, crawl_number=safe_crawl_number).first()
 
+    # = Construct the data structure for holding the results, to be returned as JSON =
     target_obj = {
         'uniprot': {
             'ac': uniprot.ac,
@@ -105,6 +108,7 @@ def get_dbentry():
         'ncbi_gene': [],
     }
 
+    # = Add info from other tables =
     # PDB
     for pdb in dbentry.pdbs:
         target_obj['pdb'].append({'pdbid': pdb.pdbid})
@@ -121,6 +125,7 @@ def get_dbentry():
     for entry in dbentry.ncbi_gene_entries:
         target_obj['ncbi_gene'].append({'gene_id': entry.gene_id})
 
+    # = Return data in JSON format =
     response = make_response( jsonify(target_obj) )
     return response
 
@@ -165,7 +170,7 @@ def query_db():
     # Use the query string to filter DBEntry rows
     results = query.filter(sql_query_string)
 
-    # Build results object
+    # = Construct the data structure for holding the results, to be returned as JSON =
     targets_obj = {'results': []}
 
     for db_entry in results:
@@ -174,10 +179,10 @@ def query_db():
             'ac': uniprot.ac,
             'entry_name': uniprot.entry_name,
             'family': uniprot.family,
-            'npdbs': db_entry.pdbs.count(),
+            'npdbs': db_entry.npdbs,
         }
         targets_obj['results'].append(target_obj)
 
-    # Return results in JSON format
+    # = Return data in JSON format =
     response = make_response( jsonify(targets_obj) )
     return response

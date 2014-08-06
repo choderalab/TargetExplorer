@@ -27,7 +27,7 @@ frontend2backend_mappings = {
     'species': ['UniProt', 'taxon_name_common'],
     'domain_length': ['UniProtDomain', 'length'],
     'subcellular_location': ['UniProtSubcellularLocation', 'subcellular_location'],
-   #  'pseudodomain': ['UniProtDomain', 'pseudodomain'],
+    # 'pseudodomain': ['UniProtDomain', 'pseudodomain'],
 }
 
 

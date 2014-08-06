@@ -49,4 +49,3 @@ flaskapp.db.session.commit()
 
 print 'Done.'
 print 'Please now edit the file project_config.py before running the database generation scripts.'
-
