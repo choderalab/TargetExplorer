@@ -105,6 +105,7 @@ def get_dbentry():
         'hgnc': [],
         'ensembl_gene': [],
         'ncbi_gene': [],
+        'npubs': dbentry.npubs,
     }
 
     # = Add info from other tables =
@@ -179,6 +180,7 @@ def query_db():
             'entry_name': uniprot.entry_name,
             'family': uniprot.family,
             'npdbs': db_entry.npdbs,
+            'npubs': db_entry.npubs,
         }
         targets_obj['results'].append(target_obj)
 
