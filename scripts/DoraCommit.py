@@ -11,8 +11,10 @@ current_crawl_datestamps_row = models.DateStamps.query.filter_by(crawl_number=cu
 
 data_problem = False
 
-# = Test whether each of the scripts have been run, and whether they have been updated in the correct order =
-for data_type in ['uniprot']:
+# ===================
+# Test whether each of the scripts have been run, and whether they have been updated in the correct order
+# ===================
+for data_type in ['uniprot', 'ncbi_gene']:
     datestamp_type = data_type + '_datestamp'
     current_crawl_datatype_datestamp = getattr(current_crawl_datestamps_row, datestamp_type)
     if current_crawl_datatype_datestamp == None:
@@ -29,17 +31,23 @@ if data_problem:
 else:
     print 'Proceeding to commit to master db...'
 
-# = Update crawl numbers =
+# ===================
+# Update crawl numbers
+# ===================
 crawldata_row.safe_crawl_number = current_crawl_number
 crawldata_row.current_crawl_number = current_crawl_number + 1
 
-# = Update datestamps data =
+# ===================
+# Update datestamps data
+# ===================
 now = datetime.datetime.utcnow()
 current_crawl_datestamps_row.commit_datestamp = now
 new_datestamps_row = models.DateStamps(crawl_number=current_crawl_number+1)
 db.session.add(new_datestamps_row)
 
-# = Delete old crawls =
+# ===================
+# Delete old crawls
+# ===================
 crawl_numbers = [row.crawl_number for row in models.DateStamps.query.all()]
 if len(crawl_numbers) > flaskapp_config.ncrawls_to_save:
     print 'More than %d crawls found.' % flaskapp_config.ncrawls_to_save
@@ -57,7 +65,9 @@ if len(crawl_numbers) > flaskapp_config.ncrawls_to_save:
             print '  - %s - %d rows' % (table_class_name, rows_to_delete.count())
             rows_to_delete.delete()
 
-# write db to disk
+# ===================
+# Write db to disk
+# ===================
 db.session.commit()
 
 print 'Database committed.'

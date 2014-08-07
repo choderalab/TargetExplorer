@@ -13,7 +13,7 @@
 #
 
 #==============================================================================
-# IMPORTS
+# Imports
 #==============================================================================
 
 import os, datetime, argparse
@@ -23,7 +23,7 @@ from lxml import etree
 from flaskapp import models, db
 
 #==============================================================================
-# PARAMETERS
+# Parameters
 #==============================================================================
 
 external_data_dir = 'external-data'
@@ -54,18 +54,18 @@ current_crawl_number = crawldata_row.current_crawl_number
 print 'Current crawl number: %d' %  current_crawl_number
 
 #==============================================================================
-# RETRIEVE DATA FROM UNIPROT AND STORE TO LOCAL FILE
+# Retrieve data from uniprot and store to local file
 #==============================================================================
 
-# If the UniProt external data does not already exist, download it
-if not os.path.exists(uniprot_xml_out_filepath) or args.use_existing_uniprot != True:
+# Unless args.use_existing_uniprot is set to true, retrieve a new set of data from UniProt
+if os.path.exists(uniprot_xml_out_filepath) and args.use_existing_uniprot:
+    print 'UniProt XML document found at:', uniprot_xml_out_filepath
+else:
     print 'Retrieving new XML document from UniProt website.'
     new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(project_config.uniprot_query_string)
     print 'Saving new XML document as:', uniprot_xml_out_filepath
     with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_file:
         uniprot_xml_file.write(new_xml_text + '\n')
-else:
-    print 'UniProt XML document found at:', uniprot_xml_out_filepath
 
 # Read in the UniProt XML document
 print 'Reading UniProt XML document:', uniprot_xml_out_filepath
@@ -403,4 +403,3 @@ current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=cur
 current_crawl_datestamp_row.uniprot_datestamp = now
 db.session.commit()
 print 'Done.'
-

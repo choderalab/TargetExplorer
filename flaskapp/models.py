@@ -14,6 +14,7 @@ table_class_names = [
     'UniProtSubcellularLocation',
     'PDB',
     'NCBIGeneEntry',
+    'NCBIGenePublication',
     'EnsemblGeneEntry',
     'HGNCEntry']
 
@@ -46,6 +47,7 @@ class DateStamps(db.Model):
     crawl_number = db.Column(db.Integer)
     uniprot_datestamp = db.Column(db.DateTime)
     pdb_datestamp = db.Column(db.DateTime)
+    ncbi_gene_datestamp = db.Column(db.DateTime)
     commit_datestamp = db.Column(db.DateTime)
     def __repr__(self):
         return '<DB DateStamps crawl number %d>' % self.crawl_number
@@ -59,6 +61,7 @@ class DBEntry(db.Model):
     nisoforms = db.Column(db.Integer)
     nfunctions = db.Column(db.Integer)
     ndiseaseassociations = db.Column(db.Integer)
+    npubs = db.Column(db.Integer)
     uniprot = db.relationship('UniProt', backref='dbentry', lazy='dynamic')
     uniprotdomains = db.relationship('UniProtDomain', backref='dbentry', lazy='dynamic')
     uniprotgenenames = db.relationship('UniProtGeneName', backref='dbentry', lazy='dynamic')
@@ -71,7 +74,7 @@ class DBEntry(db.Model):
     ensembl_gene_entries = db.relationship('EnsemblGeneEntry', backref='dbentry', lazy='dynamic')
     hgnc_entries = db.relationship('HGNCEntry', backref='dbentry', lazy='dynamic')
     def __repr__(self):
-        return '<DBEntry %d>' % (self.id)
+        return '<DBEntry %d>' % self.id
 
 class UniProt(db.Model):
     __tablename__ = 'uniprot'
@@ -105,7 +108,7 @@ class UniProtGeneName(db.Model):
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
-        return '<UniProtGeneName %r>' % (self.gene_name)
+        return '<UniProtGeneName %r>' % self.gene_name
 
 class UniProtIsoform(db.Model):
     __tablename__ = 'uniprotisoform'
@@ -131,7 +134,7 @@ class UniProtIsoformNote(db.Model):
     note = db.Column(db.Text)
     uniprotisoformid = db.Column(db.Integer, db.ForeignKey('uniprotisoform.id'))
     def __repr__(self):
-        return '<UniProtIsoformNote %r>' % (self.note)
+        return '<UniProtIsoformNote %r>' % self.note
 
 class UniProtDomain(db.Model):
     __tablename__ = 'uniprotdomain'
@@ -147,7 +150,7 @@ class UniProtDomain(db.Model):
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
-        return '<UniProtDomain targetid %r>' % (self.targetid)
+        return '<UniProtDomain targetid %r>' % self.targetid
 
 class UniProtFunction(db.Model):
     __tablename__ = 'uniprotfunction'
@@ -157,7 +160,7 @@ class UniProtFunction(db.Model):
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
-        return '<UniProtFunction %r>' % (self.function)
+        return '<UniProtFunction %r>' % self.function
 
 class UniProtDiseaseAssociation(db.Model):
     __tablename__ = 'uniprotdiseaseassociation'
@@ -167,7 +170,7 @@ class UniProtDiseaseAssociation(db.Model):
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
-        return '<UniProtDiseaseAssociation %r>' % (self.disease_association)
+        return '<UniProtDiseaseAssociation %r>' % self.disease_association
 
 class UniProtSubcellularLocation(db.Model):
     __tablename__ = 'uniprotsubcellularlocation'
@@ -177,7 +180,7 @@ class UniProtSubcellularLocation(db.Model):
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
-        return '<UniProtSubcellularLocation %r>' % (self.subcellular_location)
+        return '<UniProtSubcellularLocation %r>' % self.subcellular_location
 
 class PDB(db.Model):
     __tablename__ = 'pdb'
@@ -188,7 +191,7 @@ class PDB(db.Model):
     resolution = db.Column(db.Float)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
-        return '<PDB ID %r>' % (self.pdbid)
+        return '<PDB ID %r>' % self.pdbid
 
 # TODO
 # class PDBChain(db.Model):
@@ -198,9 +201,19 @@ class NCBIGeneEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
     gene_id = db.Column(db.Integer)
+    publications = db.relationship('NCBIGenePublication', backref='ncbi_gene_entry', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
-        return '<NCBIGeneEntry ID %r>' % (self.gene_id)
+        return '<NCBIGeneEntry ID %r>' % self.gene_id
+
+class NCBIGenePublication(db.Model):
+    __tablename__ = 'ncbi_gene_publication'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    pmid = db.Column(db.Integer)
+    ncbi_gene_entry_id = db.Column(db.Integer, db.ForeignKey('ncbi_gene_entry.id'))
+    def __repr__(self):
+        return '<NCBIGenePublication PMID %r>' % self.pmid
 
 class EnsemblGeneEntry(db.Model):
     __tablename__ = 'ensembl_gene_entry'
@@ -209,7 +222,7 @@ class EnsemblGeneEntry(db.Model):
     gene_id = db.Column(db.String(64))
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
-        return '<EnsemblGeneEntry ID %r>' % (self.gene_id)
+        return '<EnsemblGeneEntry ID %r>' % self.gene_id
 
 class HGNCEntry(db.Model):
     __tablename__ = 'hgnc_entry'
@@ -219,5 +232,5 @@ class HGNCEntry(db.Model):
     approved_symbol = db.Column(db.String(64))
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
-        return '<HGNCEntry approved_symbol %r>' % (self.approved_symbol)
+        return '<HGNCEntry approved_symbol %r>' % self.approved_symbol
 
