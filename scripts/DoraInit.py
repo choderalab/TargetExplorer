@@ -16,11 +16,14 @@ if not os.path.exists('external-data'):
 if not os.path.exists('project_config.py'):
     with open('project_config.py', 'w') as new_config_file:
         new_config_file.write('''import os
-# Edit this part
+# UniProt search options
 uniprot_query_string = 'EXAMPLE... domain:"protein kinase" AND reviewed:yes'
 uniprot_domain_regex = 'EXAMPLE... ^Protein kinase(?!; truncated)(?!; inactive)'
 
-# Don't edit this part
+# General database options
+ncrawls_to_save = 5
+
+# Don't edit the code below here
 db_name = ''' + '\'%s\'' % (args.db_name) + '''
 project_basedir = os.path.abspath(os.path.dirname(__file__))
 targetexplorer_install_dir = ''' + '\'%s\'' % tedb_basedir)
@@ -48,4 +51,4 @@ flaskapp.db.session.add(datestamps_row)
 flaskapp.db.session.commit()
 
 print 'Done.'
-print 'Please now edit the file project_config.py before running the database generation scripts.'
+print 'Please now edit the UniProt search options in project_config.py before running the database generation scripts.'

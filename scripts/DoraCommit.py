@@ -2,7 +2,7 @@
 import re, datetime
 import TargetExplorer
 from flaskapp import db, models
-import flaskapp_config
+import project_config
 
 crawldata_row = models.CrawlData.query.first()
 current_crawl_number = crawldata_row.current_crawl_number
@@ -49,10 +49,10 @@ db.session.add(new_datestamps_row)
 # Delete old crawls
 # ===================
 crawl_numbers = [row.crawl_number for row in models.DateStamps.query.all()]
-if len(crawl_numbers) > flaskapp_config.ncrawls_to_save:
-    print 'More than %d crawls found.' % flaskapp_config.ncrawls_to_save
+if len(crawl_numbers) > project_config.ncrawls_to_save:
+    print 'More than %d crawls found.' % project_config.ncrawls_to_save
     crawl_numbers_sorted = sorted(crawl_numbers, reverse=True)
-    crawls_to_delete = crawl_numbers_sorted[flaskapp_config.ncrawls_to_save:]
+    crawls_to_delete = crawl_numbers_sorted[project_config.ncrawls_to_save:]
     # iterate through crawls to delete
     for crawl_to_delete in crawls_to_delete:
         print 'Deleting crawl %d...' % crawl_to_delete
