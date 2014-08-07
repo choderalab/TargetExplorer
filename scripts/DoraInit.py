@@ -1,12 +1,16 @@
 #!/usr/bin/env python
-import os, argparse, shutil, datetime
+import os
+import argparse
+import shutil
+import datetime
+
 argparser = argparse.ArgumentParser(description='Initialize TargetExplorer database')
 argparser.add_argument('--db_name', type=str, required=True, help='Database name, without extension')
 args = argparser.parse_args()
 
 print 'Initializing database project directory...'
 
-tedb_basedir = os.path.abspath( os.path.join( os.path.dirname(__file__), '..' ) )
+tedb_basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 # make external-data dir
 if not os.path.exists('external-data'):
@@ -34,8 +38,7 @@ if not os.path.exists(wsgi_filepath):
     wsgi_src_filepath = os.path.join(tedb_basedir, 'resources', 'template-wsgi.py')
     shutil.copy(wsgi_src_filepath, wsgi_filepath)
 
-import flaskapp, flaskapp_config
-import TargetExplorer
+import flaskapp
 
 # create database
 flaskapp.db.create_all()
