@@ -30,7 +30,7 @@ if not os.path.exists(ncbi_gene_data_dir):
 
 gene2pubmed_filepath = os.path.join(ncbi_gene_data_dir, 'gene2pubmed.gz')
 
-argparser = argparse.ArgumentParser(description='Gather UniProt')
+argparser = argparse.ArgumentParser(description='Gather NCBI Gene data')
 argparser.add_argument('--use_existing_gene2pubmed', help='Do not download a new gene2pubmed.gz file. Only works if an existing file is present.', action='store_true', default=False)
 args = argparser.parse_args()
 

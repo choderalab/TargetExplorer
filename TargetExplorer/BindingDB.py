@@ -5,7 +5,7 @@
 import urllib2, sys, os, gzip, subprocess
 from lxml import etree
 
-def retrieve_all_BindingDB_data(bindingdb_all_data_filepath):
+def retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=True):
     '''
     Retrieves all BindingDB data in compressed tab-separated format, then decompresses and writes to file.
     Uses gunzip for decompression.
@@ -19,9 +19,10 @@ def retrieve_all_BindingDB_data(bindingdb_all_data_filepath):
     print 'Finished downloading BindingDB_All.tab.gz'
 
     # decompress
-    print 'Decompressing BindingDB_All.tab.gz...'
-    subprocess.call('gunzip -f %s' % bindingdb_all_data_filepath+'.gz', shell=True)
-    print 'Finished decompressing BindingDB_All.tab.gz'
+    if decompress:
+        print 'Decompressing BindingDB_All.tab.gz...'
+        subprocess.call('gunzip -f %s' % bindingdb_all_data_filepath+'.gz', shell=True)
+        print 'Finished decompressing BindingDB_All.tab.gz'
 
 def get_ACs(line):
     words = line.split('\t')
@@ -33,6 +34,7 @@ def get_bioassay_data(line):
     SMILES_string = words[0]
     BindingDB_monomerID = words[1]
     ChEMBL_ID = words[8]
+    zinc_id = words[13]
     data_origin = words[15]
     target_biomolecule = words[16]
     #target_source_organism = words[17]
@@ -55,28 +57,36 @@ def get_bioassay_data(line):
     bioassay_data['ligand_SMILES_string'] = SMILES_string
     bioassay_data['ligand_BindingDB_ID'] = BindingDB_monomerID
     bioassay_data['ligand_ChEMBL_ID'] = ChEMBL_ID
+    bioassay_data['ligand_zinc_id'] = zinc_id
     bioassay_data['BindingDB_source'] = data_origin
     bioassay_data['target_name'] = target_biomolecule
     #bioassay_data['target_sequence'] = target_sequence
     #bioassay_data['target_source_organism'] = target_source_organism
 
     bioassay_data['Ki'] = Ki # XXX remove
-    if Ki != 'n/a':
-        bioassay_data['Ki'] = Ki
-    if IC50 != 'n/a':
-        bioassay_data['IC50'] = IC50
-    if Kd != 'n/a':
-        bioassay_data['Kd'] = Kd
-    if EC50 != 'n/a':
-        bioassay_data['EC50'] = EC50
-    if kon != 'n/a':
-        bioassay_data['kon'] = kon
-    if koff != 'n/a':
-        bioassay_data['koff'] = koff
-    if pH != 'n/a':
-        bioassay_data['pH'] = pH
-    if temperature != 'n/a':
-        bioassay_data['temperature'] = temperature
+    bioassay_data['IC50'] = IC50
+    bioassay_data['Kd'] = Kd
+    bioassay_data['EC50'] = EC50
+    bioassay_data['kon'] = kon
+    bioassay_data['koff'] = koff
+    bioassay_data['pH'] = pH
+    bioassay_data['temperature'] = temperature
+    # if Ki != 'n/a':
+    #     bioassay_data['Ki'] = Ki
+    # if IC50 != 'n/a':
+    #     bioassay_data['IC50'] = IC50
+    # if Kd != 'n/a':
+    #     bioassay_data['Kd'] = Kd
+    # if EC50 != 'n/a':
+    #     bioassay_data['EC50'] = EC50
+    # if kon != 'n/a':
+    #     bioassay_data['kon'] = kon
+    # if koff != 'n/a':
+    #     bioassay_data['koff'] = koff
+    # if pH != 'n/a':
+    #     bioassay_data['pH'] = pH
+    # if temperature != 'n/a':
+    #     bioassay_data['temperature'] = temperature
 
     bioassay_data['PMID'] = PMID
     bioassay_data['DOI'] = DOI

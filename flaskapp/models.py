@@ -16,7 +16,10 @@ table_class_names = [
     'NCBIGeneEntry',
     'NCBIGenePublication',
     'EnsemblGeneEntry',
-    'HGNCEntry']
+    'HGNCEntry',
+    'BindingDBBioassay',
+    'BindingDBMeasurement',
+]
 
 frontend2backend_mappings = {
     'npdbs': ['DBEntry', 'npdbs'],
@@ -24,11 +27,13 @@ frontend2backend_mappings = {
     'nisoforms': ['DBEntry', 'nisoforms'],
     'nfunctions': ['DBEntry', 'nfunctions'],
     'ndiseaseassociations': ['DBEntry', 'ndiseaseassociations'],
+    'npubs': ['DBEntry', 'npubs'],
+    'nbioassays': ['DBEntry', 'nbioassays'],
     'family': ['UniProt', 'family'],
     'species': ['UniProt', 'taxon_name_common'],
     'domain_length': ['UniProtDomain', 'length'],
     'subcellular_location': ['UniProtSubcellularLocation', 'subcellular_location'],
-    # 'pseudodomain': ['UniProtDomain', 'pseudodomain'],
+    # TODO 'pseudodomain': ['UniProtDomain', 'pseudodomain'],
 }
 
 
@@ -48,6 +53,7 @@ class DateStamps(db.Model):
     uniprot_datestamp = db.Column(db.DateTime)
     pdb_datestamp = db.Column(db.DateTime)
     ncbi_gene_datestamp = db.Column(db.DateTime)
+    bindingdb_datestamp = db.Column(db.DateTime)
     commit_datestamp = db.Column(db.DateTime)
     def __repr__(self):
         return '<DB DateStamps crawl number %d>' % self.crawl_number
@@ -62,6 +68,7 @@ class DBEntry(db.Model):
     nfunctions = db.Column(db.Integer)
     ndiseaseassociations = db.Column(db.Integer)
     npubs = db.Column(db.Integer)
+    nbioassays = db.Column(db.Integer)
     uniprot = db.relationship('UniProt', backref='dbentry', lazy='dynamic')
     uniprotdomains = db.relationship('UniProtDomain', backref='dbentry', lazy='dynamic')
     uniprotgenenames = db.relationship('UniProtGeneName', backref='dbentry', lazy='dynamic')
@@ -73,6 +80,7 @@ class DBEntry(db.Model):
     ncbi_gene_entries = db.relationship('NCBIGeneEntry', backref='dbentry', lazy='dynamic')
     ensembl_gene_entries = db.relationship('EnsemblGeneEntry', backref='dbentry', lazy='dynamic')
     hgnc_entries = db.relationship('HGNCEntry', backref='dbentry', lazy='dynamic')
+    bindingdb_bioassays = db.relationship('BindingDBBioassay', backref='dbentry', lazy='dynamic')
     def __repr__(self):
         return '<DBEntry %d>' % self.id
 
@@ -234,3 +242,31 @@ class HGNCEntry(db.Model):
     def __repr__(self):
         return '<HGNCEntry approved_symbol %r>' % self.approved_symbol
 
+class BindingDBBioassay(db.Model):
+    __tablename__ = 'bindingdb_bioassay'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    bindingdb_source = db.Column(db.Text)
+    doi = db.Column(db.String(64))
+    pmid = db.Column(db.Integer)
+    temperature = db.Column(db.String(64))
+    ph = db.Column(db.String(64))
+    target_name = db.Column(db.Text)
+    ligand_bindingdb_id = db.Column(db.Integer)
+    ligand_chembl_id = db.Column(db.String(64))
+    ligand_smiles_string = db.Column(db.Text)
+    ligand_zinc_id = db.Column(db.String(64))
+    measurements = db.relationship('BindingDBMeasurement', backref='bindingdb_bioassay', lazy='dynamic')
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    def __repr__(self):
+        return '<BindingDB bioassay>'
+
+class BindingDBMeasurement(db.Model):
+    __tablename__ = 'bindingdb_measurement'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    measurement_type = db.Column(db.String(64))  # {Kd, Ki, IC50, EC50, koff, kon}
+    measurement_value = db.Column(db.String(64))
+    bindingdb_bioassay_id = db.Column(db.Integer, db.ForeignKey('bindingdb_bioassay.id'))
+    def __repr__(self):
+        return '<BindingDB measurement type: %r value: %r>' % (self.measurement_type, self.measurement_value)
