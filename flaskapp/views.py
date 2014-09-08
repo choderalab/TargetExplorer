@@ -137,6 +137,9 @@ def get_dbentry():
 # Examples:
 # http://.../[DB_NAME]DBAPI/search?query=family="TK" AND db_target_rank<300
 
+# Example SQLAlchemy filter syntax:
+# 'family is null AND species="Human"'
+
 @app.route('/%s/search' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def query_db():
