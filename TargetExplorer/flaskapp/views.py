@@ -64,7 +64,7 @@ def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
 
 # ======
-# Get list of db entries
+# Get list of all db entries
 # ======
 
 # Examples:
@@ -148,6 +148,7 @@ def get_dbentry():
         'ensembl_gene': [],
         'ncbi_gene': [],
         'npubs': dbentry.npubs,
+        'nbioassays': dbentry.nbioassays,
     }
 
     # = Add info from other tables =
@@ -226,6 +227,7 @@ def query_db():
             'family': uniprot.family,
             'npdbs': db_entry.npdbs,
             'npubs': db_entry.npubs,
+            'nbioassays': db_entry.nbioassays,
         }
         targets_obj['results'].append(target_obj)
 

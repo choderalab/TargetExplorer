@@ -256,17 +256,25 @@ class BindingDBBioassay(db.Model):
     ligand_chembl_id = db.Column(db.String(64))
     ligand_smiles_string = db.Column(db.Text)
     ligand_zinc_id = db.Column(db.String(64))
-    measurements = db.relationship('BindingDBMeasurement', backref='bindingdb_bioassay', lazy='dynamic')
+
+    ki = db.Column(db.String(64))
+    ic50 = db.Column(db.String(64))
+    kd = db.Column(db.String(64))
+    ec50 = db.Column(db.String(64))
+    kon = db.Column(db.String(64))
+    koff = db.Column(db.String(64))
+
+    # measurements = db.relationship('BindingDBMeasurement', backref='bindingdb_bioassay', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
         return '<BindingDB bioassay>'
 
-class BindingDBMeasurement(db.Model):
-    __tablename__ = 'bindingdb_measurement'
-    id = db.Column(db.Integer, primary_key=True)
-    crawl_number = db.Column(db.Integer)
-    measurement_type = db.Column(db.String(64))  # {Kd, Ki, IC50, EC50, koff, kon}
-    measurement_value = db.Column(db.String(64))
-    bindingdb_bioassay_id = db.Column(db.Integer, db.ForeignKey('bindingdb_bioassay.id'))
-    def __repr__(self):
-        return '<BindingDB measurement type: %r value: %r>' % (self.measurement_type, self.measurement_value)
+# class BindingDBMeasurement(db.Model):
+#     __tablename__ = 'bindingdb_measurement'
+#     id = db.Column(db.Integer, primary_key=True)
+#     crawl_number = db.Column(db.Integer)
+#     measurement_type = db.Column(db.String(64))  # {Kd, Ki, IC50, EC50, koff, kon}
+#     measurement_value = db.Column(db.String(64))
+#     bindingdb_bioassay_id = db.Column(db.Integer, db.ForeignKey('bindingdb_bioassay.id'))
+#     def __repr__(self):
+#         return '<BindingDB measurement type: %r value: %r>' % (self.measurement_type, self.measurement_value)

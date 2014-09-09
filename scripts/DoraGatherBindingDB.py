@@ -115,6 +115,7 @@ for result in results:
     db_uniprot_row = models.UniProt.query.filter_by(crawl_number=current_crawl_number, ac=ac).first()
     dbentry_id = db_uniprot_row.dbentry_id
     dbentry_row = models.DBEntry.query.filter_by(id=dbentry_id).first()
+    dbentry_row.nbioassays = len(bioassays_data)
 
     for bioassay_data in bioassays_data:
         bindingdb_bioassay_obj = models.BindingDBBioassay(
@@ -129,24 +130,17 @@ for result in results:
             ligand_chembl_id=bioassay_data['ligand_ChEMBL_ID'],
             ligand_smiles_string=bioassay_data['ligand_SMILES_string'],
             ligand_zinc_id=bioassay_data['ligand_zinc_id'],
+
+            ki=bioassay_data['Ki'],
+            ic50=bioassay_data['IC50'],
+            kd=bioassay_data['Kd'],
+            ec50=bioassay_data['EC50'],
+            kon=bioassay_data['kon'],
+            koff=bioassay_data['koff'],
+
             dbentry=dbentry_row,
         )
         db.session.add(bindingdb_bioassay_obj)
-
-    # TODO add BindingDBMeasurement objects
-
-
-
-
-# for result in results:
-#     AC, bioassays_data = result
-#     entry = DB_root.find('entry/UniProt[@AC="%s"]/..' % AC)
-#     # Create bioassays node
-#     bioassays_node = etree.SubElement(entry, 'bioassays')
-#     for bioassay_data in bioassays_data:
-#         bioassay_node = etree.SubElement(bioassays_node, 'bioassay')
-#         for data_key in bioassay_data.keys():
-#             bioassay_node.set(data_key, bioassay_data[data_key])
 
 # ==============================================================
 # Update db BindingDB datestamp
