@@ -14,8 +14,8 @@
 import os
 import datetime
 import argparse
-import TargetExplorer
-from flaskapp import models, db
+import targetexplorer
+from targetexplorer.flaskapp import models, db
 import pandas as pd
 
 # =================
@@ -50,7 +50,7 @@ if os.path.exists(gene2pubmed_filepath) and args.use_existing_gene2pubmed:
     print 'gene2pubmed file found at:', gene2pubmed_filepath
 else:
     print 'Retrieving new Gene2PubMed file from NCBI server...'
-    TargetExplorer.NCBI_Gene.retrieve_gene2pubmed(gene2pubmed_filepath)
+    targetexplorer.NCBI_Gene.retrieve_gene2pubmed(gene2pubmed_filepath)
 
 print ''
 
@@ -74,9 +74,6 @@ i = 0
 # dbentry_npubs: npubs for each DBEntry, hashed by DBEntry.id
 dbentry_npubs = {}
 for db_gene_id in db_gene_ids:
-    if i % 100 == 0:
-        print '%d/%d Gene IDs searched' % (i, len(db_gene_ids))
-
     # check if the db Gene ID is present in the gene2pubmed data
     if db_gene_id in pmids_by_gene_id:
         # if so, get the PMIDs corresponding to that Gene ID
@@ -102,6 +99,9 @@ for db_gene_id in db_gene_ids:
             db.session.add(ncbi_gene_publication_obj)
 
     i += 1
+
+    if i % 100 == 0 or i == len(db_gene_ids):
+        print '%d/%d Gene IDs searched' % (i, len(db_gene_ids))
 
 for dbentry in models.DBEntry.query.filter_by(crawl_number=current_crawl_number).all():
     if dbentry.id in dbentry_npubs:

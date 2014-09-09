@@ -1,4 +1,4 @@
-from flaskapp import db
+from targetexplorer.flaskapp import db
 
 table_class_names = [
     'CrawlData',

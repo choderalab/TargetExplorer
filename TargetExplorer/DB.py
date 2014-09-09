@@ -1,6 +1,6 @@
 import os, subprocess, shutil, tempfile, datetime
 from lxml import etree
-import TargetExplorer
+import targetexplorer
 
 datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 
@@ -36,7 +36,7 @@ local_data_filenames = {
 local_data_filepaths = { DB_script_ID : os.path.join(external_data_dir, DB_script_ID, local_data_filenames[DB_script_ID])  for DB_script_ID in local_data_filenames.keys() }
 
 retrieve_methods = {
-'BindingDB' : TargetExplorer.BindingDB.retrieve_all_BindingDB_data
+'BindingDB' : targetexplorer.BindingDB.retrieve_all_BindingDB_data
 }
 
 days_elapsed_for_suggestdl_dict = {
@@ -91,10 +91,10 @@ def retrieve_external_data(DB_script_ID, forcedl=False, uniprot_search_string=No
         update_external_data_metadata(DB_script_ID, now_datestamp, local_data_filename, local_data_filepath)
 
     # Check when the local data file was retrieved and download a new one if it is older than days_elapsed_for_suggestdl
-    external_data_metadata_root = etree.parse(TargetExplorer.DB.external_data_metadata_filepath, parser).getroot()
+    external_data_metadata_root = etree.parse(targetexplorer.DB.external_data_metadata_filepath, parser).getroot()
     xml_query = '%s/local_data_file[@filename="%s"]' % (DB_script_ID, local_data_filename)
     local_datafile_datestamp = external_data_metadata_root.find(xml_query).get('datestamp')
-    local_datafile_datestamp = datetime.datetime.strptime(local_datafile_datestamp, TargetExplorer.DB.datestamp_format_string)
+    local_datafile_datestamp = datetime.datetime.strptime(local_datafile_datestamp, targetexplorer.DB.datestamp_format_string)
     time_elapsed = now - local_datafile_datestamp
     if (time_elapsed.days > days_elapsed_for_suggestdl) or (forcedl == True):
         if time_elapsed.days > days_elapsed_for_suggestdl:

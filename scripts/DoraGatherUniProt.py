@@ -17,10 +17,10 @@
 #==============================================================================
 
 import os, datetime, argparse
-import TargetExplorer
+import targetexplorer
 import project_config
 from lxml import etree
-from flaskapp import models, db
+from targetexplorer.flaskapp import models, db
 
 #==============================================================================
 # Parameters
@@ -62,7 +62,7 @@ if os.path.exists(uniprot_xml_out_filepath) and args.use_existing_uniprot:
     print 'UniProt XML document found at:', uniprot_xml_out_filepath
 else:
     print 'Retrieving new XML document from UniProt website.'
-    new_xml_text = TargetExplorer.UniProt.retrieve_uniprot(project_config.uniprot_query_string)
+    new_xml_text = targetexplorer.UniProt.retrieve_uniprot(project_config.uniprot_query_string)
     print 'Saving new XML document as:', uniprot_xml_out_filepath
     with open(uniprot_xml_out_filepath, 'w') as uniprot_xml_file:
         uniprot_xml_file.write(new_xml_text + '\n')
@@ -79,7 +79,7 @@ domain_names_str += 'Number of entries in UniProt XML document: %d\n' % nuniprot
 all_domains = uniprot_xml.findall('./entry/feature[@type="domain"]')
 domain_names_str += 'Total number of domains: %d\n' % len(all_domains)
 
-selected_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+selected_domains = uniprot_xml.xpath('entry/feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): targetexplorer.core.xpath_match_regex_case_sensitive })
 domain_names_str += 'Number of domains matching regex: %d\n\n' % len(selected_domains)
 
 domain_names_str += '= Unique domain names which match regex =\n'
@@ -197,7 +197,7 @@ for k in range(nuniprot_entries):
     # XXX TODO Generalize
 
     if project_config.uniprot_domain_regex != None:
-        selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): TargetExplorer.core.xpath_match_regex_case_sensitive })
+        selected_domains = uniprot_entries[k].xpath('feature[@type="domain"][match_regex(@description, "%s")]' % project_config.uniprot_domain_regex, extensions = { (None, 'match_regex'): targetexplorer.core.xpath_match_regex_case_sensitive })
     else:
         selected_domains = uniprot_entries[k].findall('feature[@type="domain"]')
 
@@ -301,9 +301,9 @@ for k in range(nuniprot_entries):
     similarity_comments = uniprot_entries[k].xpath('./comment[@type="similarity"]')
     family = False
     for s in similarity_comments:
-        for f in TargetExplorer.UniProt.kinase_family_uniprot_similarity_text.keys():
+        for f in targetexplorer.UniProt.kinase_family_uniprot_similarity_text.keys():
             if f in s.findtext('text'):
-                family = TargetExplorer.UniProt.kinase_family_uniprot_similarity_text[f]
+                family = targetexplorer.UniProt.kinase_family_uniprot_similarity_text[f]
 
     # = PDB entries (from UniProt XML) =
     # keep X-ray and NMR structures (not "Model")
@@ -317,7 +317,7 @@ for k in range(nuniprot_entries):
         resolution_node = p.find('property[@type="resolution"]')
         resolution = resolution_node.get('value') if resolution_node != None else None
         chains_span_str = p.find('property[@type="chains"]').get('value')
-        chains_span = TargetExplorer.UniProt.parse_uniprot_pdbref_chains(chains_span_str)
+        chains_span = targetexplorer.UniProt.parse_uniprot_pdbref_chains(chains_span_str)
         chains_added = 0
         for c in chains_span.keys():
             chainID = c

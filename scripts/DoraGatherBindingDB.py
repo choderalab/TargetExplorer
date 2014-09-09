@@ -15,8 +15,8 @@ import subprocess
 import datetime
 import argparse
 from lxml import etree
-import TargetExplorer
-from flaskapp import models, db
+import targetexplorer
+from targetexplorer.flaskapp import models, db
 from multiprocessing import Pool
 
 # =================
@@ -55,7 +55,7 @@ if os.path.exists(bindingdb_all_data_filepath) and args.use_existing_bindingdb_d
     print 'BindingDB data file found at:', bindingdb_all_data_filepath
 else:
     print 'Retrieving new BindingDB data file from BindingDB server...'
-    TargetExplorer.BindingDB.retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=False)
+    targetexplorer.BindingDB.retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=False)
 
 
 
@@ -97,10 +97,10 @@ def extract_bindingdb(input_data):
     bioassays_data = []
     with open(DB_entry_bindingdb_data_filepath, 'r') as bindingdb_file:
         for line in bindingdb_file:
-            returnedACs = TargetExplorer.BindingDB.get_ACs(line)
+            returnedACs = targetexplorer.BindingDB.get_ACs(line)
             for returnedAC in returnedACs:
                 if returnedAC == AC:
-                    bioassay_data = TargetExplorer.BindingDB.get_bioassay_data(line) # returns a dict
+                    bioassay_data = targetexplorer.BindingDB.get_bioassay_data(line) # returns a dict
                     bioassays_data.append( bioassay_data )
     os.remove(DB_entry_bindingdb_data_filepath)
     return (AC, bioassays_data)

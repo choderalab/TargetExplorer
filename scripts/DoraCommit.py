@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-import re, datetime
-import TargetExplorer
-from flaskapp import db, models
+import re
+import datetime
+import argparse
+import targetexplorer
+from targetexplorer.flaskapp import db, models
 import project_config
 
 crawldata_row = models.CrawlData.query.first()
@@ -10,6 +12,9 @@ safe_crawl_datestamp = crawldata_row.safe_crawl_datestamp
 current_crawl_datestamps_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()
 
 data_problem = False
+
+argparser = argparse.ArgumentParser(description='Commit database')
+args = argparser.parse_args()
 
 # ===================
 # Test whether each of the scripts have been run, and whether they have been updated in the correct order
@@ -21,10 +26,10 @@ for data_type in ['uniprot', 'ncbi_gene']:
         print 'data_type "%s" FAIL: no data found in db' % data_type
         data_problem = True
     elif current_crawl_datatype_datestamp <= safe_crawl_datestamp:
-        print 'data_type "%s" FAIL: current data (%s) is older than or as old as safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(TargetExplorer.core.datestamp_format_string), safe_crawl_datestamp.strftime(TargetExplorer.core.datestamp_format_string))
+        print 'data_type "%s" FAIL: current data (%s) is older than or as old as safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string))
         data_problem = True
     elif current_crawl_datatype_datestamp > safe_crawl_datestamp:
-        print 'data_type "%s" PASS: current data (%s) is newer than safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(TargetExplorer.core.datestamp_format_string), safe_crawl_datestamp.strftime(TargetExplorer.core.datestamp_format_string))
+        print 'data_type "%s" PASS: current data (%s) is newer than safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string))
 
 if data_problem:
     raise Exception, 'Commit aborted.'

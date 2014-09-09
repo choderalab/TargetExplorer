@@ -1,5 +1,5 @@
 import os, urllib, urllib2, datetime, tempfile, subprocess, shutil
-import TargetExplorer
+import targetexplorer
 from lxml import etree
 
 def print_uniprot_xml_comparison(new_xml, old_xml):
@@ -122,10 +122,10 @@ def update_metadata_uniprot_search(datestamp, uniprot_search_filepath):
     Create the file if it does not exist.
     '''
     now = datetime.datetime.now()
-    datestamp = now.strftime(TargetExplorer.DB.datestamp_format_string)
+    datestamp = now.strftime(targetexplorer.DB.datestamp_format_string)
     parser = etree.XMLParser(remove_blank_text=True)
-    if os.path.exists(TargetExplorer.DB.external_data_metadata_filepath):
-        metadata_root = etree.parse(TargetExplorer.DB.external_data_metadata_filepath, parser).getroot()
+    if os.path.exists(targetexplorer.DB.external_data_metadata_filepath):
+        metadata_root = etree.parse(targetexplorer.DB.external_data_metadata_filepath, parser).getroot()
     else:
         metadata_root = etree.Element('external_data')
     uniprot_node = metadata_root.find('UniProt')
@@ -136,7 +136,7 @@ def update_metadata_uniprot_search(datestamp, uniprot_search_filepath):
         uniprot_search_node = etree.SubElement(uniprot_node, 'uniprot_search')
     uniprot_search_node.set('filepath', uniprot_search_filepath)
     uniprot_search_node.set('datestamp', datestamp)
-    with open(TargetExplorer.DB.external_data_metadata_filepath, 'w') as metadata_file:
+    with open(targetexplorer.DB.external_data_metadata_filepath, 'w') as metadata_file:
         metadata_file.write(etree.tostring(metadata_root, pretty_print=True))
 
 def get_uniprot_mapping(query_data_type, retrieve_data_type, query_data):

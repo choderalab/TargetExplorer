@@ -5,7 +5,7 @@
 
 import os, platform, shlex
 from subprocess import Popen, PIPE
-import TargetExplorer
+import targetexplorer
     
 def run_salign(align_codes, sequences, structures_path, dendrogram_filename, alignment_pir_filename, alignment_pap_filename, verbose=True):
     '''Use structural information to build a multiple sequence alignment.
@@ -86,7 +86,7 @@ Returns a list of aligned sequences
     # If clustalo binary not passed as an argument, try to autodetect
     if clustalo_binary == None:
         # First try searching $PATH
-        which_result = TargetExplorer.core.which('clustalo')
+        which_result = targetexplorer.core.which('clustalo')
         if which_result != None:
             clustalo_binary = which_result
     if clustalo_binary != None:
@@ -100,7 +100,7 @@ Returns a list of aligned sequences
     seq_string = ''
     for s in range(nseq):
         try:
-            seq_string += '>%s\n%s\n' % (sequence_ids[s], TargetExplorer.core.seqwrap(sequences[s]))
+            seq_string += '>%s\n%s\n' % (sequence_ids[s], targetexplorer.core.seqwrap(sequences[s]))
         except:
             print sequence_ids[s], sequences[s]
             raise
@@ -117,7 +117,7 @@ Returns a list of aligned sequences
     stdout = p.communicate(input=seq_string)[0]
 
     # Extract the aligned sequences and return
-    aln_seq_ids, aln_seqs = TargetExplorer.core.parse_fasta_string(stdout)
+    aln_seq_ids, aln_seqs = targetexplorer.core.parse_fasta_string(stdout)
     return aln_seqs
 
 def seq_comparator(seq1, seq2):

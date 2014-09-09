@@ -2,7 +2,7 @@ from flask import abort, jsonify, request, make_response, current_app
 import re
 from datetime import timedelta
 from functools import update_wrapper
-from flaskapp import app, db, models, config
+from targetexplorer.flaskapp import app, db, models, config
 
 # ======
 # HTTP access control decorator - for cross-origin resource sharing (CORS)
@@ -64,30 +64,72 @@ def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
 
 # ======
+# Get list of db entries
+# ======
+
+# Examples:
+# http://.../[DB_NAME]DBAPI/listall
+
+@app.route('/%s/listall' % config.dbapi_name, methods = ['GET'])
+@crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
+def listall():
+    # note: leadingpath is ignored
+
+    # = Get safe crawl number =
+    crawldata = models.CrawlData.query.first()
+    safe_crawl_number = crawldata.safe_crawl_number
+
+    # = Query the UniProt table =
+    uniprot_values = [values for values in models.UniProt.query.filter_by(crawl_number=safe_crawl_number).values(models.UniProt.ac, models.UniProt.entry_name)]
+
+    # = Construct the data structure for holding the results, to be returned as JSON =
+    results_obj = {
+        'listall': [],
+    }
+
+    # = Add info from other tables =
+    for entry_data in uniprot_values:
+        entry_obj = {
+            'ac': entry_data[0],
+            'entry_name': entry_data[1],
+        }
+        results_obj['listall'].append(entry_obj)
+
+    # = Return data in JSON format =
+    response = make_response( jsonify(results_obj) )
+    return response
+
+
+# ======
 # Get individual db entry
 # ======
 
 # Examples:
 # http://.../[DB_NAME]DBAPI/entry?ac=P00519
+# http://.../[DB_NAME]DBAPI/entry?entry_name=P00519
 
 @app.route('/%s/entry' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def get_dbentry():
     # note: leadingpath is ignored
 
-    ac = request.args.get('ac')
-    if ac == None:
-        abort(404)
-    # TODO UniProt AC format will be extended some time after June 11 2014!
-    elif not (re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', ac) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', ac)):
-        abort(404)
-
     # = Get safe crawl number =
     crawldata = models.CrawlData.query.first()
     safe_crawl_number = crawldata.safe_crawl_number
 
+    for request_field in ['ac', 'entry_name']:
+        if request_field in request.args:
+            break
+
+    request_value = request.args.get(request_field)
+    if request_field == 'ac':
+        # TODO UniProt AC format will be extended some time after June 11 2014!
+        if not (re.match('[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]', request_value) or re.match('[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]', request_value)):
+            abort(404)
+
     # = Search the UniProt table using the query AC =
-    uniprot = models.UniProt.query.filter_by(ac=ac, crawl_number=safe_crawl_number).first()
+    model_request_field = getattr(models.UniProt, request_field)
+    uniprot = models.UniProt.query.filter(model_request_field==request_value, models.UniProt.crawl_number==safe_crawl_number).first()
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
