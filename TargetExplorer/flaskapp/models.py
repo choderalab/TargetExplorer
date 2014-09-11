@@ -13,12 +13,14 @@ table_class_names = [
     'UniProtDiseaseAssociation',
     'UniProtSubcellularLocation',
     'PDB',
+    'PDBChain',
+    'PDBExpressionData',
     'NCBIGeneEntry',
     'NCBIGenePublication',
     'EnsemblGeneEntry',
     'HGNCEntry',
     'BindingDBBioassay',
-    'BindingDBMeasurement',
+    # 'BindingDBMeasurement',
 ]
 
 frontend2backend_mappings = {
@@ -197,12 +199,39 @@ class PDB(db.Model):
     pdbid = db.Column(db.String(64))
     method = db.Column(db.Text)
     resolution = db.Column(db.Float)
+    chains = db.relationship('PDBChain', backref='pdb', lazy='dynamic')
+    expression_data = db.relationship('PDBExpressionData', backref='pdb', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
         return '<PDB ID %r>' % self.pdbid
 
-# TODO
-# class PDBChain(db.Model):
+class PDBChain(db.Model):
+    __tablename__ = 'pdbchain'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    chain_id = db.Column(db.String(64))
+    domain_id = db.Column(db.Integer)
+    begin = db.Column(db.Integer)
+    end = db.Column(db.Integer)
+    experimental_seq = db.Column(db.Text)
+    experimental_seq_aln_conflicts = db.Column(db.Text)
+    experimental_seq_len = db.Column(db.Integer)
+    observed_seq_aln_exp = db.Column(db.Text)
+    observed_seq_aln = db.Column(db.Text)
+    observed_ss_aln = db.Column(db.Text)
+    pdb_id = db.Column(db.Integer, db.ForeignKey('pdb.id'))
+    def __repr__(self):
+        return '<PDBChain ID %r>' % self.chain_id
+
+class PDBExpressionData(db.Model):
+    __tablename__ = 'pdbexpressiondata'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    expression_data_type = db.Column(db.String(64))
+    expression_data_value = db.Column(db.Text)
+    pdb_id = db.Column(db.Integer, db.ForeignKey('pdb.id'))
+    def __repr__(self):
+        return '<PDBExpressionData id %r>' % self.id
 
 class NCBIGeneEntry(db.Model):
     __tablename__ = 'ncbi_gene_entry'

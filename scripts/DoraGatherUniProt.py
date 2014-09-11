@@ -318,27 +318,25 @@ for k in range(nuniprot_entries):
         resolution = resolution_node.get('value') if resolution_node != None else None
         chains_span_str = p.find('property[@type="chains"]').get('value')
         chains_span = targetexplorer.UniProt.parse_uniprot_pdbref_chains(chains_span_str)
-        chains_added = 0
+        chain_objs = []
         for c in chains_span.keys():
-            chainID = c
+            chain_id = c
             pdb_begin = chains_span[c][0]
             pdb_end = chains_span[c][1]
             # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
             # Have to check against each PK domain
-            for d,domain in enumerate(domains_data):
+            for domain_id, domain in enumerate(domains_data):
                 pk_begin = domain.begin
                 pk_end = domain.end
                 if (pdb_begin < pk_begin+30) & (pdb_end > pk_end-30):
-                    domainID = str(d)
-                    pdb_begin = str(pdb_begin)
-                    pdb_end = str(pdb_end)
-                    chains_added += 1
+                    chain_obj = models.PDBChain(crawl_number=current_crawl_number, chain_id=chain_id, domain_id=domain_id, begin=pdb_begin, end=pdb_end)
+                    chain_objs.append(chain_obj)
                 else:
                     continue
 
-        if chains_added > 0:
+        if len(chain_objs) > 0:
             pdb_obj = models.PDB(crawl_number=current_crawl_number, pdbid=pdbid, method=pdb_method, resolution=resolution)
-            pdb_data.append(pdb_obj)
+            pdb_data.append({'pdb_obj': pdb_obj, 'chain_objs': chain_objs})
 
     # # = Add the warnings node last (only if it contains any warnings) = #
     # TODO still need this?
@@ -382,9 +380,14 @@ for k in range(nuniprot_entries):
         domain_obj.dbentry = dbentry
         domain_obj.uniprot_entry = uniprot
         db.session.add(domain_obj)
-    for pdb_obj in pdb_data:
+    for pdb_data_dict in pdb_data:
+        pdb_obj = pdb_data_dict['pdb_obj']
+        chain_objs = pdb_data_dict['chain_objs']
         pdb_obj.dbentry = dbentry
         db.session.add(pdb_obj)
+        for chain_obj in chain_objs:
+            chain_obj.pdb = pdb_obj
+            db.session.add(chain_obj)
     for gene_name_obj in gene_name_data:
         gene_name_obj.dbentry = dbentry
         db.session.add(gene_name_obj)
