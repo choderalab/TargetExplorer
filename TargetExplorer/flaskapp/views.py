@@ -221,6 +221,7 @@ def query_db():
 
     for db_entry in results:
         uniprot = db.session.query(models.UniProt).filter_by(dbentry_id=db_entry.id).first()
+        domain_targetids = [domain_row.targetid for domain_row in uniprot.domains]
         target_obj = {
             'ac': uniprot.ac,
             'entry_name': uniprot.entry_name,
@@ -228,6 +229,7 @@ def query_db():
             'npdbs': db_entry.npdbs,
             'npubs': db_entry.npubs,
             'nbioassays': db_entry.nbioassays,
+            'domains': domain_targetids,
         }
         targets_obj['results'].append(target_obj)
 
