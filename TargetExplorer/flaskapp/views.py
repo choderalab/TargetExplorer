@@ -73,8 +73,6 @@ def not_found(error):
 @app.route('/%s/listall' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def listall():
-    # note: leadingpath is ignored
-
     # = Get safe crawl number =
     crawldata = models.CrawlData.query.first()
     safe_crawl_number = crawldata.safe_crawl_number
@@ -111,8 +109,6 @@ def listall():
 @app.route('/%s/entry' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def get_dbentry():
-    # note: leadingpath is ignored
-
     # = Get safe crawl number =
     crawldata = models.CrawlData.query.first()
     safe_crawl_number = crawldata.safe_crawl_number
@@ -178,7 +174,7 @@ def get_dbentry():
 # ======
 
 # Examples:
-# http://.../[DB_NAME]DBAPI/search?query=family="TK" AND db_target_rank<300
+# http://.../[DB_NAME]DBAPI/search?query=family="TK" AND db_target_rank<300&return="domain_seqs"
 
 # Example SQLAlchemy filter syntax:
 # 'family is null AND species="Human"'
@@ -187,6 +183,9 @@ def get_dbentry():
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def query_db():
     frontend_query_string = request.args.get('query') # expecting SQLAlchemy syntax (wtih frontend-style field names)
+    return_fields = request.args.get('return') if 'return' in request.args else []
+    if type(return_fields) == str:
+        return_fields = [return_fields]
 
     # = Get safe crawl number =
     crawldata = models.CrawlData.query.first()
@@ -231,8 +230,37 @@ def query_db():
             'nbioassays': db_entry.nbioassays,
             'domains': domain_targetids,
         }
+
+        # Optional additional data
+        if 'seqs' in return_fields:
+            canon_isoform = uniprot.isoforms.filter_by(canonical=True).first()
+            target_obj['sequence'] = canon_isoform.sequence
+        if 'domain_seqs' in return_fields:
+            domain_data = [{'targetid': domain_row.targetid, 'sequence': domain_row.sequence} for domain_row in uniprot.domains]
+            target_obj['domains'] = domain_data
+
         targets_obj['results'].append(target_obj)
 
     # = Return data in JSON format =
     response = make_response( jsonify(targets_obj) )
+    return response
+
+# ======
+# Get database metadata
+# ======
+
+# Examples:
+# http://.../[DB_NAME]DBAPI/get_metadata
+
+@app.route('/%s/get_metadata' % config.dbapi_name, methods = ['GET'])
+@crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
+def get_metadata():
+    import project_config
+    results_obj = {
+        'uniprot_query_string': project_config.uniprot_query_string,
+        'uniprot_domain_regex': project_config.uniprot_domain_regex,
+    }
+
+    # = Return data in JSON format =
+    response = make_response( jsonify(results_obj) )
     return response
