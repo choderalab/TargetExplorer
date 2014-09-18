@@ -55,46 +55,6 @@ parser = etree.XMLParser(remove_blank_text=True)
 
 verbose = False
 
-
-
-
-# #==============================================================================
-# # Parameters
-# #==============================================================================
-#
-# if '-stage' in sys.argv:
-#     run_mode = 'stage'
-# elif '-dev' in sys.argv:
-#     run_mode = 'dev'
-# else:
-#     run_mode = 'nowrite'
-#
-# print 'Running in mode: %s' % run_mode
-#
-# database_dir = 'database'
-# external_data_dir = 'external-data'
-# local_pdb_dir = os.path.join(external_data_dir, 'PDB')
-# local_sifts_dir = os.path.join(external_data_dir, 'SIFTS')
-# if not os.path.exists(local_pdb_dir):
-#     os.mkdir(local_pdb_dir)
-# if not os.path.exists(local_sifts_dir):
-#     os.mkdir(local_sifts_dir)
-#
-# DBstage_filepath = os.path.join(database_dir, 'database-stage.xml')
-# if not os.path.exists(DBstage_filepath):
-#     raise Exception, '%s not found.' % DBstage_filepath
-#
-# if run_mode != 'nowrite':
-#     DB_out_filename = 'database-%(run_mode)s.xml' % vars()
-#     DB_out_filepath = os.path.join(database_dir, DB_out_filename)
-#
-# verbose = False
-#
-# now = datetime.datetime.utcnow()
-# datestamp = now.strftime(targetexplorer.DB.datestamp_format_string)
-#
-# parser = etree.XMLParser(remove_blank_text=True)
-
 #==============================================================================
 # Definitions
 #==============================================================================
@@ -221,10 +181,7 @@ def extract_pdb_data(pdb_dict):
                     if os.path.exists(local_pdb_filepath):
                         # In this case, just add a message telling the script to delete this PDB structure from the DB. The continue clause skips to the end of the function.
                         print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdbid
-                        # structure_results_obj = Structure_Data(structureID=pdbid)
-                        # structure_results_obj.exception_message='DELETE_ME - SIFTS file could not be downloaded'
-                        # results_obj.add_structure_results(structure_results_obj)
-                        return [pdbid, 'DELETE']
+                        return {'pdb_row_id': pdb_row_id, 'exception_message': 'SIFTS file could not be downloaded'}
                     else:
                         raise urlerror
                 else:
@@ -320,6 +277,11 @@ if __name__ == '__main__':
     for pdb_results in results:
         pdb_row_id = pdb_results['pdb_row_id']
         pdb_row = models.PDB.query.filter_by(id=pdb_row_id).first()
+
+        if 'exception_message' in pdb_results and pdb_results.get('exception_message') == 'SIFTS file could not be downloaded':
+            db.session.delete(pdb_row)
+            continue
+
         for chain_row_id in pdb_results['chain_dicts']:
             chain_row = models.PDBChain.query.filter_by(id=chain_row_id).first()
             chain_dict = pdb_results['chain_dicts'][chain_row_id]
@@ -328,10 +290,15 @@ if __name__ == '__main__':
                     continue
                 setattr(chain_row, key, chain_dict[key])
 
-            # Delete PDB structure and chain entries with @DELETE_ME attrib. These are cases where the sifts_uniprotAC does not match the uniprotAC in DB_root (derived from the UniProt entry by gather-uniprot.py), or where more than 90% of the experimental sequence is unobserved
+            # Delete chain entries with exception message of 'DELETE_ME'.
+            # These are cases where the sifts_uniprotAC does not match the
+            # uniprotAC in DB_root (derived from the UniProt entry by
+            # gather-uniprot.py), or where more than 90% of the
+            # experimental sequence is unobserved
             if chain_dict['exception_message'] == 'DELETE_ME':
                 db.session.delete(chain_row)
 
+        # If all chain entries have been deleted, delete the entire PDB row.
         if pdb_row.chains.count() == 0:
             db.session.delete(pdb_row)
 

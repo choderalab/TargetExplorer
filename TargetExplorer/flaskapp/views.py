@@ -238,6 +238,13 @@ def query_db():
         if 'domain_seqs' in return_fields:
             domain_data = [{'targetid': domain_row.targetid, 'sequence': domain_row.sequence} for domain_row in uniprot.domains]
             target_obj['domains'] = domain_data
+        if 'pdb_data' in return_fields:
+            pdb_data = []
+            for pdb_row in db_entry.pdbs:
+                pdbchain_data = [{'chainid': pdb_chain_row.chain_id, 'domainid': pdb_chain_row.domain_id, 'seq_begin': pdb_chain_row.begin, 'seq_end': pdb_chain_row.end} for pdb_chain_row in pdb_row.chains]
+                pdb_data.append({'pdbid': pdb_row.pdbid, 'pdbchains': pdbchain_data})
+
+            target_obj['pdbs'] = pdb_data
 
         targets_obj['results'].append(target_obj)
 
