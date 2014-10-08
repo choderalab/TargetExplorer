@@ -18,9 +18,9 @@ and [SQLAlchemy](http://www.sqlalchemy.org/) (an object-relational mapper which
 maps between SQL databases and Python objects).
 
 The database is generated using a series of scripts which gather in data from
-various public web resources. The first script to run is DoraCommit.py, which
+various public web resources. The first script to run is DoraInit.py, which
 initializes the necessary files and directory structure for a new database.
-This should be followed by DoraInit.py, which retrieves a set of
+This should be followed by DoraGatherUniProt.py, which retrieves a set of
 [UniProt](http://www.uniprot.org/) entries defined by a given search term.
 Subsequent scripts (once they have been migrated over from the old _XML_
 branch) add in data from various other databases such as the
