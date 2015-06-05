@@ -83,7 +83,7 @@ def check_correct_working_dir():
 
 def seq2pretty_html(seq, aa_css_class_list=None):
     '''Pass a sequence string.
-    Returns a list of lxml html td elements, colored according to residue type.
+    Returns a list of lxml html spans elements, colored according to residue type.
     Use the aa_css_class_list option to pass a list of custom aa_css_classes. Must be the same length as the seq list.
     '''
     if aa_css_class_list != None and len(aa_css_class_list) != len(seq):

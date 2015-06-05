@@ -24,6 +24,9 @@ table_class_names = [
 ]
 
 frontend2backend_mappings = {
+    'ac': ['UniProt', 'ac'],
+    'name': ['UniProt', 'entry_name'],
+    'target': ['UniProtDomain', 'targetid'],
     'npdbs': ['DBEntry', 'npdbs'],
     'ndomains': ['DBEntry', 'ndomains'],
     'nisoforms': ['DBEntry', 'nisoforms'],
