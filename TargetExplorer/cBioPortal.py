@@ -50,14 +50,12 @@ class GatherCbioportalData(object):
                 crawl_number=self.current_crawl_number
             ).values(models.UniProt.ac)
         ]
-        self.db_uniprot_acs = ['P00519']
         self.hgnc_gene_symbols = [
             value_tuple[0] for value_tuple
             in models.HGNCEntry.query.filter_by(
                 crawl_number=self.current_crawl_number
             ).values(models.HGNCEntry.approved_symbol)
         ]
-        self.hgnc_gene_symbols = ['ABL1']
 
     def get_mutation_data_as_xml(self):
         if os.path.exists(external_data_filepath) and self.use_existing_data:
