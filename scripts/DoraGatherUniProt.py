@@ -16,10 +16,12 @@
 # Imports
 #==============================================================================
 
-import os, datetime, argparse
-import targetexplorer
-import project_config
+import os
+import datetime
+import argparse
 from lxml import etree
+import project_config
+import targetexplorer.UniProt
 from targetexplorer.flaskapp import models, db
 
 #==============================================================================
@@ -40,7 +42,7 @@ domain_names_filename = 'selected_domain_names.txt'
 ignore_uniprot_pdbs = ['1GQ5']
 
 argparser = argparse.ArgumentParser(description='Gather UniProt')
-argparser.add_argument('--use_existing_uniprot', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true', default=False)
+argparser.add_argument('--use_existing_data', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true', default=False)
 argparser.add_argument('--count_nonselected_domain_names', help='Count the number of occurrences of domain names which are not selected by the regex and write to the "selected_domain_names.txt" file (may take a little while)', action='store_true', default=False)
 args = argparser.parse_args()
 
@@ -57,8 +59,8 @@ print 'Current crawl number: %d' %  current_crawl_number
 # Retrieve data from uniprot and store to local file
 #==============================================================================
 
-# Unless args.use_existing_uniprot is set to true, retrieve a new set of data from UniProt
-if os.path.exists(uniprot_xml_out_filepath) and args.use_existing_uniprot:
+# Unless args.use_existing_data is set to true, retrieve a new set of data from UniProt
+if os.path.exists(uniprot_xml_out_filepath) and args.use_existing_data:
     print 'UniProt XML document found at:', uniprot_xml_out_filepath
 else:
     print 'Retrieving new XML document from UniProt website.'
@@ -283,11 +285,45 @@ for k in range(nuniprot_entries):
         ncbi_gene_entries.append( models.NCBIGeneEntry(crawl_number=current_crawl_number, gene_id=GeneID) )
 
     # Ensembl
-    ensembl_gene_entries = []
-    ensembl_gene_ids = uniprot_entries[k].findall('./dbReference[@type="Ensembl"]/property[@type="gene ID"]')
-    ensembl_gene_ids_set = set( [ id.get('value') for id in ensembl_gene_ids ] )
-    for ensembl_gene_id in ensembl_gene_ids_set:
-        ensembl_gene_entries.append( models.EnsemblGeneEntry(crawl_number=current_crawl_number, gene_id=ensembl_gene_id) )
+
+    # transcript_data = {
+    #     'ENSMUST00000003710':
+    #         {
+    #             'gene':
+    #                 'ENSG000...',
+    #             'protein':
+    #                 'ENSP000...',
+    #         }
+    # }
+
+    ensembl_transcript_nodes = uniprot_entries[k].findall('./dbReference[@type="Ensembl"]')
+
+    ensembl_data = {}
+    for transcript_node in ensembl_transcript_nodes:
+        ensembl_transcript_id = transcript_node.get('id')
+
+        ensembl_gene_nodes = transcript_node.findall('property[@type="gene ID"]')
+        if len(ensembl_gene_nodes) > 1:
+            print('WARNING: Ensembl transcript {0} linked with > 1 gene ID'.format(ensembl_transcript_id))
+        ensembl_gene_id = ensembl_gene_nodes[0].get('value')
+
+        ensembl_protein_nodes = transcript_node.findall('property[@type="protein sequence ID"]')
+        if len(ensembl_protein_nodes) > 1:
+            print('WARNING: Ensembl transcript {0} linked with > 1 protein ID'.format(ensembl_transcript_id))
+        ensembl_protein_id = ensembl_protein_nodes[0].get('value')
+
+        uniprot_isoform_molecule_node = transcript_node.find('molecule')
+        if uniprot_isoform_molecule_node is not None:
+            uniprot_isoform_ac = uniprot_isoform_molecule_node.get('id')
+        else:
+            uniprot_isoform_ac = None
+
+        ensembl_data[ensembl_transcript_id] = {
+            'gene': ensembl_gene_id,
+            'protein': ensembl_protein_id,
+            'uniprot_isoform_ac': uniprot_isoform_ac
+        }
+
 
     # HGNC
     hgnc_entries = []
@@ -295,7 +331,7 @@ for k in range(nuniprot_entries):
     for hgnc_dbref in hgnc_dbrefs:
         hgnc_gene_id = hgnc_dbref.get('id')
         approved_symbol = hgnc_dbref.find('property[@type="gene designation"]').get('value')
-        hgnc_entries.append( models.HGNCEntry(crawl_number=current_crawl_number, gene_id=hgnc_gene_id, approved_symbol=approved_symbol) )
+        hgnc_entries.append(models.HGNCEntry(crawl_number=current_crawl_number, gene_id=hgnc_gene_id, approved_symbol=approved_symbol))
 
     # = Family information =
     similarity_comments = uniprot_entries[k].xpath('./comment[@type="similarity"]')
@@ -349,9 +385,27 @@ for k in range(nuniprot_entries):
     # Construct data objects and add to db
     # ========
 
-    dbentry = models.DBEntry(crawl_number=current_crawl_number, npdbs=len(pdb_data), ndomains=len(domains_data), nisoforms=len(isoforms), nfunctions=len(functions), ndiseaseassociations=len(disease_associations))
+    dbentry = models.DBEntry(
+        crawl_number=current_crawl_number,
+        npdbs=len(pdb_data),
+        ndomains=len(domains_data),
+        nisoforms=len(isoforms),
+        nfunctions=len(functions),
+        ndiseaseassociations=len(disease_associations),
+    )
     db.session.add(dbentry)
-    uniprot = models.UniProt(crawl_number=current_crawl_number, ac=ac, entry_name=entry_name, last_uniprot_update=last_uniprot_update, ncbi_taxonid=ncbi_taxonid, dbentry=dbentry, recommended_name=recommended_name, taxon_name_scientific=taxon_name_scientific, taxon_name_common=taxon_name_common, lineage=lineage_csv)
+    uniprot = models.UniProt(
+        crawl_number=current_crawl_number,
+        ac=ac,
+        entry_name=entry_name,
+        last_uniprot_update=last_uniprot_update,
+        ncbi_taxonid=ncbi_taxonid,
+        dbentry=dbentry,
+        recommended_name=recommended_name,
+        taxon_name_scientific=taxon_name_scientific,
+        taxon_name_common=taxon_name_common,
+        lineage=lineage_csv,
+    )
     if family:
         uniprot.family = family
     db.session.add(uniprot)
@@ -394,12 +448,38 @@ for k in range(nuniprot_entries):
     for NCBIGeneEntry in ncbi_gene_entries:
         NCBIGeneEntry.dbentry = dbentry
         db.session.add(NCBIGeneEntry)
-    for EnsemblGeneEntry in ensembl_gene_entries:
-        EnsemblGeneEntry.dbentry = dbentry
-        db.session.add(EnsemblGeneEntry)
     for HGNCEntry in hgnc_entries:
         HGNCEntry.dbentry = dbentry
         db.session.add(HGNCEntry)
+    for ensembl_transcript_id in ensembl_data:
+        ensembl_gene_id = ensembl_data[ensembl_transcript_id]['gene']
+        ensembl_gene_row = models.EnsemblGene(
+            crawl_number=current_crawl_number,
+            gene_id=ensembl_gene_id,
+            dbentry=dbentry,
+        )
+        db.session.add(ensembl_gene_row)
+
+        ensembl_transcript_row = models.EnsemblTranscript(
+            crawl_number=current_crawl_number,
+            transcript_id=ensembl_transcript_id,
+            ensembl_gene=ensembl_gene_row,
+        )
+        ensembl_transcript_uniprot_isoform_ac = ensembl_data[ensembl_transcript_id]['uniprot_isoform_ac']
+        if ensembl_transcript_uniprot_isoform_ac is not None:
+            matching_uniprot_isoform_obj = [isoform[0] for isoform in isoforms if isoform[0].ac == ensembl_transcript_uniprot_isoform_ac]
+            if len(matching_uniprot_isoform_obj) != 0:
+                ensembl_transcript_row.uniprotisoform = matching_uniprot_isoform_obj[0]
+        db.session.add(ensembl_transcript_row)
+
+        ensembl_protein_id = ensembl_data[ensembl_transcript_id]['protein']
+        ensembl_protein_row = models.EnsemblProtein(
+            crawl_number=current_crawl_number,
+            protein_id=ensembl_protein_id,
+            ensembl_gene=ensembl_gene_row,
+            ensembl_transcript=ensembl_transcript_row,
+        )
+        db.session.add(ensembl_protein_row)
 
 # update db UniProt datestamp
 current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()

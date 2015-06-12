@@ -11,6 +11,7 @@ datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 # =========
 # =========
 
+
 def xpath_match_regex_case_sensitive(context, attrib_values, xpath_argument):
     ''' To be used as an lxml XPath extension, for regex searches of attrib values.
     '''
@@ -22,6 +23,7 @@ def xpath_match_regex_case_sensitive(context, attrib_values, xpath_argument):
     else:
         regex = re.compile(xpath_argument)
         return bool( re.search(regex, attrib_values[0]) )
+
 
 def xpath_match_regex_case_insensitive(context, attrib_values, xpath_argument):
     ''' To be used as an lxml XPath extension, for regex searches of attrib values.
@@ -35,6 +37,12 @@ def xpath_match_regex_case_insensitive(context, attrib_values, xpath_argument):
         regex = re.compile(xpath_argument, re.IGNORECASE)
         return bool( re.search(regex, attrib_values[0]) )
 
+
+def int_else_none(literal):
+    try:
+        return int(literal)
+    except ValueError:
+        return None
 
 
 

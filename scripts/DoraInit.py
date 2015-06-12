@@ -9,8 +9,6 @@ argparser = argparse.ArgumentParser(description='Initialize TargetExplorer datab
 argparser.add_argument('--db_name', type=str, required=True, help='Database name, without extension')
 args = argparser.parse_args()
 
-print 'Initializing database project directory...'
-
 targetexplorer_lib_dir = os.path.abspath(os.path.join(os.path.dirname(targetexplorer.__file__)))
 
 # make external-data dir
@@ -54,5 +52,5 @@ datestamps_row = flaskapp.models.DateStamps(crawl_number=current_crawl_number)
 flaskapp.db.session.add(datestamps_row)
 flaskapp.db.session.commit()
 
-print 'Done.'
-print 'Please now edit the UniProt search options in project_config.py before running the database generation scripts.'
+print('Done.')
+print('Please now edit the UniProt search options in project_config.py before running the database generation scripts.')

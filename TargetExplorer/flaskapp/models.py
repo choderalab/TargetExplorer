@@ -17,10 +17,12 @@ table_class_names = [
     'PDBExpressionData',
     'NCBIGeneEntry',
     'NCBIGenePublication',
-    'EnsemblGeneEntry',
+    'EnsemblGene',
     'HGNCEntry',
     'BindingDBBioassay',
     # 'BindingDBMeasurement',
+    'CbioportalCase',
+    'CbioportalMutation',
 ]
 
 frontend2backend_mappings = {
@@ -59,6 +61,7 @@ class DateStamps(db.Model):
     pdb_datestamp = db.Column(db.DateTime)
     ncbi_gene_datestamp = db.Column(db.DateTime)
     bindingdb_datestamp = db.Column(db.DateTime)
+    cbioportal_datestamp = db.Column(db.DateTime)
     commit_datestamp = db.Column(db.DateTime)
     def __repr__(self):
         return '<DB DateStamps crawl number %d>' % self.crawl_number
@@ -83,9 +86,10 @@ class DBEntry(db.Model):
     uniprotsubcellularlocations = db.relationship('UniProtSubcellularLocation', backref='dbentry', lazy='dynamic')
     pdbs = db.relationship('PDB', backref='dbentry', lazy='dynamic')
     ncbi_gene_entries = db.relationship('NCBIGeneEntry', backref='dbentry', lazy='dynamic')
-    ensembl_gene_entries = db.relationship('EnsemblGeneEntry', backref='dbentry', lazy='dynamic')
+    ensembl_genes = db.relationship('EnsemblGene', backref='dbentry', lazy='dynamic')
     hgnc_entries = db.relationship('HGNCEntry', backref='dbentry', lazy='dynamic')
     bindingdb_bioassays = db.relationship('BindingDBBioassay', backref='dbentry', lazy='dynamic')
+    cbioportal_mutations = db.relationship('CbioportalMutation', backref='dbentry', lazy='dynamic')
     def __repr__(self):
         return '<DBEntry %d>' % self.id
 
@@ -135,6 +139,7 @@ class UniProtIsoform(db.Model):
     version = db.Column(db.Integer)
     sequence = db.Column(db.Text)
     notes = db.relationship('UniProtIsoformNote', backref='uniprotisoform', lazy='dynamic')
+    ensembl_transcripts = db.relationship('EnsemblTranscript', backref='uniprotisoform', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
@@ -160,6 +165,7 @@ class UniProtDomain(db.Model):
     length = db.Column(db.Integer)
     sequence = db.Column(db.Text)
     # pseudodomain = db.Column(db.Boolean)
+    cbioportal_mutations = db.relationship('CbioportalMutation', backref='uniprot_domain', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
@@ -255,14 +261,37 @@ class NCBIGenePublication(db.Model):
     def __repr__(self):
         return '<NCBIGenePublication PMID %r>' % self.pmid
 
-class EnsemblGeneEntry(db.Model):
-    __tablename__ = 'ensembl_gene_entry'
+class EnsemblGene(db.Model):
+    __tablename__ = 'ensembl_gene'
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
     gene_id = db.Column(db.String(64))
+    ensembl_transcripts = db.relationship('EnsemblTranscript', backref='ensembl_gene', lazy='dynamic')
+    ensembl_proteins = db.relationship('EnsemblProtein', backref='ensembl_gene', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     def __repr__(self):
-        return '<EnsemblGeneEntry ID %r>' % self.gene_id
+        return '<EnsemblGene ID %r>' % self.gene_id
+
+class EnsemblTranscript(db.Model):
+    __tablename__ = 'ensembl_transcript'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    transcript_id = db.Column(db.String(64))
+    ensembl_proteins = db.relationship('EnsemblProtein', backref='ensembl_transcript', lazy='dynamic')
+    ensembl_gene_id = db.Column(db.Integer, db.ForeignKey('ensembl_gene.id'))
+    uniprot_isoform_id = db.Column(db.Integer, db.ForeignKey('uniprotisoform.id'))
+    def __repr__(self):
+        return '<EnsemblTranscript ID %r>' % self.transcript_id
+
+class EnsemblProtein(db.Model):
+    __tablename__ = 'ensembl_protein'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    protein_id = db.Column(db.String(64))
+    ensembl_gene_id = db.Column(db.Integer, db.ForeignKey('ensembl_gene.id'))
+    ensembl_transcript_id = db.Column(db.Integer, db.ForeignKey('ensembl_transcript.id'))
+    def __repr__(self):
+        return '<EnsemblProtein ID %r>' % self.protein_id
 
 class HGNCEntry(db.Model):
     __tablename__ = 'hgnc_entry'
@@ -310,3 +339,38 @@ class BindingDBBioassay(db.Model):
 #     bindingdb_bioassay_id = db.Column(db.Integer, db.ForeignKey('bindingdb_bioassay.id'))
 #     def __repr__(self):
 #         return '<BindingDB measurement type: %r value: %r>' % (self.measurement_type, self.measurement_value)
+
+class CbioportalCase(db.Model):
+    __tablename__ = 'cbioportal_case'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    study = db.Column(db.Text)
+    case_id = db.Column(db.Text)
+    mutations = db.relationship('CbioportalMutation', backref='cbioportal_case', lazy='dynamic')
+    def __repr__(self):
+        return '<CbioportalCase ID {0}>'.format(self.case_id)
+
+class CbioportalMutation(db.Model):
+    __tablename__ = 'cbioportal_mutation'
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    type = db.Column(db.Text)
+    cbioportal_aa_change_string = db.Column(db.Text)
+    mutation_origin = db.Column(db.Text)
+    validation_status = db.Column(db.Text)
+    functional_impact_score = db.Column(db.Text)
+    chromosome_index = db.Column(db.Integer)
+    chromosome_startpos = db.Column(db.Integer)
+    chromosome_endpos = db.Column(db.Integer)
+    reference_dna_allele = db.Column(db.Text)
+    variant_dna_allele = db.Column(db.Text)
+    oncotator_aa_pos = db.Column(db.Integer)
+    oncotator_reference_aa = db.Column(db.Text)
+    oncotator_variant_aa = db.Column(db.Text)
+    oncotator_ensembl_transcript = db.Column(db.Text)
+    in_uniprot_domain = db.Column(db.Boolean)
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    uniprot_domain_id = db.Column(db.Integer, db.ForeignKey('uniprotdomain.id'))
+    cbioportal_case_id = db.Column(db.Integer, db.ForeignKey('cbioportal_case.id'))
+    def __repr__(self):
+        return '<CbioportalMutation ID {0} type {1} aa_change {2} in_uniprot_domain {3}>'.format(self.id, self.type, self.oncotator_aa_pos, self.in_uniprot_domain)

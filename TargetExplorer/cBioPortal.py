@@ -2,8 +2,201 @@
 #
 # Daniel L. Parton <partond@mskcc.org> - 9 Oct 2013
 
-import urllib2, re, sys, os
+import urllib2
+import re
+import os
+import datetime
 from lxml import etree
+from targetexplorer.core import int_else_none
+from targetexplorer.Oncotator import retrieve_oncotator_mutation_data_as_json
+from targetexplorer.flaskapp import models, db
+
+parser = etree.XMLParser(remove_blank_text=True)
+
+external_data_dir = os.path.join('external-data', 'cBioPortal')
+external_data_filepath = os.path.join(external_data_dir, 'cbioportal-mutations.xml')
+
+ensembl_transcript_id_regex = re.compile('(ENS[A-Z]{0,3}T[0-9]{11})')
+
+
+class GatherCbioportalData(object):
+    def __init__(self, use_existing_data=False, write_extended_mutation_txt_files=False,
+                 run_main=True
+                 ):
+        self.use_existing_data = use_existing_data
+        self.write_extended_mutation_txt_files = write_extended_mutation_txt_files
+
+        if not os.path.exists(external_data_dir):
+            os.mkdir(external_data_dir)
+
+        self.now = datetime.datetime.utcnow()
+
+        # get current crawl number
+        crawldata_row = models.CrawlData.query.first()
+        self.current_crawl_number = crawldata_row.current_crawl_number
+        print('Current crawl number: {0}'.format(self.current_crawl_number))
+
+        if run_main:
+            self.get_hgnc_gene_symbols_from_db()
+            self.get_mutation_data_as_xml()
+            self.extract_mutation_data()
+            self.finish()
+
+    def get_hgnc_gene_symbols_from_db(self):
+        # required to query cBioPortal
+        self.db_uniprot_acs = [
+            value_tuple[0] for value_tuple
+            in models.UniProt.query.filter_by(
+                crawl_number=self.current_crawl_number
+            ).values(models.UniProt.ac)
+        ]
+        self.db_uniprot_acs = ['P00519']
+        self.hgnc_gene_symbols = [
+            value_tuple[0] for value_tuple
+            in models.HGNCEntry.query.filter_by(
+                crawl_number=self.current_crawl_number
+            ).values(models.HGNCEntry.approved_symbol)
+        ]
+        self.hgnc_gene_symbols = ['ABL1']
+
+    def get_mutation_data_as_xml(self):
+        if os.path.exists(external_data_filepath) and self.use_existing_data:
+            print 'cBioPortal data file found at:', external_data_filepath
+        else:
+            print 'Retrieving new cBioPortal data file from server...'
+            self.cancer_studies = get_cancer_studies()
+            retrieve_mutants_xml(
+                external_data_filepath,
+                self.cancer_studies,
+                self.hgnc_gene_symbols,
+                write_extended_mutation_txt_files=self.write_extended_mutation_txt_files,
+            )
+
+        self.xmltree = etree.parse(external_data_filepath, parser).getroot()
+
+    def get_oncotator_data(self, chromosome_index, chromosome_startpos,
+                                                 chromosome_endpos, reference_allele, variant_allele
+                                                 ):
+        oncotator_query_str = '_'.join([
+            str(chromosome_index),
+            str(chromosome_startpos),
+            str(chromosome_endpos),
+            reference_allele,
+            variant_allele,
+        ])
+        oncotator_data = retrieve_oncotator_mutation_data_as_json(oncotator_query_str)
+        if oncotator_data['transcript_id'] != oncotator_data['annotation_transcript']:
+            print(
+                'WARNING: oncotator transcript_id {0} does not match annotation_transcript {1}'.format(
+                    oncotator_data['transcript_id'],
+                    oncotator_data['annotation_transcript'],
+                )
+            )
+
+        # example: 'ENST00000318560.5'
+        oncotator_ensembl_transcript_id = oncotator_data['transcript_id']
+        ensembl_transcript_regex_match = re.match(
+            ensembl_transcript_id_regex, oncotator_ensembl_transcript_id
+        )
+        if ensembl_transcript_regex_match is None:
+            return None
+        protein_change = oncotator_data['protein_change']
+        protein_change_regex_match = re.match('p.([A-Z])([0-9]+)([A-Z])', protein_change)
+        if protein_change_regex_match is None:
+            return None
+        reference_aa, aa_pos, variant_aa = protein_change_regex_match.groups()
+        return {
+            'ensembl_transcript_id': ensembl_transcript_regex_match.groups(0)[0],
+            'reference_aa': reference_aa,
+            'aa_pos': int(aa_pos),
+            'variant_aa': variant_aa
+        }
+
+    def extract_mutation_data(self):
+        # for gene_node in self.xmltree.findall('gene'):
+        #     cases = gene_node.findall('mutant')
+        case_nodes = self.xmltree.findall('gene/case')
+        case_rows_by_case_id = {}
+        for case_node in case_nodes:
+            case_id = case_node.get('case_id')
+            if case_id not in case_rows_by_case_id:
+                case_row = models.CbioportalCase(
+                    crawl_number=self.current_crawl_number,
+                    study=case_node.get('study'),
+                    case_id=case_id,
+                )
+                db.session.add(case_row)
+                case_rows_by_case_id[case_id] = case_row
+            else:
+                case_row = case_rows_by_case_id[case_id]
+
+            mutation_nodes = case_node.findall('mutation')
+            for mutation_node in mutation_nodes:
+                mutation_type = mutation_node.get('mutation_type')
+                chromosome_index = int_else_none(mutation_node.get('chromosome_index'))
+                chromosome_startpos = int_else_none(mutation_node.get('chromosome_startpos'))
+                chromosome_endpos = int_else_none(mutation_node.get('chromosome_endpos'))
+                reference_allele = mutation_node.get('reference_allele')
+                variant_allele = mutation_node.get('variant_allele')
+
+                mutation_row = models.CbioportalMutation(
+                    crawl_number=self.current_crawl_number,
+                    type=mutation_type,
+                    cbioportal_aa_change_string=mutation_node.get('aa_change'),
+                    mutation_origin=mutation_node.get('mutation_origin'),
+                    validation_status=mutation_node.get('validation_status'),
+                    functional_impact_score=mutation_node.get('functional_impact_score'),
+                    chromosome_index=chromosome_index,
+                    chromosome_startpos=chromosome_startpos,
+                    chromosome_endpos=chromosome_endpos,
+                    reference_dna_allele=reference_allele,
+                    variant_dna_allele=variant_allele,
+                    cbioportal_case=case_row,
+                    in_uniprot_domain=False,
+                )
+
+                if mutation_type == 'Missense_Mutation' and None not in [chromosome_index, chromosome_startpos, chromosome_endpos]:
+                    oncotator_data = self.get_oncotator_data(
+                        chromosome_index,
+                        chromosome_startpos,
+                        chromosome_endpos,
+                        reference_allele,
+                        variant_allele
+                    )
+                    if oncotator_data is not None:
+                        reference_aa = oncotator_data['reference_aa']
+                        aa_pos = oncotator_data['aa_pos']
+                        variant_aa = oncotator_data['variant_aa']
+                        mutation_row.oncotator_reference_aa = reference_aa
+                        mutation_row.oncotator_aa_pos = aa_pos
+                        mutation_row.oncotator_variant_aa = variant_aa
+
+                        matching_ensembl_transcript_row = models.EnsemblTranscript.query.filter_by(
+                            transcript_id=oncotator_data['ensembl_transcript_id']
+                        ).first()
+                        if ((matching_ensembl_transcript_row is not None) and
+                                (matching_ensembl_transcript_row.uniprotisoform is not None) and
+                                matching_ensembl_transcript_row.uniprotisoform.canonical):
+                            mutation_row.dbentry = matching_ensembl_transcript_row.ensembl_gene.dbentry
+
+                            # is mutation within a uniprot domain?
+                            matching_uniprot_domains = matching_ensembl_transcript_row.ensembl_gene.dbentry.uniprotdomains.all()
+                            for domain in matching_uniprot_domains:
+                                if aa_pos >= domain.begin and aa_pos <= domain.end:
+                                    if mutation_row.oncotator_reference_aa != mutation_row.cbioportal_aa_change_string[0]:
+                                        continue
+                                    mutation_row.in_uniprot_domain = True
+                                    mutation_row.uniprot_domain = domain
+
+                db.session.add(mutation_row)
+
+    def finish(self):
+        # update db datestamps
+        current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=self.current_crawl_number).first()
+        current_crawl_datestamp_row.cbioportal_datestamp = self.now
+        db.session.commit()
+        print 'Done.'
+
 
 def get_cancer_studies():
     '''
@@ -27,9 +220,7 @@ def get_genetic_profile_ids(cancer_study):
     '''
     For a given cancer study, return a list of available genetic_profile_ids (e.g. 'laml_tcga_pub_mutations')
     '''
-    genetic_profile_ids = []
-
-    genetic_profile_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getGeneticProfiles&cancer_study_id=%(cancer_study)s' % vars()
+    genetic_profile_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getGeneticProfiles&cancer_study_id={0}'.format(cancer_study)
     response = urllib2.urlopen(genetic_profile_url)
     page = response.read(100000000000)
     lines = page.splitlines()
@@ -73,7 +264,7 @@ def get_profile_data(case_set_id, genetic_profile_id, entrez_gene_ids):
     return gene_mutations
 
 
-def retrieve_Mutation_datatxt(case_set_id, genetic_profile_id, gene_ids):
+def retrieve_mutation_datatxt(case_set_id, genetic_profile_id, gene_ids):
     '''
     Queries cBioPortal for "Mutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
     Returns the data file as a list of text lines.
@@ -86,22 +277,32 @@ def retrieve_Mutation_datatxt(case_set_id, genetic_profile_id, gene_ids):
     return lines
 
 
-def retrieve_ExtendedMutation_datatxt(case_set_id, genetic_profile_id, gene_ids):
+def retrieve_extended_mutation_datatxt(case_set_id, genetic_profile_id, gene_ids, write_to_filepath=False):
     '''
     Queries cBioPortal for "ExtendedMutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
     Returns the data file as a list of text lines.
     '''
     gene_ids_string = '+'.join(gene_ids)
-    mutation_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getMutationData&case_set_id=%(case_set_id)s&genetic_profile_id=%(genetic_profile_id)s&gene_list=%(gene_ids_string)s' % vars()
+    mutation_url = 'http://www.cbioportal.org/public-portal/webservice.do' \
+                   '?cmd=getMutationData&case_set_id={0}&genetic_profile_id={1}&gene_list={2}'.format(
+        case_set_id, genetic_profile_id, gene_ids_string
+    )
     response = urllib2.urlopen(mutation_url)
     page = response.read(1000000000)
+    if write_to_filepath:
+        with open(write_to_filepath, 'w') as ofile:
+            ofile.write(page)
     lines = page.splitlines()
     return lines
 
 
-def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=False):
-    '''
-    Given a list of cBioPortal cancer studies (typically all those available) and a list of HGNC Approved gene Symbols, downloads all mutation data and writes as an XML file.
+def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
+                         write_extended_mutation_txt_files=False,
+                         verbose=False
+                         ):
+    """
+    Given a list of cBioPortal cancer studies (typically all those available) and a list of HGNC
+    Approved gene Symbols, downloads all mutation data and writes as an XML file.
     IMPORTANT: residue positions are not yet mapped to the canonical UniProt sequence.
 
     Schema for returned XML:
@@ -111,7 +312,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
         <mutant source= study= case_id= >
           <mutation mutation_type= aa_change= ... >
 
-    '''
+    """
 
     # XML root node
     results_node = etree.Element('CBPmuts')
@@ -132,7 +333,18 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
         case_set_id = cancer_study + '_sequenced'
         genetic_profile_id = cancer_study + '_mutations'
         print 'Retrieving ExtendedMutation data from cBioPortal for study %s...' % cancer_study
-        lines = retrieve_ExtendedMutation_datatxt(case_set_id, genetic_profile_id, gene_ids)
+
+        if write_extended_mutation_txt_files:
+            txt_output_filepath = os.path.join(external_data_dir, cancer_study+'.txt')
+        else:
+            txt_output_filepath = False
+
+        lines = retrieve_extended_mutation_datatxt(
+            case_set_id,
+            genetic_profile_id,
+            gene_ids,
+            write_to_filepath=txt_output_filepath,
+        )
         if lines == ['Error: Problem when identifying a cancer study for the request.']:
             print 'WARNING: case_set_id "%s" not available - probably means that sequencing data from the underlying cancer study is not yet available. Skipping this case set.' % case_set_id
             continue
@@ -186,17 +398,17 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
 
             for aa_change in aa_changes:
                 # Look for a mutant node (corresponding to this study and case_id). This will only exist if a mutation has already been added for this mutant.
-                mutant_node = gene_nodes_dict[returned_gene_id].find('mutant[@study="%s"][@case_id="%s"]' % (cancer_study, case_id))
+                case_node = gene_nodes_dict[returned_gene_id].find('case[@study="%s"][@case_id="%s"]' % (cancer_study, case_id))
                 # If not found, create it.
-                if mutant_node == None:
-                    mutant_node = etree.SubElement(gene_nodes_dict[returned_gene_id], 'mutant')
-                    mutant_node.set('source', 'cBioPortal')
-                    mutant_node.set('study', cancer_study)
-                    mutant_node.set('case_id', case_id)
-                    mutant_nodes_by_case_id[case_id] = mutant_node
+                if case_node == None:
+                    case_node = etree.SubElement(gene_nodes_dict[returned_gene_id], 'case')
+                    case_node.set('source', 'cBioPortal')
+                    case_node.set('study', cancer_study)
+                    case_node.set('case_id', case_id)
+                    mutant_nodes_by_case_id[case_id] = case_node
 
                 # Each mutation gets a mutation_mode
-                mutation_node = etree.SubElement(mutant_node, 'mutation')
+                mutation_node = etree.SubElement(case_node, 'mutation')
                 mutation_node.set('mutation_origin', mutation_status)
                 mutation_node.set('mutation_type', mutation_type)
                 mutation_node.set('validation_status', validation_status)
@@ -218,7 +430,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
         # ------------
 
         print 'Retrieving Mutation data from cBioPortal for study %s...' % cancer_study
-        lines = retrieve_Mutation_datatxt(case_set_id, genetic_profile_id, gene_ids)
+        lines = retrieve_mutation_datatxt(case_set_id, genetic_profile_id, gene_ids)
         print 'Done retrieving Mutation data from cBioPortal.'
 
         # First two lines are header info
@@ -235,7 +447,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
             returned_gene_id = words[1]
             aa_change_strings = words[2:]
 
-            if debug:
+            if verbose:
                 print returned_gene_id
 
             # Make a flat list of aa changes (with multiple-mutation aa_changes split into separate elements)
@@ -274,9 +486,10 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids, verbose=
     # -----------
 
     with open(output_xml_filepath, 'w') as output_xml_file:
-        output_xml_file.write( etree.tostring(results_node, pretty_print=True) )
+        output_xml_file.write(etree.tostring(results_node, pretty_print=True))
 
     # ===========
+
 
 def match_dual_consecutive_aa_change(aa_change_string):
     '''
@@ -299,6 +512,7 @@ def match_dual_consecutive_aa_change(aa_change_string):
     else:
         return False
 
+
 def split_dual_consecutive_aa_change(aa_change_string):
     '''
     For an aa_change string of the type: '324_325LA>FS'
@@ -310,6 +524,7 @@ def split_dual_consecutive_aa_change(aa_change_string):
     resnames = aa_change_string_split[1].split('>') # ['LA', 'FS']
     aa_changes = [resnames[0][0] + positions[0] + resnames[1][0], resnames[0][1] + positions[1] + resnames[1][1]]
     return aa_changes
+
 
 def percent_cases_with_mutations(gene_node):
     '''

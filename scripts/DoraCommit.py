@@ -19,7 +19,7 @@ args = argparser.parse_args()
 # ===================
 # Test whether each of the scripts have been run, and whether they have been updated in the correct order
 # ===================
-for data_type in ['uniprot', 'ncbi_gene', 'bindingdb', 'pdb']:
+for data_type in ['uniprot', 'ncbi_gene', 'bindingdb', 'pdb', 'cbioportal']:
     datestamp_type = data_type + '_datestamp'
     current_crawl_datatype_datestamp = getattr(current_crawl_datestamps_row, datestamp_type)
     if current_crawl_datatype_datestamp == None:
