@@ -83,7 +83,10 @@ class GatherCbioportalData(object):
             variant_allele,
         ])
         oncotator_data = retrieve_oncotator_mutation_data_as_json(oncotator_query_str)
-        if oncotator_data['transcript_id'] != oncotator_data['annotation_transcript']:
+        oncotator_ensembl_transcript_id = oncotator_data.get('transcript_id')
+        if oncotator_ensembl_transcript_id is None:
+            return None
+        if oncotator_ensembl_transcript_id != oncotator_data.get('annotation_transcript'):
             print(
                 'WARNING: oncotator transcript_id {0} does not match annotation_transcript {1}'.format(
                     oncotator_data['transcript_id'],
@@ -92,7 +95,6 @@ class GatherCbioportalData(object):
             )
 
         # example: 'ENST00000318560.5'
-        oncotator_ensembl_transcript_id = oncotator_data['transcript_id']
         ensembl_transcript_regex_match = re.match(
             ensembl_transcript_id_regex, oncotator_ensembl_transcript_id
         )
@@ -117,6 +119,7 @@ class GatherCbioportalData(object):
         case_rows_by_case_id = {}
         for case_node in case_nodes:
             case_id = case_node.get('case_id')
+            print('Extracting mutation data for case {0}'.format(case_id))
             if case_id not in case_rows_by_case_id:
                 case_row = models.CbioportalCase(
                     crawl_number=self.current_crawl_number,
