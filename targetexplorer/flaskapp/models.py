@@ -367,7 +367,7 @@ class CbioportalMutation(db.Model):
     oncotator_aa_pos = db.Column(db.Integer)
     oncotator_reference_aa = db.Column(db.Text)
     oncotator_variant_aa = db.Column(db.Text)
-    oncotator_ensembl_transcript = db.Column(db.Text)
+    oncotator_ensembl_transcript_id = db.Column(db.Text)
     in_uniprot_domain = db.Column(db.Boolean)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_domain_id = db.Column(db.Integer, db.ForeignKey('uniprotdomain.id'))

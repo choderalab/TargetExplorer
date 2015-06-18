@@ -87,12 +87,12 @@ def find_packages():
     contributors, licensed under the BSD license.
     """
     packages = []
-    for dir,subdirs,files in os.walk('TargetExplorer'):
+    for dir,subdirs,files in os.walk('targetexplorer'):
         package = dir.replace(os.path.sep, '.')
         if '__init__.py' not in files:
             # not a package
             continue
-        packages.append(package.replace('TargetExplorer', 'targetexplorer'))
+        packages.append(package)
     return packages
 
 ##########################

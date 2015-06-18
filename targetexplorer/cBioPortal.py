@@ -168,12 +168,14 @@ class GatherCbioportalData(object):
                         reference_aa = oncotator_data['reference_aa']
                         aa_pos = oncotator_data['aa_pos']
                         variant_aa = oncotator_data['variant_aa']
+                        ensembl_transcript_id = oncotator_data['ensembl_transcript_id']
                         mutation_row.oncotator_reference_aa = reference_aa
                         mutation_row.oncotator_aa_pos = aa_pos
                         mutation_row.oncotator_variant_aa = variant_aa
+                        mutation_row.oncotator_ensembl_transcript_id = ensembl_transcript_id
 
                         matching_ensembl_transcript_row = models.EnsemblTranscript.query.filter_by(
-                            transcript_id=oncotator_data['ensembl_transcript_id']
+                            transcript_id=ensembl_transcript_id
                         ).first()
                         if ((matching_ensembl_transcript_row is not None) and
                                 (matching_ensembl_transcript_row.uniprotisoform is not None) and

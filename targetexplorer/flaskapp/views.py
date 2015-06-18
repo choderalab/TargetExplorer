@@ -269,5 +269,5 @@ def get_metadata():
     }
 
     # = Return data in JSON format =
-    response = make_response( jsonify(results_obj) )
+    response = make_response(jsonify(results_obj))
     return response
