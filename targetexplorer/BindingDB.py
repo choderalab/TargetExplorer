@@ -2,7 +2,7 @@
 #
 # Daniel L. Parton <partond@mskcc.org> - 25 Oct 2013
 
-import urllib2, sys, os, gzip, subprocess
+import urllib2, sys, os, subprocess
 from lxml import etree
 
 def retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=True):
@@ -11,7 +11,7 @@ def retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=True):
     Uses gunzip for decompression.
     '''
     print 'Downloading BindingDB_All.tab.gz...'
-    url = 'http://bindingdb.org/bind/downloads/BindingDB_All.tab.gz'
+    url = 'http://bindingdb.org/bind/downloads/BindingDB_All_2015m5.tsv.zip'
     response = urllib2.urlopen(url)
     page = response.read(1000000000)
     with open(bindingdb_all_data_filepath+'.gz', 'wb') as ofile:

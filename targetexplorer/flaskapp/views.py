@@ -104,7 +104,7 @@ def listall():
 
 # Examples:
 # http://.../[DB_NAME]DBAPI/entry?ac=P00519
-# http://.../[DB_NAME]DBAPI/entry?entry_name=P00519
+# http://.../[DB_NAME]DBAPI/entry?entry_name=ABL1_HUMAN
 
 @app.route('/%s/entry' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
@@ -157,7 +157,7 @@ def get_dbentry():
         target_obj['hgnc'].append({'gene_id': entry.gene_id, 'approved_symbol': entry.approved_symbol})
 
     # Ensembl Gene
-    for entry in dbentry.ensembl_gene_entries:
+    for entry in dbentry.ensembl_genes:
         target_obj['ensembl_gene'].append({'gene_id': entry.gene_id})
 
     # NCBI Gene

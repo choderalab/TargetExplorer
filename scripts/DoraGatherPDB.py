@@ -24,6 +24,7 @@ import traceback
 import argparse
 from lxml import etree
 import targetexplorer
+#import targetexplorer.PDB
 from targetexplorer.flaskapp import models, db
 import Bio.PDB
 import Bio.Data.SCOPData
@@ -272,7 +273,7 @@ if __name__ == '__main__':
     # Use multiprocessor pool to retrieve various data for each PDB
     pool = Pool()
     # results = pool.map(extract_pdb_data, [(db_pdb_row.id, current_crawl_number) for db_pdb_row in db_pdb_rows])
-    results = pool.map(extract_pdb_data, db_pdb_dicts)
+    results = map(extract_pdb_data, db_pdb_dicts) #I changed pool.map() to map() to get error messages in order -MI
 
     for pdb_results in results:
         pdb_row_id = pdb_results['pdb_row_id']

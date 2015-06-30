@@ -55,7 +55,7 @@ if os.path.exists(bindingdb_all_data_filepath) and args.use_existing_bindingdb_d
     print 'BindingDB data file found at:', bindingdb_all_data_filepath
 else:
     print 'Retrieving new BindingDB data file from BindingDB server...'
-    targetexplorer.BindingDB.retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=False)
+    targetexplorer.BindingDB.retrieve_all_BindingDB_data(bindingdb_all_data_filepath)
 
 
 
@@ -91,9 +91,14 @@ if True:
 
 def extract_bindingdb(input_data):
     AC, grep_path, bindingdb_matches_filepath = input_data
-    print AC
+    print AC, grep_path, bindingdb_matches_filepath
     DB_entry_bindingdb_data_filepath = os.path.join(bindingdb_data_dir, AC + '.tab')
-    subprocess.call('%s -E "%s" %s > %s' % (grep_path, AC, bindingdb_matches_filepath, DB_entry_bindingdb_data_filepath), shell=True)
+    # subprocess.call('%s "%s" %s > %s' % (grep_path, AC, bindingdb_matches_filepath, DB_entry_bindingdb_data_filepath), shell=True)
+    grep_output = subprocess.check_output([grep_path, AC, bindingdb_matches_filepath])
+    with open(DB_entry_bindingdb_data_filepath, 'w') as bindingdb_file:
+        bindingdb_file.write(grep_output)
+    # import ipdb; ipdb.set_trace()
+
     bioassays_data = []
     with open(DB_entry_bindingdb_data_filepath, 'r') as bindingdb_file:
         for line in bindingdb_file:
@@ -105,10 +110,12 @@ def extract_bindingdb(input_data):
     os.remove(DB_entry_bindingdb_data_filepath)
     return (AC, bioassays_data)
 
-if __name__ == '__main__':
-    pool = Pool()
-    input_data = [(AC, args.grep_path, bindingdb_matches_filepath) for AC in db_uniprot_acs]
-    results = pool.map(extract_bindingdb, input_data)
+pool = Pool()
+#create tuple for each AC
+input_data = [(AC, args.grep_path, bindingdb_matches_filepath) for AC in db_uniprot_acs]
+# import ipdb; ipdb.set_trace()
+results = pool.map(extract_bindingdb, input_data)
+# sys.exit()
 
 for result in results:
     ac, bioassays_data = result
@@ -116,6 +123,7 @@ for result in results:
     dbentry_id = db_uniprot_row.dbentry_id
     dbentry_row = models.DBEntry.query.filter_by(id=dbentry_id).first()
     dbentry_row.nbioassays = len(bioassays_data)
+
 
     for bioassay_data in bioassays_data:
         bindingdb_bioassay_obj = models.BindingDBBioassay(
@@ -139,7 +147,7 @@ for result in results:
             koff=bioassay_data['koff'],
 
             dbentry=dbentry_row,
-        )
+            )
         db.session.add(bindingdb_bioassay_obj)
 
 # ==============================================================
