@@ -24,6 +24,7 @@ import traceback
 import argparse
 from lxml import etree
 import targetexplorer
+#import targetexplorer.PDB
 from targetexplorer.flaskapp import models, db
 import Bio.PDB
 import Bio.Data.SCOPData

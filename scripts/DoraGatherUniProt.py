@@ -21,7 +21,7 @@ import datetime
 import argparse
 from lxml import etree
 import project_config
-import targetexplorer.UniProt
+import targetexplorer
 from targetexplorer.flaskapp import models, db
 
 #==============================================================================

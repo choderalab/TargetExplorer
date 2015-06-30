@@ -4,6 +4,7 @@ import datetime
 import argparse
 import targetexplorer
 from targetexplorer.flaskapp import db, models
+import flask_sqlalchemy
 import project_config
 
 crawldata_row = models.CrawlData.query.first()
@@ -17,7 +18,7 @@ argparser = argparse.ArgumentParser(description='Commit database')
 args = argparser.parse_args()
 
 # ===================
-# Test whether each of the scripts have been run, and whether they have been updated in the correct order
+# Test whether each of the scripts have been run since previous safe crawl.
 # ===================
 for data_type in ['uniprot', 'ncbi_gene', 'bindingdb', 'pdb', 'cbioportal']:
     datestamp_type = data_type + '_datestamp'
@@ -61,13 +62,12 @@ if len(crawl_numbers) > project_config.ncrawls_to_save:
     # iterate through crawls to delete
     for crawl_to_delete in crawls_to_delete:
         print 'Deleting crawl %d...' % crawl_to_delete
-        # iterate through tables
-        for table_class_name in models.table_class_names:
-            if table_class_name == 'CrawlData':
+        table_classes = [value for value in models.__dict__.values() if isinstance(value, flask_sqlalchemy._BoundDeclarativeMeta)]
+        for table in table_classes:
+            if table == models.CrawlData:
                 continue
-            table = getattr(models, table_class_name)
             rows_to_delete = table.query.filter_by(crawl_number=crawl_to_delete)
-            print '  - %s - %d rows' % (table_class_name, rows_to_delete.count())
+            print '  - %s - %d rows' % (table.__name__, rows_to_delete.count())
             rows_to_delete.delete()
 
 # ===================

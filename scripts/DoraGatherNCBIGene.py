@@ -16,6 +16,7 @@ import datetime
 import argparse
 import targetexplorer
 from targetexplorer.flaskapp import models, db
+#import targetexplorer.NCBI_Gene
 import pandas as pd
 
 # =================
