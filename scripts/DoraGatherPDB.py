@@ -1,5 +1,5 @@
 import argparse
-from targetexplorer.pdb import GatherPDB
+from targetexplorer.protein_databank import GatherPDB
 
 
 argparser = argparse.ArgumentParser(description='Gather cBioPortal data')

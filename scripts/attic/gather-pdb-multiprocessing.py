@@ -102,7 +102,7 @@ def gather_pdb(k):
             chainid = chain_node.get('id')
             if verbose: print entry_name, uniprotAC, pdbid, chainid
             # First check whether the first residue with matching chainid and a UniProt crossref has the same UniProt AC as was picked up from UniProt (by gather-uniprot.py).
-            # 3O50 and 3O51 are picked up by gather-uniprot.py from uniprot AC O14965. But these have uniprot AC B4DX16 in the sifts .xml files, which is a TrEMBL entry. Sequences are almost identical except for deletion of ~70 residues prior to PK domain of B4DX16. This means that experimental_sequence_aln and related sequences are not added by gather-pdb.py. Need to sort out a special case for these pdbs. Should check for similar cases in other kinases.
+            # 3O50 and 3O51 are picked up by gather-uniprot.py from uniprot AC O14965. But these have uniprot AC B4DX16 in the sifts .xml files, which is a TrEMBL entry. Sequences are almost identical except for deletion of ~70 residues prior to PK domain of B4DX16. This means that experimental_sequence_aln and related sequences are not added by gather-protein_databank.py. Need to sort out a special case for these pdbs. Should check for similar cases in other kinases.
             # 3O50 and 3O51 can be ignored. (Plenty of other PDBs for that protein)
             # 3OG7 is picked up from uniprot AC P15056, but the PDB entry links to Q5IBP5 - this is the AKAP9-BRAF fusion protein.
             # XXX TODO XXX 3OG7 will be ignored for now, but at some point should make separate entries for fusion proteins, and add the PDB files accordingly.

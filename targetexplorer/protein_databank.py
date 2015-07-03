@@ -197,7 +197,7 @@ def extract_pdb_data(pdb_dict):
         # If still not found, download the PDB file
         if not os.path.exists(local_pdb_filepath):
             print 'Downloading PDB file and saving as:', local_pdb_filepath
-            page = targetexplorer.PDB.retrieve_pdb(pdbid, compressed='yes')
+            page = retrieve_pdb(pdbid, compressed='yes')
             # download and write compressed file
             with open(local_pdb_filepath, 'wb') as local_pdb_file:
                 local_pdb_file.write(page)
@@ -223,7 +223,7 @@ def extract_pdb_data(pdb_dict):
         if not os.path.exists(local_sifts_filepath):
             print 'Downloading SIFTS file (compressed) and saving as:', local_sifts_filepath
             try:
-                page = targetexplorer.PDB.retrieve_sifts(pdbid)
+                page = retrieve_sifts(pdbid)
             except urllib2.URLError as urlerror:
                 if urlerror.reason == 'ftp error: [Errno ftp error] 550 Failed to change directory.':
                     # Check the PDB file has definitely been downloaded. If so, then the problem is probably that the SIFTS people have not yet created the file for this PDB entry, or they have not added it to their server yet.
@@ -283,7 +283,7 @@ def extract_pdb_data(pdb_dict):
         chain_row_id = chain_dict['chain_row_id']
         chain_id = chain_dict['chain_id']
         logger.debug(entry_name, ac, pdbid, chain_id)
-        pdb_chain_dict = targetexplorer.PDB.extract_sifts_seq(local_sifts_filepath, ac, entry_name, pdbid, chain_id, seq)
+        pdb_chain_dict = extract_sifts_seq(local_sifts_filepath, ac, entry_name, pdbid, chain_id, seq)
         results['chain_dicts'][chain_row_id] = pdb_chain_dict
 
     return results
@@ -347,7 +347,7 @@ def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, cha
     sifts = etree.fromstring( gzip.open(sifts_filepath, 'r').read() )
 
     # First check whether the first residue with matching chainID and a UniProt crossref has the same UniProt AC as was picked up from UniProt (by gather-uniprot.py).
-    # 3O50 and 3O51 are picked up by gather-uniprot.py from uniprot AC O14965. But these have uniprot AC B4DX16 in the sifts .xml files, which is a TrEMBL entry. Sequences are almost identical except for deletion of ~70 residues prior to PK domain of B4DX16. This means that experimental_sequence_aln and related sequences are not added by gather-pdb.py. Need to sort out a special case for these pdbs. Should check for similar cases in other kinases.
+    # 3O50 and 3O51 are picked up by gather-uniprot.py from uniprot AC O14965. But these have uniprot AC B4DX16 in the sifts .xml files, which is a TrEMBL entry. Sequences are almost identical except for deletion of ~70 residues prior to PK domain of B4DX16. This means that experimental_sequence_aln and related sequences are not added by gather-protein_databank.py. Need to sort out a special case for these pdbs. Should check for similar cases in other kinases.
     # 3O50 and 3O51 can be ignored. (Plenty of other PDBs for that protein)
     # 3OG7 is picked up from uniprot AC P15056, but the PDB entry links to Q5IBP5 - this is the AKAP9-BRAF fusion protein.
     # XXX TODO XXX 3OG7 will be ignored for now, but at some point should make separate entries for fusion proteins, and add the PDB files accordingly.

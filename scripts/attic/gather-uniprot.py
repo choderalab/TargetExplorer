@@ -3,7 +3,7 @@
 # PDB cross-refs are added if the structure is deemed to contain the PK domain.
 # This is determined from whether the PDB sequence span can include the span of
 # the PK domain less 30 residues at each end. Only PDB ID, chain ID, and resi
-# span are added. Use gather-pdb.py to add further info from sifts.
+# span are added. Use gather-protein_databank.py to add further info from sifts.
 #
 # New UniProt XML document downloaded only if existing one is > 7 days old, or
 # if --forcedl flag is used.
@@ -296,7 +296,7 @@ for k in range(nkinases):
                 chains.set('id', c)
                 pdb_begin = chains_span[c][0]
                 pdb_end = chains_span[c][1]
-                # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
+                # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-protein_databank.py
                 # Have to check against each PK domain
                 for x_iter,x in enumerate(kinase_PK_domains):
                     pk_begin = int(x.get('begin'))

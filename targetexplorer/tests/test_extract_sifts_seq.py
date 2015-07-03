@@ -3,7 +3,7 @@ from targetexplorer.utils import get_installed_resource_filepath
 
 
 def test_extract_sifts_seq():
-    from targetexplorer.pdb import extract_sifts_seq
+    from targetexplorer.protein_databank import extract_sifts_seq
     sifts_filepath = get_installed_resource_filepath(os.path.join(
         'resources', '4L00.xml.gz'
     ))
