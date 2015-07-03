@@ -5,7 +5,7 @@
 
 import argparse
 from targetexplorer.core import read_project_config
-from targetexplorer.uniprot_tmp import GatherUniProt
+from targetexplorer.uniprot import GatherUniProt
 
 
 def parse_arguments():
@@ -391,7 +391,7 @@ print('Done.')
 #             chain_id = c
 #             pdb_begin = chains_span[c][0]
 #             pdb_end = chains_span[c][1]
-#             # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb_tmp.py
+#             # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
 #             # Have to check against each PK domain
 #             for domain_id, domain in enumerate(domains_data):
 #                 pk_begin = domain.begin

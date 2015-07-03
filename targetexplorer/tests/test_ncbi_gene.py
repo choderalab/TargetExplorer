@@ -1,6 +1,6 @@
 from targetexplorer.flaskapp import models
 from targetexplorer.tests.utils import projecttest_context
-from targetexplorer.ncbi_gene_tmp import GatherNCBIGene
+from targetexplorer.ncbi_gene import GatherNCBIGene
 
 
 def test_gather_ncbi_gene():

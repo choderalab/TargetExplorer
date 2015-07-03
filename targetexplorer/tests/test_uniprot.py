@@ -3,7 +3,7 @@ import os
 from lxml import etree
 
 from targetexplorer.flaskapp import models
-from targetexplorer.uniprot_tmp import retrieve_uniprot, GatherUniProt
+from targetexplorer.uniprot import retrieve_uniprot, GatherUniProt
 from targetexplorer.core import xml_parser
 from targetexplorer.utils import get_installed_resource_filepath
 from targetexplorer.tests.utils import projecttest_context

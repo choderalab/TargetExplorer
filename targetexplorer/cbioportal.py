@@ -8,7 +8,7 @@ import os
 import datetime
 from lxml import etree
 from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath
-from targetexplorer.oncotator_tmp import retrieve_oncotator_mutation_data_as_json
+from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json
 from targetexplorer.flaskapp import models, db
 
 

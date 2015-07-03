@@ -1,5 +1,5 @@
 import argparse
-from targetexplorer.ncbi_gene_tmp import GatherNCBIGene
+from targetexplorer.ncbi_gene import GatherNCBIGene
 
 argparser = argparse.ArgumentParser(description='Gather NCBI Gene data')
 argparser.add_argument(

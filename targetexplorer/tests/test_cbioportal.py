@@ -1,6 +1,6 @@
 from targetexplorer.flaskapp import models
 from targetexplorer.tests.utils import projecttest_context
-from targetexplorer.cbioportal_tmp import GatherCbioportalData
+from targetexplorer.cbioportal import GatherCbioportalData
 
 
 def test_gather_cbioportal():
