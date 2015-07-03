@@ -1,6 +1,12 @@
-import os, textwrap
-#import choderalab
+import sys
+import os
+import textwrap
+from lxml import etree
 from lxml.builder import E
+import yaml
+import logging
+from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
 
 # ========
 # Global package variables
@@ -8,8 +14,46 @@ from lxml.builder import E
 
 datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 
+project_config_filename = 'project_config.yaml'
+
+external_data_dirpath = 'external-data'
+
 # =========
 # =========
+
+class FlaskDBApp(object):
+    def __init__(self):
+        self.app = Flask(__name__)
+        self.db = SQLAlchemy(self.app)
+        self.update_config()
+
+    def update_config(self):
+        self.project_config = read_project_config()
+        self.app.config.update(
+            SQLALCHEMY_DATABASE_URI=self.project_config['sqlalchemy_uri']
+        )
+
+
+def read_project_config():
+    if not os.path.exists(project_config_filename):
+        return None
+
+    with open(project_config_filename) as config_file:
+        config = yaml.load(config_file)
+    return config
+
+# =========
+# =========
+
+xml_parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
+
+logger = logging.getLogger('info')
+default_loglevel = 'info'
+loglevel_obj = getattr(logging, default_loglevel.upper())
+logger.setLevel(loglevel_obj)
+logger.addHandler(logging.StreamHandler(stream=sys.stdout))
+
+
 
 
 def xpath_match_regex_case_sensitive(context, attrib_values, xpath_argument):
@@ -46,8 +90,17 @@ def int_else_none(literal):
 
 
 
+try:
+    from yaml import CLoader as YamlLoader, CDumper as YamlDumper
+except ImportError:
+    from yaml import Loader as YamlLoader, Dumper as YamlDumper
 
 
+def write_yaml_file(data, filepath):
+    with open(filepath, 'w') as file:
+        yaml.dump(
+            data, stream=file, default_flow_style=False, Dumper=YamlDumper
+        )
 
 
 

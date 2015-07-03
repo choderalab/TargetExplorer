@@ -10,4 +10,5 @@ argparser.add_argument(
     default=False
 )
 args = argparser.parse_args()
+
 GatherCbioportalData(use_existing_data=args.use_existing_data)

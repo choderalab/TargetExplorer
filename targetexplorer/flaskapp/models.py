@@ -1,4 +1,8 @@
 from targetexplorer.flaskapp import db
+from targetexplorer.core import FlaskDBApp
+
+# flaskdbapp = FlaskDBApp()
+# db = flaskdbapp.db
 
 table_class_names = [
     'CrawlData',

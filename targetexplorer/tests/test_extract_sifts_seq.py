@@ -1,6 +1,13 @@
+import os
+from targetexplorer.utils import get_installed_resource_filepath
+
+
 def test_extract_sifts_seq():
     from targetexplorer.PDB import extract_sifts_seq
-    sifts_filepath = 'tests/resources/4L00.xml.gz'
+    sifts_filepath = get_installed_resource_filepath(os.path.join(
+        'resources', '4L00.xml.gz'
+    ))
+
     seq = 'MQYLNIKEDCNAMAFCAKMRSSKKTEVNLEAPEPGVEVIFYLSDREPLRLGSGEYTAEEL\
 CIRAAQACRISPLCHNLFALYDENTKLWYAPNRTITVDDKMSLRLHYRMRFYFTNWHGTN\
 DNEQSVWRHSPKKQKNGYEKKKIPDATPLLDASSLEYLFAQGQYDLVKCLAPIRDPKTEQ\
@@ -21,6 +28,7 @@ SGSLKEYLPKNKNKINLKQQLKYAVQICKGMDYLGSRQYVHRDLAARNVLVESEHQVKIG\
 DFGLTKAIETDKEYYTVKDDRDSPVFWYAPECLMQSKFYIASDVWSFGVTLHELLTYCDS\
 DSSPMALFLKMIGPTHGQMTVTRLVNTLKEGKRLPCPPNCPDEVYQLMRKCWEFQPSNRT\
 SFQNLIEGFEALLK'
+
     pdb_chain_obj = extract_sifts_seq(sifts_filepath, 'P23458', 'JAK1_HUMAN', '4L00', 'A', seq)
 
     assert pdb_chain_obj['experimental_seq_aln_conflicts'] == '--------\

@@ -2,7 +2,8 @@ from flask import abort, jsonify, request, make_response, current_app
 import re
 from datetime import timedelta
 from functools import update_wrapper
-from targetexplorer.flaskapp import app, db, models, config
+from targetexplorer.flaskapp import app, db, models
+config = app.config
 
 # ======
 # HTTP access control decorator - for cross-origin resource sharing (CORS)

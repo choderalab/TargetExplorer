@@ -7,22 +7,24 @@ import re
 import os
 import datetime
 from lxml import etree
-from targetexplorer.core import int_else_none
+from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath
 from targetexplorer.Oncotator import retrieve_oncotator_mutation_data_as_json
 from targetexplorer.flaskapp import models, db
 
-parser = etree.XMLParser(remove_blank_text=True)
 
-external_data_dir = os.path.join('external-data', 'cBioPortal')
+external_data_dir = os.path.join(external_data_dirpath, 'cBioPortal')
 external_data_filepath = os.path.join(external_data_dir, 'cbioportal-mutations.xml')
 
 ensembl_transcript_id_regex = re.compile('(ENS[A-Z]{0,3}T[0-9]{11})')
 
 
 class GatherCbioportalData(object):
-    def __init__(self, use_existing_data=False, write_extended_mutation_txt_files=False,
+    def __init__(self,
+                 use_existing_data=False,
+                 write_extended_mutation_txt_files=False,
                  run_main=True
                  ):
+
         self.use_existing_data = use_existing_data
         self.write_extended_mutation_txt_files = write_extended_mutation_txt_files
 
@@ -70,7 +72,7 @@ class GatherCbioportalData(object):
                 write_extended_mutation_txt_files=self.write_extended_mutation_txt_files,
             )
 
-        self.xmltree = etree.parse(external_data_filepath, parser).getroot()
+        self.xmltree = etree.parse(external_data_filepath, xml_parser).getroot()
 
     def get_oncotator_data(self, chromosome_index, chromosome_startpos,
                                                  chromosome_endpos, reference_allele, variant_allele
