@@ -1,5 +1,5 @@
 import argparse
-from targetexplorer.cBioPortal import GatherCbioportalData, external_data_filepath
+from targetexplorer.cbioportal_tmp import GatherCbioportalData, external_data_filepath
 
 
 argparser = argparse.ArgumentParser(description='Gather cBioPortal data')

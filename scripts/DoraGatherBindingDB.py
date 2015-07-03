@@ -1,5 +1,5 @@
 import argparse
-from targetexplorer.BindingDB import GatherBindingDB
+from targetexplorer.bindingdb_tmp import GatherBindingDB
 
 argparser = argparse.ArgumentParser(description='Gather BindingDB data')
 argparser.add_argument(

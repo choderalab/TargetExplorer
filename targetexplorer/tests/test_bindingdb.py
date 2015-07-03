@@ -1,7 +1,7 @@
 import os
 from targetexplorer.flaskapp import models
 from targetexplorer.tests.utils import projecttest_context
-from targetexplorer.BindingDB import GatherBindingDB
+from targetexplorer.bindingdb_tmp import GatherBindingDB
 
 
 def test_gather_pdb():

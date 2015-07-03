@@ -8,11 +8,11 @@ from targetexplorer.utils import installation_testdir_filepath, get_installed_re
 from targetexplorer.core import external_data_dirpath
 from targetexplorer.flaskapp import db
 from targetexplorer.initproject import initialize_crawldata_and_datestamps
-from targetexplorer.UniProt import GatherUniProt
-from targetexplorer.PDB import GatherPDB
-from targetexplorer.NCBI_Gene import GatherNCBIGene
-from targetexplorer.BindingDB import GatherBindingDB
-from targetexplorer.cBioPortal import GatherCbioportalData
+from targetexplorer.uniprot_tmp import GatherUniProt
+from targetexplorer.pdb_tmp import GatherPDB
+from targetexplorer.ncbi_gene_tmp import GatherNCBIGene
+from targetexplorer.bindingdb_tmp import GatherBindingDB
+from targetexplorer.cbioportal_tmp import GatherCbioportalData
 from targetexplorer.commit import Commit
 
 
