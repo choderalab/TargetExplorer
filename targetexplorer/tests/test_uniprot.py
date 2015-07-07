@@ -1,7 +1,6 @@
 import os
-
 from lxml import etree
-
+import gzip
 from targetexplorer.flaskapp import models
 from targetexplorer.uniprot import retrieve_uniprot, GatherUniProt
 from targetexplorer.core import xml_parser
@@ -17,8 +16,8 @@ def test_retrieve_uniprot():
 def test_retrieve_uniprot_matches_reference():
     xml_text = retrieve_uniprot('mnemonic:ABL1_HUMAN')
     xml_root = etree.fromstring(xml_text, xml_parser)
-    ref_xml_filepath = get_installed_resource_filepath(os.path.join('resources', 'uniprot-search.xml'))
-    with open(ref_xml_filepath) as ref_xml_file:
+    ref_xml_filepath = get_installed_resource_filepath(os.path.join('resources', 'uniprot-search-abl1.xml.gz'))
+    with gzip.open(ref_xml_filepath) as ref_xml_file:
         ref_xml_root = etree.parse(ref_xml_file, xml_parser)
 
     entry_name = xml_root.find('entry/name').text

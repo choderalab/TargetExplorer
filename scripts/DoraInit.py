@@ -16,7 +16,7 @@ args = parse_arguments()
 
 InitProject(
     db_name=args.db_name,
-    project_path=os.path.abspath('.')
+    project_path=os.getcwd()
 )
 print(
     'Please now edit the UniProt search options in {0} before running the '

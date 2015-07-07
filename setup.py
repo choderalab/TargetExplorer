@@ -87,7 +87,7 @@ def find_packages():
     contributors, licensed under the BSD license.
     """
     packages = []
-    for dir,subdirs,files in os.walk('targetexplorer'):
+    for dir, subdirs, files in os.walk('targetexplorer'):
         package = dir.replace(os.path.sep, '.')
         if '__init__.py' not in files:
             # not a package
@@ -108,7 +108,6 @@ setup(
     description = 'Database framework for storing genomic, structural and functional data for a target protein family, with RESTful API.',
     license='GPLv2',
     long_description = read_readme('README.md'),
-    # packages = ['TargetExplorer', 'flaskapp', '_blah'],
     packages = find_packages(),
     package_data = {'targetexplorer': ['resources/*']},
     scripts = ['scripts/DoraInit.py', 'scripts/DoraGatherUniProt.py', 'scripts/DoraGatherPDB.py', 'scripts/DoraGatherNCBIGene.py', 'scripts/DoraGatherBindingDB.py', 'scripts/DoraGathercBioPortal.py', 'scripts/DoraCommit.py'],

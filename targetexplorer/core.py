@@ -89,7 +89,6 @@ def int_else_none(literal):
         return None
 
 
-
 try:
     from yaml import CLoader as YamlLoader, CDumper as YamlDumper
 except ImportError:

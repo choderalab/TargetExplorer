@@ -8,15 +8,15 @@ argparser.add_argument(
     action='store_true',
     default=False
 )
-argparser.add_argument(
-    '--grep_path',
-    help='Provide explicit path for grep. Otherwise, searches in the usual places.',
-    type=str,
-    default='grep'
-)
+# argparser.add_argument(
+#     '--grep_path',
+#     help='Provide explicit path for grep. Otherwise, searches in the usual places.',
+#     type=str,
+#     default='grep'
+# )
 args = argparser.parse_args()
 
 GatherBindingDB(
     use_existing_bindingdb_data=args.use_existing_bindingdb_data,
-    grep_path=args.grep_path
+    # grep_path=args.grep_path,
 )

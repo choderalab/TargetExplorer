@@ -18,7 +18,7 @@ def get_installed_resource_filepath(relative_path):
 
     Examples
     --------
-    get_installed_resource_filename('resources/template-project_config.py')
+    get_installed_resource_filename('resources/template-wsgi.py')
     """
 
     fn = resource_filename(targetexplorer.__name__, relative_path)

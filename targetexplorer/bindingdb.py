@@ -2,52 +2,61 @@ import urllib2
 import subprocess
 import os
 import datetime
+from functools import partial
 from targetexplorer.flaskapp import models, db
+from targetexplorer.core import external_data_dirpath, logger
 from multiprocessing import Pool
+
+bindingdb_data_dir = os.path.join(external_data_dirpath, 'BindingDB')
+bindingdb_all_data_filepath = os.path.join(bindingdb_data_dir, 'BindingDB_All.tab')
+bindingdb_matches_filepath = os.path.join(bindingdb_data_dir, 'bindingdb-matches.tab')
 
 
 class GatherBindingDB(object):
     def __init__(self,
                  use_existing_bindingdb_data=False,
-                 grep_path=False,
+                 grep_path='grep',
                  run_main=True
                  ):
         self.use_existing_bindingdb_data = use_existing_bindingdb_data
         self.grep_path = grep_path
+        self.now = datetime.datetime.utcnow()
+        crawldata_row = models.CrawlData.query.first()
+        self.current_crawl_number = crawldata_row.current_crawl_number
         if run_main:
-            self.main()
+            self.setup()
+            self.get_bindingdb_data_file()
+            self.get_uniprot_acs_from_db()
+            extracted_bindingdb_data = extract_bindingdb_data_using_python(
+                bindingdb_all_data_filepath,
+                self.db_uniprot_acs
+            )
+            # extracted_bindingdb_data = self.extract_bindingdb_data_using_grep()
+            # print extracted_bindingdb_data[0][1][0]
+            self.create_db_rows(extracted_bindingdb_data)
+            self.commit_to_db()
 
-    def main(self):
-        external_data_dir = os.path.join('external-data')
-        bindingdb_data_dir = os.path.join(external_data_dir, 'BindingDB')
-
+    def setup(self):
         if not os.path.exists(bindingdb_data_dir):
             os.mkdir(bindingdb_data_dir)
 
-        bindingdb_all_data_filepath = os.path.join(bindingdb_data_dir, 'BindingDB_All.tab')
-
-        now = datetime.datetime.utcnow()
-
-        # get current crawl number
-        crawldata_row = models.CrawlData.query.first()
-        current_crawl_number = crawldata_row.current_crawl_number
-        print 'Current crawl number: %d' % current_crawl_number
-
-        # =================
-        # Download new BindingDB data
-        # =================
-
+    def get_bindingdb_data_file(self):
         # Unless use_existing_bindingdb_data is set to True, retrieve a new file from BindingDB
         if os.path.exists(bindingdb_all_data_filepath) and self.use_existing_bindingdb_data:
-            print 'BindingDB data file found at:', bindingdb_all_data_filepath
+            logger.info('BindingDB data file found at: {0}'.format(bindingdb_all_data_filepath))
         else:
-            print 'Retrieving new BindingDB data file from BindingDB server...'
+            logger.info('Retrieving new BindingDB data file from BindingDB server...')
             retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=False)
 
+    def get_uniprot_acs_from_db(self):
+        self.db_uniprot_acs = [
+            value_tuple[0] for value_tuple in models.UniProt.query.filter_by(
+                crawl_number=self.current_crawl_number
+            ).values(models.UniProt.ac)
+        ]
 
-
-        # clab.DB.retrieve_external_data(DB_script_ID, forcedl=force_bindingdb_all_download)
-
+    def extract_bindingdb_data_using_grep(self):
+        # TODO this is now deprecated - using alternative implementation extract_bindingdb_data_using_python
         # =================
         # Use grep to extract information for each entry in the DB
         # =================
@@ -59,54 +68,40 @@ class GatherBindingDB(object):
         #       * parse each kinase data file and add to kinDB
         #       * delete individual kinase data files
 
-        db_uniprot_acs = [value_tuple[0] for value_tuple in models.UniProt.query.filter_by(crawl_number=current_crawl_number).values(models.UniProt.ac)]
-
-        # db_uniprot_acs = ['P00519']
-
-
-
-
-        regex_search = '|'.join(db_uniprot_acs)
-        bindingdb_matches_filepath = os.path.join(bindingdb_data_dir, 'tmp-bindingdb-matches.tab')
-
-        # TODO use proper logic here
-        if True:
-            print 'First pass through BindingDB data with grep... - extracting all lines which match UniProt ACs in the DB (performance can be variable - testing has indicated approx. 1 hr on a 2012 MBP, but only 2 mins or so on a Linux machine; probably due to different GNU grep versions)'
-            with open(bindingdb_all_data_filepath, 'r') as bindingdb_all_data_file:
-                #subprocess.call('%(self.grep_path)s -E "%(regex_search)s" %(bindingdb_all_data_filepath)s > %(bindingdb_matches_filepath)s' % vars(), shell=True)
-                subprocess.call('%s -E "%s" %s > %s' % (self.grep_path, regex_search, bindingdb_all_data_filepath, bindingdb_matches_filepath), shell=True)
-
-        def extract_bindingdb(input_data):
-            AC, grep_path, bindingdb_matches_filepath = input_data
-            print AC
-            DB_entry_bindingdb_data_filepath = os.path.join(bindingdb_data_dir, AC + '.tab')
-            subprocess.call('%s -E "%s" %s > %s' % (grep_path, AC, bindingdb_matches_filepath, DB_entry_bindingdb_data_filepath), shell=True)
-            bioassays_data = []
-            with open(DB_entry_bindingdb_data_filepath, 'r') as bindingdb_file:
-                for line in bindingdb_file:
-                    returnedACs = get_ACs(line)
-                    for returnedAC in returnedACs:
-                        if returnedAC == AC:
-                            bioassay_data = get_bioassay_data(line) # returns a dict
-                            bioassays_data.append( bioassay_data )
-            os.remove(DB_entry_bindingdb_data_filepath)
-            return (AC, bioassays_data)
+        extract_bindingdb_data_given_uniprot_acs_using_grep(
+            bindingdb_all_data_filepath,
+            bindingdb_matches_filepath,
+            self.db_uniprot_acs,
+            grep_path=self.grep_path,
+        )
 
         # pool = Pool()
-        input_data = [(AC, self.grep_path, bindingdb_matches_filepath) for AC in db_uniprot_acs]
         # TODO get this working in parallel. Currently gives some pickling error when using multiprocessing
-        results = map(extract_bindingdb, input_data)
+        # results = map(extract_bindingdb, input_data)
+        results = map(
+            partial(
+                extract_bindingdb_given_single_uniprot_ac_using_grep,
+                grep_path=self.grep_path,
+                bindingdb_matches_filepath=bindingdb_matches_filepath
+            ),
+            self.db_uniprot_acs,
+        )
+        return results
 
-        for result in results:
-            ac, bioassays_data = result
-            db_uniprot_row = models.UniProt.query.filter_by(crawl_number=current_crawl_number, ac=ac).first()
+    def create_db_rows(self, extracted_bindingdb_data):
+        # for bindingdb_data_tuple in extracted_bindingdb_data:
+        for ac, bioassays_data in extracted_bindingdb_data.iteritems():
+            # ac, bioassays_data = bindingdb_data_tuple
+            db_uniprot_row = models.UniProt.query.filter_by(
+                crawl_number=self.current_crawl_number, ac=ac
+            ).first()
             dbentry_id = db_uniprot_row.dbentry_id
             dbentry_row = models.DBEntry.query.filter_by(id=dbentry_id).first()
             dbentry_row.nbioassays = len(bioassays_data)
 
             for bioassay_data in bioassays_data:
                 bindingdb_bioassay_obj = models.BindingDBBioassay(
-                    crawl_number=current_crawl_number,
+                    crawl_number=self.current_crawl_number,
                     bindingdb_source=bioassay_data['BindingDB_source'],
                     doi=bioassay_data['DOI'],
                     pmid=bioassay_data['PMID'],
@@ -129,24 +124,20 @@ class GatherBindingDB(object):
                 )
                 db.session.add(bindingdb_bioassay_obj)
 
-        # ==============================================================
-        # Update db BindingDB datestamp
-        # ==============================================================
-
-        current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()
-        current_crawl_datestamp_row.bindingdb_datestamp = now
+    def commit_to_db(self):
+        current_crawl_datestamp_row = models.DateStamps.query.filter_by(
+            crawl_number=self.current_crawl_number
+        ).first()
+        current_crawl_datestamp_row.bindingdb_datestamp = self.now
         db.session.commit()
         print 'Done.'
 
 
-
-
-
 def retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=True):
-    '''
+    """
     Retrieves all BindingDB data in compressed tab-separated format, then decompresses and writes to file.
     Uses gunzip for decompression.
-    '''
+    """
     print 'Downloading BindingDB_All.tab.gz...'
     url = 'http://bindingdb.org/bind/downloads/BindingDB_All.tab.gz'
     response = urllib2.urlopen(url)
@@ -161,35 +152,34 @@ def retrieve_all_BindingDB_data(bindingdb_all_data_filepath, decompress=True):
         subprocess.call('gunzip -f %s' % bindingdb_all_data_filepath+'.gz', shell=True)
         print 'Finished decompressing BindingDB_All.tab.gz'
 
-def get_ACs(line):
+def get_acs(line):
     words = line.split('\t')
     UniProtACs = words[20].split(' ')
     return UniProtACs
 
-def get_bioassay_data(line):
-    words = line.split('\t')
-    SMILES_string = words[0]
-    BindingDB_monomerID = words[1]
-    ChEMBL_ID = words[8]
-    zinc_id = words[13]
-    data_origin = words[15]
-    target_biomolecule = words[16]
-    #target_source_organism = words[17]
-    #target_sequence = words[18]
-    #pdbID = words[19]
-    #UniProtAC = words[20]
-    Ki = words[22]
-    IC50 = words[23]
-    Kd = words[24]
-    EC50 = words[25]
-    kon = words[26]
-    koff = words[27]
-    PMID = words[28]
-    DOI = words[29]
-    pH = words[32]
-    temperature = words[33]
+def get_bioassay_data(bioassay_data_line_tsplit):
+    SMILES_string = bioassay_data_line_tsplit[0]
+    BindingDB_monomerID = bioassay_data_line_tsplit[1]
+    ChEMBL_ID = bioassay_data_line_tsplit[8]
+    zinc_id = bioassay_data_line_tsplit[13]
+    data_origin = bioassay_data_line_tsplit[15]
+    target_biomolecule = bioassay_data_line_tsplit[16]
+    #target_source_organism = bioassay_data_line_tsplit[17]
+    #target_sequence = bioassay_data_line_tsplit[18]
+    #pdbID = bioassay_data_line_tsplit[19]
+    #UniProtAC = bioassay_data_line_tsplit[20]
+    Ki = bioassay_data_line_tsplit[22]
+    IC50 = bioassay_data_line_tsplit[23]
+    Kd = bioassay_data_line_tsplit[24]
+    EC50 = bioassay_data_line_tsplit[25]
+    kon = bioassay_data_line_tsplit[26]
+    koff = bioassay_data_line_tsplit[27]
+    PMID = bioassay_data_line_tsplit[28]
+    DOI = bioassay_data_line_tsplit[29]
+    pH = bioassay_data_line_tsplit[32]
+    temperature = bioassay_data_line_tsplit[33]
 
-    bioassay_data = {}
+    bioassay_data = dict()
 
     bioassay_data['ligand_SMILES_string'] = SMILES_string
     bioassay_data['ligand_BindingDB_ID'] = BindingDB_monomerID
@@ -230,3 +220,75 @@ def get_bioassay_data(line):
 
     return bioassay_data
 
+
+def extract_bindingdb_data_given_uniprot_acs_using_grep(
+        bindingdb_data_filepath,
+        output_filepath,
+        uniprot_acs,
+        grep_path='grep',
+    ):
+    # TODO deprecated
+    """
+    Parameters
+    ----------
+    bindingdb_data_filepath: str
+    uniprot_acs: list of str
+    """
+    regex_search = '|'.join(uniprot_acs)
+
+    print 'First pass through BindingDB data with grep... - extracting all lines which match UniProt ACs in the DB (performance can be variable - testing has indicated approx. 1 hr on a 2012 MBP, but only 2 mins or so on a Linux machine; probably due to different GNU grep versions)'
+    # with open(bindingdb_data_filepath, 'r') as bindingdb_data_file:
+    # subprocess.call('%(self.grep_path)s -E "%(regex_search)s" %(bindingdb_all_data_filepath)s > %(bindingdb_matches_filepath)s' % vars(), shell=True)
+    subprocess.call(
+        '%s -E "%s" %s > %s' % (grep_path, regex_search, bindingdb_data_filepath, output_filepath),
+        shell=True
+    )
+
+
+def extract_bindingdb_given_single_uniprot_ac_using_grep(
+        ac,
+        grep_path=None,
+        bindingdb_matches_filepath=None,
+    ):
+    # TODO deprecated
+    db_entry_bindingdb_data_filepath = os.path.join(bindingdb_data_dir, ac + '.tab')
+    subprocess.call(
+        '{0} -E "{1}" {2} > {3}'.format(
+            grep_path, ac, bindingdb_matches_filepath, db_entry_bindingdb_data_filepath
+        ),
+        shell=True
+    )
+    bioassays_data = []
+    with open(db_entry_bindingdb_data_filepath, 'r') as bindingdb_file:
+        for line in bindingdb_file:
+            returned_acs = get_acs(line)
+            for returned_ac in returned_acs:
+                if returned_ac == ac:
+                    bioassay_data = get_bioassay_data(line)   # returns a dict
+                    bioassays_data.append(bioassay_data)
+    os.remove(db_entry_bindingdb_data_filepath)
+    return (ac, bioassays_data)
+
+
+def extract_bindingdb_data_using_python(
+        bindingdb_data_filepath,
+        uniprot_acs
+    ):
+    bindingdb_data_dict = dict()
+    with open(bindingdb_data_filepath) as bindingdb_data_file:
+        first_line = True
+        for line in bindingdb_data_file:
+            if first_line:
+                first_line = False
+                continue
+            words = line.split('\t')
+            ac_field = words[20]
+            ac = ac_field.split(' ')[0]
+            if ac in uniprot_acs:
+                if ac not in bindingdb_data_dict:
+                    bindingdb_data_dict[ac] = []
+                bindingdb_data_dict[ac].append(
+                    get_bioassay_data(words)   # returns a dict
+                )
+
+    return bindingdb_data_dict

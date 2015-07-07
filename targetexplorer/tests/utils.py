@@ -38,6 +38,17 @@ class SetUpSampleProject(object):
         self.uniprot_query ='mnemonic:ABL1_HUMAN'
         self.uniprot_domain_regex ='^Protein kinase(?!; truncated)(?!; inactive)'
 
+        uniprot_ref_filepath = get_installed_resource_filepath(
+            os.path.join('resources', 'uniprot-search-abl1.xml.gz')
+        )
+        if not os.path.exists(os.path.join(external_data_dirpath, 'UniProt')):
+            os.mkdir(os.path.join(external_data_dirpath, 'UniProt'))
+        with gzip.open(uniprot_ref_filepath) as uniprot_ref_file:
+            with open(
+                os.path.join(external_data_dirpath, 'UniProt', 'uniprot-search.xml'), 'w'
+            ) as uniprot_test_file:
+                uniprot_test_file.write(uniprot_ref_file.read())
+
         gene2pubmed_ref_filepath = get_installed_resource_filepath(
             os.path.join('resources', 'gene2pubmed-abl1.gz')
         )
@@ -69,7 +80,8 @@ class SetUpSampleProject(object):
         self.init()
         GatherUniProt(
             uniprot_query=self.uniprot_query,
-            uniprot_domain_regex=self.uniprot_domain_regex
+            uniprot_domain_regex=self.uniprot_domain_regex,
+            use_existing_data=True,
         )
 
     def pdb(self):

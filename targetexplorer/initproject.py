@@ -3,7 +3,7 @@ import shutil
 import datetime
 import targetexplorer
 from targetexplorer.utils import get_installed_resource_filepath
-from targetexplorer.core import write_yaml_file
+from targetexplorer.core import write_yaml_file, logger
 
 
 class InitProject(object):
@@ -63,7 +63,7 @@ class InitProject(object):
         db.create_all()
 
     def finish(self):
-        print('Done.')
+        logger.info('Done.')
 
 
 def initialize_crawldata_and_datestamps():

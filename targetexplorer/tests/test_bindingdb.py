@@ -4,7 +4,7 @@ from targetexplorer.tests.utils import projecttest_context
 from targetexplorer.bindingdb import GatherBindingDB
 
 
-def test_gather_pdb():
+def test_gather_bindingdb():
     with projecttest_context(set_up_project_stage='uniprot'):
         import platform
         if platform.system() == 'Darwin':
