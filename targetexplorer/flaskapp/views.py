@@ -158,7 +158,7 @@ def get_dbentry():
         target_obj['hgnc'].append({'gene_id': entry.gene_id, 'approved_symbol': entry.approved_symbol})
 
     # Ensembl Gene
-    for entry in dbentry.ensembl_gene_entries:
+    for entry in dbentry.ensembl_genes:
         target_obj['ensembl_gene'].append({'gene_id': entry.gene_id})
 
     # NCBI Gene
@@ -166,7 +166,7 @@ def get_dbentry():
         target_obj['ncbi_gene'].append({'gene_id': entry.gene_id})
 
     # = Return data in JSON format =
-    response = make_response( jsonify(target_obj) )
+    response = make_response(jsonify(target_obj))
     return response
 
 

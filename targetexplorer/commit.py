@@ -1,5 +1,6 @@
 import datetime
 import targetexplorer
+from flask_sqlalchemy import _BoundDeclarativeMeta
 from targetexplorer.flaskapp import db, models
 from targetexplorer.core import read_project_config
 

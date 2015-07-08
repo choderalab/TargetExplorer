@@ -39,3 +39,5 @@ nosetests.xml
 
 # Web pages
 gh-pages
+
+.idea

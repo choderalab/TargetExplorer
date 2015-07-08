@@ -1,33 +1,6 @@
 from targetexplorer.flaskapp import db
-from targetexplorer.core import FlaskDBApp
+from flask_sqlalchemy import _BoundDeclarativeMeta
 
-# flaskdbapp = FlaskDBApp()
-# db = flaskdbapp.db
-
-table_class_names = [
-    'CrawlData',
-    'DateStamps',
-    'DBEntry',
-    'UniProt',
-    'UniProtGeneName',
-    'UniProtIsoform',
-    'UniProtIsoformNote',
-    'UniProtDomain',
-    'UniProtFunction',
-    'UniProtDiseaseAssociation',
-    'UniProtSubcellularLocation',
-    'PDB',
-    'PDBChain',
-    'PDBExpressionData',
-    'NCBIGeneEntry',
-    'NCBIGenePublication',
-    'EnsemblGene',
-    'HGNCEntry',
-    'BindingDBBioassay',
-    # 'BindingDBMeasurement',
-    'CbioportalCase',
-    'CbioportalMutation',
-]
 
 frontend2backend_mappings = {
     'ac': ['UniProt', 'ac'],
@@ -378,3 +351,9 @@ class CbioportalMutation(db.Model):
     cbioportal_case_id = db.Column(db.Integer, db.ForeignKey('cbioportal_case.id'))
     def __repr__(self):
         return '<CbioportalMutation ID {0} type {1} aa_change {2} in_uniprot_domain {3}>'.format(self.id, self.type, self.oncotator_aa_pos, self.in_uniprot_domain)
+
+
+_module_local_names = [key for key in locals().keys()]
+table_class_names = [
+    key for key in _module_local_names if isinstance(locals()[key], _BoundDeclarativeMeta)
+]

@@ -7,7 +7,6 @@ import argparse
 from targetexplorer.core import read_project_config
 from targetexplorer.uniprot import GatherUniProt
 
-
 def parse_arguments():
         argparser = argparse.ArgumentParser(description='Gather UniProt')
         argparser.add_argument('--use_existing_data', help='Do not download a new UniProt document. Only works if an existing document is present.', action='store_true', default=False)
