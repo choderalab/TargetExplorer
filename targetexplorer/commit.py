@@ -1,85 +1,77 @@
 import datetime
 import targetexplorer
-from flask_sqlalchemy import _BoundDeclarativeMeta
 from targetexplorer.flaskapp import db, models
-from targetexplorer.core import read_project_config
+from targetexplorer.core import read_project_config, logger
 
 
 class Commit(object):
     def __init__(self, run_main=True):
+        self.project_config = read_project_config()
+        self.crawldata_row = models.CrawlData.query.first()
+        self.current_crawl_number = self.crawldata_row.current_crawl_number
+        self.safe_crawl_datestamp = self.crawldata_row.safe_crawl_datestamp
+        self.current_crawl_datestamps_row = models.DateStamps.query.filter_by(crawl_number=self.current_crawl_number).first()
         if run_main:
-            self.main()
+            self.check_all_gather_scripts_have_been_run()
+            self.update_crawl_numbers()
+            self.update_datestamps()
+            self.delete_old_crawls()
+            self.commit()
 
-    def main(self):
-        project_config = read_project_config()
-
-        crawldata_row = models.CrawlData.query.first()
-        current_crawl_number = crawldata_row.current_crawl_number
-        safe_crawl_datestamp = crawldata_row.safe_crawl_datestamp
-        current_crawl_datestamps_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()
-
+    def check_all_gather_scripts_have_been_run(self):
+        """
+        Test whether each of the gather scripts have been run,
+        and whether they have been updated in the correct order
+        """
         data_problem = False
-
-        # ===================
-        # Test whether each of the scripts have been run, and whether they have been updated in the correct order
-        # ===================
         for data_type in ['uniprot', 'ncbi_gene', 'bindingdb', 'pdb', 'cbioportal']:
             datestamp_type = data_type + '_datestamp'
-            current_crawl_datatype_datestamp = getattr(current_crawl_datestamps_row, datestamp_type)
+            current_crawl_datatype_datestamp = getattr(self.current_crawl_datestamps_row, datestamp_type)
             if current_crawl_datatype_datestamp == None:
-                print 'data_type "%s" FAIL: no data found in db' % data_type
+                logger.info('data_type "%s" FAIL: no data found in db' % data_type)
                 data_problem = True
-            elif current_crawl_datatype_datestamp <= safe_crawl_datestamp:
-                print 'data_type "%s" FAIL: current data (%s) is older than or as old as safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string))
+            elif current_crawl_datatype_datestamp <= self.safe_crawl_datestamp:
+                logger.info('data_type "%s" FAIL: current data (%s) is older than or as old as safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), self.safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string)))
                 data_problem = True
-            elif current_crawl_datatype_datestamp > safe_crawl_datestamp:
-                print 'data_type "%s" PASS: current data (%s) is newer than safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string))
+            elif current_crawl_datatype_datestamp > self.safe_crawl_datestamp:
+                logger.info('data_type "%s" PASS: current data (%s) is newer than safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), self.safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string)))
 
         if data_problem:
-            raise Exception, 'Commit aborted.'
+            raise Exception('Commit aborted.')
         else:
-            print 'Proceeding to commit to master db...'
+            logger.info('Proceeding to commit to master db...')
 
-        # ===================
-        # Update crawl numbers
-        # ===================
-        crawldata_row.safe_crawl_number = current_crawl_number
-        crawldata_row.current_crawl_number = current_crawl_number + 1
+    def update_crawl_numbers(self):
+        self.crawldata_row.safe_crawl_number = self.current_crawl_number
+        self.crawldata_row.current_crawl_number = self.current_crawl_number + 1
 
-        # ===================
-        # Update datestamps data
-        # ===================
+    def update_datestamps(self):
         now = datetime.datetime.utcnow()
-        current_crawl_datestamps_row.commit_datestamp = now
-        new_datestamps_row = models.DateStamps(crawl_number=current_crawl_number+1)
+        self.current_crawl_datestamps_row.commit_datestamp = now
+        new_datestamps_row = models.DateStamps(crawl_number=self.current_crawl_number+1)
         db.session.add(new_datestamps_row)
 
-        # ===================
-        # Delete old crawls
-        # ===================
+    def delete_old_crawls(self):
         crawl_numbers = [row.crawl_number for row in models.DateStamps.query.all()]
-        if len(crawl_numbers) > project_config['ncrawls_to_save']:
-            print 'More than %d crawls found.' % project_config['ncrawls_to_save']
+        if len(crawl_numbers) > self.project_config['ncrawls_to_save']:
+            logger.info('More than %d crawls found.' % self.project_config['ncrawls_to_save'])
             crawl_numbers_sorted = sorted(crawl_numbers, reverse=True)
-            crawls_to_delete = crawl_numbers_sorted[project_config['ncrawls_to_save']:]
+            crawls_to_delete = crawl_numbers_sorted[self.project_config['ncrawls_to_save']:]
             # iterate through crawls to delete
             for crawl_to_delete in crawls_to_delete:
-                print 'Deleting crawl %d...' % crawl_to_delete
+                logger.info('Deleting crawl %d...' % crawl_to_delete)
                 # iterate through tables
                 for table_class_name in models.table_class_names:
                     if table_class_name == 'CrawlData':
                         continue
                     table = getattr(models, table_class_name)
                     rows_to_delete = table.query.filter_by(crawl_number=crawl_to_delete)
-                    print '  - %s - %d rows' % (table_class_name, rows_to_delete.count())
+                    logger.info('  - %s - %d rows' % (table_class_name, rows_to_delete.count()))
                     rows_to_delete.delete()
 
-        # ===================
-        # Write db to disk
-        # ===================
+    def commit(self):
         db.session.commit()
-
-        print 'Database committed.'
-        print 'New safe crawl number: %d' % (current_crawl_number)
-        print 'New current crawl number: %d' % (current_crawl_number+1)
-        print 'Done.'
+        logger.info('Database committed.')
+        logger.info('New safe crawl number: {0}'.format(self.current_crawl_number))
+        logger.info('New current crawl number: {0}'.format(self.current_crawl_number+1))
+        logger.info('Done.')

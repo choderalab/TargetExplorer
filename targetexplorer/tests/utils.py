@@ -9,7 +9,7 @@ from targetexplorer.core import external_data_dirpath
 from targetexplorer.flaskapp import db
 from targetexplorer.initproject import initialize_crawldata_and_datestamps
 from targetexplorer.uniprot import GatherUniProt
-from targetexplorer.protein_databank import GatherPDB
+from targetexplorer.pdb import GatherPDB
 from targetexplorer.ncbi_gene import GatherNCBIGene
 from targetexplorer.bindingdb import GatherBindingDB
 from targetexplorer.cbioportal import GatherCbioportalData

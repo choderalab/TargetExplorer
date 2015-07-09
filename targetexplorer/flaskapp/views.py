@@ -3,6 +3,7 @@ import re
 from datetime import timedelta
 from functools import update_wrapper
 from targetexplorer.flaskapp import app, db, models
+from targetexplorer.core import read_project_config
 config = app.config
 
 # ======
@@ -263,10 +264,10 @@ def query_db():
 @app.route('/%s/get_metadata' % config.dbapi_name, methods = ['GET'])
 @crossdomain(origin='*', headers=["Origin", "X-Requested-With", "Content-Type", "Accept"])
 def get_metadata():
-    import project_config
+    project_config = read_project_config()
     results_obj = {
-        'uniprot_query_string': project_config.uniprot_query_string,
-        'uniprot_domain_regex': project_config.uniprot_domain_regex,
+        'uniprot_query_string': project_config['uniprot_query_string'],
+        'uniprot_domain_regex': project_config['uniprot_domain_regex'],
     }
 
     # = Return data in JSON format =

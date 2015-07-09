@@ -12,12 +12,3 @@ app.config.update(
     SQLALCHEMY_DATABASE_URI=project_config.get('sqlalchemy_uri')
 )
 import models
-
-# app.config.from_pyfile(
-#     os.path.join(
-#         targetexplorer_flaskapp_dir,
-#         'config.py'
-#     )
-# )
-
-# from targetexplorer.flaskapp import views, models

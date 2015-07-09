@@ -1,7 +1,3 @@
-# Functions for retrieval of cBioPortal data via the web API
-#
-# Daniel L. Parton <partond@mskcc.org> - 9 Oct 2013
-
 import urllib2
 import re
 import os

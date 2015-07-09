@@ -1,18 +1,15 @@
-# Library containing functions for multiple sequence alignment
-#
-# Daniel L. Parton <partond@mskcc.org> - 2 Apr 2013
-#
-
-import os, platform, shlex
+import os
+import shlex
 from subprocess import Popen, PIPE
 import targetexplorer
-    
+
+
 def run_salign(align_codes, sequences, structures_path, dendrogram_filename, alignment_pir_filename, alignment_pap_filename, verbose=True):
-    '''Use structural information to build a multiple sequence alignment.
-align_codes: list of codes used to identify each sequence/structure pair. Should match the name of the structure file
-sequences: list of sequences in FASTA format.
-structures_path (string): a directory containing the necessary structures
-'''
+    """Use structural information to build a multiple sequence alignment.
+    align_codes: list of codes used to identify each sequence/structure pair. Should match the name of the structure file
+    sequences: list of sequences in FASTA format.
+    structures_path (string): a directory containing the necessary structures
+    """
     import modeller
     # First create a .seg file from the information in sequences and align_codes
     nseq = len(align_codes)
@@ -20,7 +17,6 @@ structures_path (string): a directory containing the necessary structures
     with open(seq_path, 'w') as seq_file:
         for s in range(nseq):
             seq_file.write('>P1;%s\n' % align_codes[s])
-            #seq_file.write('structureX:%s:FIRST:%s:LAST:%s::::\n' % (align_codes[s], TODO, TODO))
             seq_file.write('structureX:%s:FIRST:%s:LAST:%s::::\n' % (align_codes[s], '@', '@'))
             seq_file.write(sequences[s] + '*\n')
 
@@ -77,12 +73,13 @@ structures_path (string): a directory containing the necessary structures
     
     if verbose: print "Done."
 
-def run_clustalo(sequence_ids, sequences, outfmt='vienna', dealign=True, force=False, clustalo_binary=None):
-    '''Multiple sequence alignment using clustalo
 
-Pass a list of sequence ids and a list of sequences
-Returns a list of aligned sequences
-'''
+def run_clustalo(sequence_ids, sequences, outfmt='vienna', dealign=True, force=False, clustalo_binary=None):
+    """Multiple sequence alignment using clustalo
+
+    Pass a list of sequence ids and a list of sequences
+    Returns a list of aligned sequences
+    """
     # If clustalo binary not passed as an argument, try to autodetect
     if clustalo_binary == None:
         # First try searching $PATH
@@ -120,22 +117,23 @@ Returns a list of aligned sequences
     aln_seq_ids, aln_seqs = targetexplorer.core.parse_fasta_string(stdout)
     return aln_seqs
 
+
 def seq_comparator(seq1, seq2):
-    '''Returns a comparison between two aligned sequences.
-Sequences must be the same length.
-* = match
-: = high probability of substitution
-. = lower probability of substitution
-  = gap, or least probability of substitution
+    """Returns a comparison between two aligned sequences.
+    Sequences must be the same length.
+    * = match
+    : = high probability of substitution
+    . = lower probability of substitution
+      = gap, or least probability of substitution
 
-Note that this will fail if a nonstandard aa code is included in the sequence.
+    Note that this will fail if a nonstandard aa code is included in the sequence.
 
-Substitution "probabilities" based on the PAM250 scoring matrix.
+    Substitution "probabilities" based on the PAM250 scoring matrix.
 
-This is the same method used by the UniProt alignment service.
-'''
+    This is the same method used by the UniProt alignment service.
+    """
     if len(seq1) != len(seq2):
-        raise Exception, 'ERROR: len(seq1) must equal len(seq2)'
+        raise Exception('ERROR: len(seq1) must equal len(seq2)')
     comparison = ''
     for r in range(len(seq1)):
         if seq1[r] == '-' or seq2[r] == '-':
@@ -150,6 +148,7 @@ This is the same method used by the UniProt alignment service.
             comparison += ' '
     return comparison
 
+
 def score_aln(seq1, seq2, gap_penalty=0):
     '''
     Scores an alignment between two sequences using a PAM matrix.
@@ -159,7 +158,7 @@ def score_aln(seq1, seq2, gap_penalty=0):
     score = 0
     for i in range(len(seq1)):
         if seq1[i] == '-' or seq2[i] == '-':
-            score=gap_penalty
+            score = gap_penalty
         else:
             score += Gonnet_PAM250[seq1[i].upper()][seq2[i].upper()]
     return score
@@ -167,71 +166,69 @@ def score_aln(seq1, seq2, gap_penalty=0):
 # Gonnet_PAM250 is a scoring matrix based on an alignment of the entire SWISS-PROT database, by Gonnet, Cohen and Benner (1992).
 # More info here: http://imed.med.ucm.es/Tools/sias_help.html
 Gonnet_PAM250 = {
-'C' : {
-    'C' : 12 , 'S' : 0  , 'T' : 0  , 'P' : -3 , 'A' : 0  , 'G' : -2 , 'N' : -2 , 'D' : -3 , 'E' : -3 , 'Q' : -2 , 'H' : -1 , 'R' : -2 , 'K' : -3 , 'M' : -1 , 'I' : -1 , 'L' : -2 , 'V' : 0  , 'F' : -1 , 'Y' : 0  , 'W' : -1 , 'X' : -3 , '*' : -8 } ,
-
-'S' : {
-    'C' : 0  , 'S' : 2  , 'T' : 2  , 'P' : 0  , 'A' : 1  , 'G' : 0  , 'N' : 1  , 'D' : 0  , 'E' : 0  , 'Q' : 0  , 'H' : 0  , 'R' : 0  , 'K' : 0 , 'M' : -1 , 'I' : -2 , 'L' : -2 , 'V' : -1 , 'F' : -3 , 'Y' : -2 , 'W' : -3  , 'X' : 0 , '*' : -8 } ,
-
-'T' : {
-    'C' : 0  , 'S' : 2  , 'T' : 2  , 'P' : 0  , 'A' : 1 , 'G' : -1  , 'N' : 0  , 'D' : 0  , 'E' : 0  , 'Q' : 0  , 'H' : 0  , 'R' : 0  , 'K' : 0 , 'M' : -1 , 'I' : -1 , 'L' : -1  , 'V' : 0 , 'F' : -2 , 'Y' : -2 , 'W' : -4  , 'X' : 0 , '*' : -8 } ,
-
-'P' : {
-    'C' : -3  , 'S' : 0  , 'T' : 0  , 'P' : 8  , 'A' : 0 , 'G' : -2 , 'N' : -1 , 'D' : -1  , 'E' : 0  , 'Q' : 0 , 'H' : -1 , 'R' : -1 , 'K' : -1 , 'M' : -2 , 'I' : -3 , 'L' : -2 , 'V' : -2 , 'F' : -4 , 'Y' : -3 , 'W' : -5 , 'X' : -1 , '*' : -8 } ,
-
-'A' : {
-    'C' : 0  , 'S' : 1  , 'T' : 1  , 'P' : 0  , 'A' : 2  , 'G' : 0  , 'N' : 0  , 'D' : 0  , 'E' : 0  , 'Q' : 0 , 'H' : -1 , 'R' : -1  , 'K' : 0 , 'M' : -1 , 'I' : -1 , 'L' : -1  , 'V' : 0 , 'F' : -2 , 'Y' : -2 , 'W' : -4  , 'X' : 0 , '*' : -8 } ,
-
-'G' : {
-    'C' : -2  , 'S' : 0 , 'T' : -1 , 'P' : -2  , 'A' : 0  , 'G' : 7  , 'N' : 0  , 'D' : 0 , 'E' : -1 , 'Q' : -1 , 'H' : -1 , 'R' : -1 , 'K' : -1 , 'M' : -4 , 'I' : -4 , 'L' : -4 , 'V' : -3 , 'F' : -5 , 'Y' : -4 , 'W' : -4 , 'X' : -1 , '*' : -8 } ,
-
-'N' : {
-    'C' : -2  , 'S' : 1  , 'T' : 0 , 'P' : -1  , 'A' : 0  , 'G' : 0  , 'N' : 4  , 'D' : 2  , 'E' : 1  , 'Q' : 1  , 'H' : 1  , 'R' : 0  , 'K' : 1 , 'M' : -2 , 'I' : -3 , 'L' : -3 , 'V' : -2 , 'F' : -3 , 'Y' : -1 , 'W' : -4  , 'X' : 0 , '*' : -8 } ,
-
-'D' : {
-    'C' : -3  , 'S' : 0  , 'T' : 0 , 'P' : -1  , 'A' : 0  , 'G' : 0  , 'N' : 2  , 'D' : 5  , 'E' : 3  , 'Q' : 1  , 'H' : 0  , 'R' : 0  , 'K' : 0 , 'M' : -3 , 'I' : -4 , 'L' : -4 , 'V' : -3 , 'F' : -4 , 'Y' : -3 , 'W' : -5 , 'X' : -1 , '*' : -8 } ,
-
-'E' : {
-    'C' : -3  , 'S' : 0  , 'T' : 0  , 'P' : 0  , 'A' : 0 , 'G' : -1  , 'N' : 1  , 'D' : 3  , 'E' : 4  , 'Q' : 2  , 'H' : 0  , 'R' : 0  , 'K' : 1 , 'M' : -2 , 'I' : -3 , 'L' : -3 , 'V' : -2 , 'F' : -4 , 'Y' : -3 , 'W' : -4 , 'X' : -1 , '*' : -8 } ,
-
-'Q' : {
-    'C' : -2  , 'S' : 0  , 'T' : 0  , 'P' : 0  , 'A' : 0 , 'G' : -1  , 'N' : 1  , 'D' : 1  , 'E' : 2  , 'Q' : 3  , 'H' : 1  , 'R' : 2  , 'K' : 2 , 'M' : -1 , 'I' : -2 , 'L' : -2 , 'V' : -2 , 'F' : -3 , 'Y' : -2 , 'W' : -3 , 'X' : -1 , '*' : -8 } ,
-
-'H' : {
-    'C' : -1  , 'S' : 0  , 'T' : 0 , 'P' : -1 , 'A' : -1 , 'G' : -1  , 'N' : 1  , 'D' : 0  , 'E' : 0  , 'Q' : 1  , 'H' : 6  , 'R' : 1  , 'K' : 1 , 'M' : -1 , 'I' : -2 , 'L' : -2 , 'V' : -2  , 'F' : 0  , 'Y' : 2 , 'W' : -1 , 'X' : -1 , '*' : -8 } ,
-
-'R' : {
-    'C' : -2  , 'S' : 0  , 'T' : 0 , 'P' : -1 , 'A' : -1 , 'G' : -1  , 'N' : 0  , 'D' : 0  , 'E' : 0  , 'Q' : 2  , 'H' : 1  , 'R' : 5  , 'K' : 3 , 'M' : -2 , 'I' : -2 , 'L' : -2 , 'V' : -2 , 'F' : -3 , 'Y' : -2 , 'W' : -2 , 'X' : -1 , '*' : -8 } ,
-
-'K' : {
-    'C' : -3  , 'S' : 0  , 'T' : 0 , 'P' : -1  , 'A' : 0 , 'G' : -1  , 'N' : 1  , 'D' : 0  , 'E' : 1  , 'Q' : 2  , 'H' : 1  , 'R' : 3  , 'K' : 3 , 'M' : -1 , 'I' : -2 , 'L' : -2 , 'V' : -2 , 'F' : -3 , 'Y' : -2 , 'W' : -4 , 'X' : -1 , '*' : -8 } ,
-
-'M' : {
-    'C' : -1 , 'S' : -1 , 'T' : -1 , 'P' : -2 , 'A' : -1 , 'G' : -4 , 'N' : -2 , 'D' : -3 , 'E' : -2 , 'Q' : -1 , 'H' : -1 , 'R' : -2 , 'K' : -1  , 'M' : 4  , 'I' : 2  , 'L' : 3  , 'V' : 2  , 'F' : 2  , 'Y' : 0 , 'W' : -1 , 'X' : -1 , '*' : -8 } ,
-
-'I' : {
-    'C' : -1 , 'S' : -2 , 'T' : -1 , 'P' : -3 , 'A' : -1 , 'G' : -4 , 'N' : -3 , 'D' : -4 , 'E' : -3 , 'Q' : -2 , 'H' : -2 , 'R' : -2 , 'K' : -2  , 'M' : 2  , 'I' : 4  , 'L' : 3  , 'V' : 3  , 'F' : 1 , 'Y' : -1 , 'W' : -2 , 'X' : -1 , '*' : -8 } ,
-
-'L' : {
-    'C' : -2 , 'S' : -2 , 'T' : -1 , 'P' : -2 , 'A' : -1 , 'G' : -4 , 'N' : -3 , 'D' : -4 , 'E' : -3 , 'Q' : -2 , 'H' : -2 , 'R' : -2 , 'K' : -2  , 'M' : 3  , 'I' : 3  , 'L' : 4  , 'V' : 2  , 'F' : 2  , 'Y' : 0 , 'W' : -1 , 'X' : -1 , '*' : -8 } ,
-
-'V' : {
-    'C' : 0 , 'S' : -1  , 'T' : 0 , 'P' : -2  , 'A' : 0 , 'G' : -3 , 'N' : -2 , 'D' : -3 , 'E' : -2 , 'Q' : -2 , 'H' : -2 , 'R' : -2 , 'K' : -2  , 'M' : 2  , 'I' : 3  , 'L' : 2  , 'V' : 3  , 'F' : 0 , 'Y' : -1 , 'W' : -3 , 'X' : -1 , '*' : -8 } ,
-
-'F' : {
-    'C' : -1 , 'S' : -3 , 'T' : -2 , 'P' : -4 , 'A' : -2 , 'G' : -5 , 'N' : -3 , 'D' : -4 , 'E' : -4 , 'Q' : -3  , 'H' : 0 , 'R' : -3 , 'K' : -3  , 'M' : 2  , 'I' : 1  , 'L' : 2  , 'V' : 0  , 'F' : 7  , 'Y' : 5  , 'W' : 4 , 'X' : -2 , '*' : -8 } ,
-
-'Y' : {
-    'C' : 0 , 'S' : -2 , 'T' : -2 , 'P' : -3 , 'A' : -2 , 'G' : -4 , 'N' : -1 , 'D' : -3 , 'E' : -3 , 'Q' : -2  , 'H' : 2 , 'R' : -2 , 'K' : -2  , 'M' : 0 , 'I' : -1  , 'L' : 0 , 'V' : -1  , 'F' : 5  , 'Y' : 8  , 'W' : 4 , 'X' : -2 , '*' : -8 } ,
-
-'W' : {
-    'C' : -1 , 'S' : -3 , 'T' : -4 , 'P' : -5 , 'A' : -4 , 'G' : -4 , 'N' : -4 , 'D' : -5 , 'E' : -4 , 'Q' : -3 , 'H' : -1 , 'R' : -2 , 'K' : -4 , 'M' : -1 , 'I' : -2 , 'L' : -1 , 'V' : -3  , 'F' : 4  , 'Y' : 4 , 'W' : 14 , 'X' : -4 , '*' : -8 } ,
-
-'X' : {
-    'C' : -3  , 'S' : 0  , 'T' : 0 , 'P' : -1  , 'A' : 0 , 'G' : -1  , 'N' : 0 , 'D' : -1 , 'E' : -1 , 'Q' : -1 , 'H' : -1 , 'R' : -1 , 'K' : -1 , 'M' : -1 , 'I' : -1 , 'L' : -1 , 'V' : -1 , 'F' : -2 , 'Y' : -2 , 'W' : -4 , 'X' : -1 , '*' : -8 } ,
-
-'*' : {
-    'C' : -8 , 'S' : -8 , 'T' : -8 , 'P' : -8 , 'A' : -8 , 'G' : -8 , 'N' : -8 , 'D' : -8 , 'E' : -8 , 'Q' : -8 , 'H' : -8 , 'R' : -8 , 'K' : -8 , 'M' : -8 , 'I' : -8 , 'L' : -8 , 'V' : -8 , 'F' : -8 , 'Y' : -8 , 'W' : -8 , 'X' : -8  , '*' : 1 }
+    'C': {
+        'C': 12, 'S': 0, 'T': 0, 'P': -3, 'A': 0, 'G': -2, 'N': -2, 'D': -3, 'E': -3, 'Q': -2, 'H': -1, 'R': -2, 'K': -3, 'M': -1, 'I': -1, 'L': -2, 'V': 0, 'F': -1, 'Y': 0, 'W': -1, 'X': -3, '*': -8 },
+    
+    'S': {
+        'C': 0, 'S': 2, 'T': 2, 'P': 0, 'A': 1, 'G': 0, 'N': 1, 'D': 0, 'E': 0, 'Q': 0, 'H': 0, 'R': 0, 'K': 0, 'M': -1, 'I': -2, 'L': -2, 'V': -1, 'F': -3, 'Y': -2, 'W': -3, 'X': 0, '*': -8 },
+    
+    'T': {
+        'C': 0, 'S': 2, 'T': 2, 'P': 0, 'A': 1, 'G': -1, 'N': 0, 'D': 0, 'E': 0, 'Q': 0, 'H': 0, 'R': 0, 'K': 0, 'M': -1, 'I': -1, 'L': -1, 'V': 0, 'F': -2, 'Y': -2, 'W': -4, 'X': 0, '*': -8 },
+    
+    'P': {
+        'C': -3, 'S': 0, 'T': 0, 'P': 8, 'A': 0, 'G': -2, 'N': -1, 'D': -1, 'E': 0, 'Q': 0, 'H': -1, 'R': -1, 'K': -1, 'M': -2, 'I': -3, 'L': -2, 'V': -2, 'F': -4, 'Y': -3, 'W': -5, 'X': -1, '*': -8 },
+    
+    'A': {
+        'C': 0, 'S': 1, 'T': 1, 'P': 0, 'A': 2, 'G': 0, 'N': 0, 'D': 0, 'E': 0, 'Q': 0, 'H': -1, 'R': -1, 'K': 0, 'M': -1, 'I': -1, 'L': -1, 'V': 0, 'F': -2, 'Y': -2, 'W': -4, 'X': 0, '*': -8 },
+    
+    'G': {
+        'C': -2, 'S': 0, 'T': -1, 'P': -2, 'A': 0, 'G': 7, 'N': 0, 'D': 0, 'E': -1, 'Q': -1, 'H': -1, 'R': -1, 'K': -1, 'M': -4, 'I': -4, 'L': -4, 'V': -3, 'F': -5, 'Y': -4, 'W': -4, 'X': -1, '*': -8 },
+    
+    'N': {
+        'C': -2, 'S': 1, 'T': 0, 'P': -1, 'A': 0, 'G': 0, 'N': 4, 'D': 2, 'E': 1, 'Q': 1, 'H': 1, 'R': 0, 'K': 1, 'M': -2, 'I': -3, 'L': -3, 'V': -2, 'F': -3, 'Y': -1, 'W': -4, 'X': 0, '*': -8 },
+    
+    'D': {
+        'C': -3, 'S': 0, 'T': 0, 'P': -1, 'A': 0, 'G': 0, 'N': 2, 'D': 5, 'E': 3, 'Q': 1, 'H': 0, 'R': 0, 'K': 0, 'M': -3, 'I': -4, 'L': -4, 'V': -3, 'F': -4, 'Y': -3, 'W': -5, 'X': -1, '*': -8 },
+    
+    'E': {
+        'C': -3, 'S': 0, 'T': 0, 'P': 0, 'A': 0, 'G': -1, 'N': 1, 'D': 3, 'E': 4, 'Q': 2, 'H': 0, 'R': 0, 'K': 1, 'M': -2, 'I': -3, 'L': -3, 'V': -2, 'F': -4, 'Y': -3, 'W': -4, 'X': -1, '*': -8 },
+    
+    'Q': {
+        'C': -2, 'S': 0, 'T': 0, 'P': 0, 'A': 0, 'G': -1, 'N': 1, 'D': 1, 'E': 2, 'Q': 3, 'H': 1, 'R': 2, 'K': 2, 'M': -1, 'I': -2, 'L': -2, 'V': -2, 'F': -3, 'Y': -2, 'W': -3, 'X': -1, '*': -8 },
+    
+    'H': {
+        'C': -1, 'S': 0, 'T': 0, 'P': -1, 'A': -1, 'G': -1, 'N': 1, 'D': 0, 'E': 0, 'Q': 1, 'H': 6, 'R': 1, 'K': 1, 'M': -1, 'I': -2, 'L': -2, 'V': -2, 'F': 0, 'Y': 2, 'W': -1, 'X': -1, '*': -8 },
+    
+    'R': {
+        'C': -2, 'S': 0, 'T': 0, 'P': -1, 'A': -1, 'G': -1, 'N': 0, 'D': 0, 'E': 0, 'Q': 2, 'H': 1, 'R': 5, 'K': 3, 'M': -2, 'I': -2, 'L': -2, 'V': -2, 'F': -3, 'Y': -2, 'W': -2, 'X': -1, '*': -8 },
+    
+    'K': {
+        'C': -3, 'S': 0, 'T': 0, 'P': -1, 'A': 0, 'G': -1, 'N': 1, 'D': 0, 'E': 1, 'Q': 2, 'H': 1, 'R': 3, 'K': 3, 'M': -1, 'I': -2, 'L': -2, 'V': -2, 'F': -3, 'Y': -2, 'W': -4, 'X': -1, '*': -8 },
+    
+    'M': {
+        'C': -1, 'S': -1, 'T': -1, 'P': -2, 'A': -1, 'G': -4, 'N': -2, 'D': -3, 'E': -2, 'Q': -1, 'H': -1, 'R': -2, 'K': -1, 'M': 4, 'I': 2, 'L': 3, 'V': 2, 'F': 2, 'Y': 0, 'W': -1, 'X': -1, '*': -8 },
+    
+    'I': {
+        'C': -1, 'S': -2, 'T': -1, 'P': -3, 'A': -1, 'G': -4, 'N': -3, 'D': -4, 'E': -3, 'Q': -2, 'H': -2, 'R': -2, 'K': -2, 'M': 2, 'I': 4, 'L': 3, 'V': 3, 'F': 1, 'Y': -1, 'W': -2, 'X': -1, '*': -8 },
+    
+    'L': {
+        'C': -2, 'S': -2, 'T': -1, 'P': -2, 'A': -1, 'G': -4, 'N': -3, 'D': -4, 'E': -3, 'Q': -2, 'H': -2, 'R': -2, 'K': -2, 'M': 3, 'I': 3, 'L': 4, 'V': 2, 'F': 2, 'Y': 0, 'W': -1, 'X': -1, '*': -8 },
+    
+    'V': {
+        'C': 0, 'S': -1, 'T': 0, 'P': -2, 'A': 0, 'G': -3, 'N': -2, 'D': -3, 'E': -2, 'Q': -2, 'H': -2, 'R': -2, 'K': -2, 'M': 2, 'I': 3, 'L': 2, 'V': 3, 'F': 0, 'Y': -1, 'W': -3, 'X': -1, '*': -8 },
+    
+    'F': {
+        'C': -1, 'S': -3, 'T': -2, 'P': -4, 'A': -2, 'G': -5, 'N': -3, 'D': -4, 'E': -4, 'Q': -3, 'H': 0, 'R': -3, 'K': -3, 'M': 2, 'I': 1, 'L': 2, 'V': 0, 'F': 7, 'Y': 5, 'W': 4, 'X': -2, '*': -8 },
+    
+    'Y': {
+        'C': 0, 'S': -2, 'T': -2, 'P': -3, 'A': -2, 'G': -4, 'N': -1, 'D': -3, 'E': -3, 'Q': -2, 'H': 2, 'R': -2, 'K': -2, 'M': 0, 'I': -1, 'L': 0, 'V': -1, 'F': 5, 'Y': 8, 'W': 4, 'X': -2, '*': -8 },
+    
+    'W': {
+        'C': -1, 'S': -3, 'T': -4, 'P': -5, 'A': -4, 'G': -4, 'N': -4, 'D': -5, 'E': -4, 'Q': -3, 'H': -1, 'R': -2, 'K': -4, 'M': -1, 'I': -2, 'L': -1, 'V': -3, 'F': 4, 'Y': 4, 'W': 14, 'X': -4, '*': -8 },
+    
+    'X': {
+        'C': -3, 'S': 0, 'T': 0, 'P': -1, 'A': 0, 'G': -1, 'N': 0, 'D': -1, 'E': -1, 'Q': -1, 'H': -1, 'R': -1, 'K': -1, 'M': -1, 'I': -1, 'L': -1, 'V': -1, 'F': -2, 'Y': -2, 'W': -4, 'X': -1, '*': -8 },
+    
+    '*': {
+        'C': -8, 'S': -8, 'T': -8, 'P': -8, 'A': -8, 'G': -8, 'N': -8, 'D': -8, 'E': -8, 'Q': -8, 'H': -8, 'R': -8, 'K': -8, 'M': -8, 'I': -8, 'L': -8, 'V': -8, 'F': -8, 'Y': -8, 'W': -8, 'X': -8, '*': 1 }
 }
-
-
