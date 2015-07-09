@@ -9,15 +9,15 @@ from targetexplorer.flaskapp import db, models
 # This dict converts family information listed in UniProt in the similarity comments to codes similar to those used in the kinase.com poster
 # Note that a UniProt "family" is equivalent to a Manning et al. "group". Also, there are a few additional families annotated in UniProt.
 kinase_family_uniprot_similarity_text = {
-'AGC Ser/Thr protein kinase family' : 'AGC',
-'CAMK Ser/Thr protein kinase family' : 'CAMK',
-'CMGC Ser/Thr protein kinase family' : 'CMGC',
-'CK1 Ser/Thr protein kinase family' : 'CK1',
-'STE Ser/Thr protein kinase family' : 'STE',
-'TKL Ser/Thr protein kinase family' : 'TKL',
-'Tyr protein kinase family' : 'TK',
-'NEK Ser/Thr protein kinase family' : 'NEK',
-'RIO-type Ser/Thr kinase family' : 'RIO-type'
+    'AGC Ser/Thr protein kinase family': 'AGC',
+    'CAMK Ser/Thr protein kinase family': 'CAMK',
+    'CMGC Ser/Thr protein kinase family': 'CMGC',
+    'CK1 Ser/Thr protein kinase family': 'CK1',
+    'STE Ser/Thr protein kinase family': 'STE',
+    'TKL Ser/Thr protein kinase family': 'TKL',
+    'Tyr protein kinase family': 'TK',
+    'NEK Ser/Thr protein kinase family': 'NEK',
+    'RIO-type Ser/Thr kinase family': 'RIO-type'
 }
 
 
@@ -282,8 +282,7 @@ class GatherUniProt(object):
 
 
         # = Exceptions =
-        # TODO Please for the love of god refactor
-        # These exceptions should be specified by the user in project_config.yaml
+        # TODO Please for the love of god refactor - these exceptions should be specified by the user, probably in project_config.yaml
 
         # Skip if no matching domains found
         if len(selected_domains) < 1:
@@ -471,7 +470,7 @@ class GatherUniProt(object):
                 chain_id = c
                 pdb_begin = chains_span[c][0]
                 pdb_end = chains_span[c][1]
-                # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-protein_databank.py
+                # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
                 # Have to check against each PK domain
                 for domain_id, domain in enumerate(domains_data):
                     pk_begin = domain.begin
@@ -604,11 +603,6 @@ class GatherUniProt(object):
         ).first()
         current_crawl_datestamp_row.uniprot_datestamp = self.now
         db.session.commit()
-
-
-
-
-
 
 
 def parse_uniprot_pdbref_chains(chains_span_str):

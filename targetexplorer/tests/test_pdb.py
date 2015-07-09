@@ -1,6 +1,6 @@
 from targetexplorer.flaskapp import models
 from targetexplorer.tests.utils import projecttest_context
-from targetexplorer.protein_databank import GatherPDB
+from targetexplorer.pdb import GatherPDB
 
 
 def test_gather_pdb():
