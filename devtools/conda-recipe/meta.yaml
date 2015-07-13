@@ -1,0 +1,41 @@
+package:
+  name: targetexplorer-dev
+  version: !!str dev
+
+# source:
+#   git_url: https://github.com/choderalab/TargetExplorer
+
+build:
+  preserve_egg_dir: True
+  number: 0
+#   entry_points:
+#     - dora = targetexplorer.cli:main
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - biopython
+    - flask
+    - sqlalchemy
+    - flask-sqlalchemy
+    - pandas
+    # - numpy
+    - lxml
+    - pyyaml
+
+test:
+  requires:
+    - nose
+  imports:
+    - targetexplorer
+  commands:
+    - nosetests targetexplorer -v --exe
+
+about:
+  home: https://github.com/choderalab/targetexplorer
+  license: GNU Lesser General Public License v2 or later (LGPLv2+)
+  summary: Database framework with RESTful API for aggregating genomic, structural, and functional data for target protein families.
