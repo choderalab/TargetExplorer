@@ -14,7 +14,7 @@ script:
 
 env:
   global:
-    # secure: ""
+    # secure: "eA8N3FhgO03HN7mJGwR0iLtIsgFufi1wYMr1I//x7NLhhqrZvdbmo6ukecjgmz32fq3JHJM5qtcEr1+kp411VG9rCCGeeL8WBfxscIwxUIPaTDkIulFY/tKeEn+nObHscEtKyS9aPxImthwKEtmbgxdysYXOS1nnUBXSC5FEfW/exsG04AddBS85UDcQAY96jBb3TcNSuAZnHVZKkRPFnwTVuKV9eU/KLFDXfjeJodntaRY5YpuR4Njsm6FXHKqQgprbSnXe8o3+zN+XAHRCcyRgqFzbiquyhFnTUYd+6dwOFNwTtUGhEiEUyfCcb9Z/vUahT7RK5Vflb/c0kKK5nmrcwQT3Ykc6Jhb5Por3H/Ue1fnXz87+YsiX3BzDNANnDx2vt85GX/UHT9l8jkgwfw9tJgSGDIIjBaHAnVzw1kzAHRi0Kb5TkXHaPIdaM7CvOae6KxPk+OA6sg6j0lU0AW0vCQNR1UVkbmyaftCUTUjX/L2SJNVQT2LGh6qb3GeH23WrF32BO4nBLUeQWWcvldHHGaOlyEo8NeZgfHsluiNLe8b6aVE6li02F9KLnFLarxkCPOUcBmS3AHtz0aRig0CNEywE2fhYz7jrgq3WLuBHCF9lFZA4l4u1jUB14WVxt+TUNwz0rmX40fgoslSsJKgo+QGjg0hT0WfZg7ndpKk="
   matrix:
     - python=2.7  CONDA_PY=27
     # - python=3.3  CONDA_PY=33  PYTHONPATH=/home/travis/bin/modeller9.14/modlib:/home/travis/bin/modeller9.14/lib/x86_64-intel8/python3.3  LD_LIBRARY_PATH=/home/travis/bin/modeller9.14/lib/x86_64-intel8
