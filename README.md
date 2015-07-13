@@ -1,6 +1,10 @@
 TargetExplorer
 ==============
 
+[![Build Status](https://travis-ci.org/choderalab/targetexplorer.svg)](https://travis-ci.org/choderalab/targetexplorer)
+
+Database framework with RESTful API for aggregating genomic, structural, and functional data for target protein families.
+
 Authors
 -------
 
