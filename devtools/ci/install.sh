@@ -13,7 +13,6 @@ export PATH=$HOME/miniconda/bin:$PATH
 sudo apt-get update
 
 conda update --yes conda
-conda config --add channels https://conda.anaconda.org/dannyparton
 conda config --add channels http://conda.anaconda.org/choderalab
 # conda config --add channels http://conda.anaconda.org/mpi4py
 source activate $python
