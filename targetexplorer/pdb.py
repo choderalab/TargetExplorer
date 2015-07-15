@@ -7,7 +7,7 @@ import traceback
 from lxml import etree
 import Bio.PDB
 import Bio.Data.SCOPData
-from multiprocessing import Pool
+# from multiprocessing import Pool
 from targetexplorer.flaskapp import models, db
 from targetexplorer.core import logger
 
@@ -61,8 +61,8 @@ class GatherPDB(object):
         db_pdb_dicts = map(dictify_pdb_row, db_pdb_rows)
 
         # Use multiprocessor pool to retrieve various data for each PDB
-        pool = Pool()
-        results = pool.map(extract_pdb_data, db_pdb_dicts)
+        # pool = Pool()
+        results = map(extract_pdb_data, db_pdb_dicts)
 
         for pdb_results in results:
             pdb_row_id = pdb_results['pdb_row_id']
