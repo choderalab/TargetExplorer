@@ -24,6 +24,6 @@ after_success:
   - echo "after_success"
   - source devtools/ci/after_success.sh
   - conda config --add channels http://conda.anaconda.org/choderalab
-  - conda install nose
-  - conda install --use-local targetexplorer
+  - conda install --yes nose
+  - conda install --yes --use-local targetexplorer
   - nosetests targetexplorer -v --exe -A 'network and not slow'
