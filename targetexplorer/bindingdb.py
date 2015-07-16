@@ -13,11 +13,9 @@ bindingdb_matches_filepath = os.path.join(bindingdb_data_dir, 'bindingdb-matches
 class GatherBindingDB(object):
     def __init__(self,
                  use_existing_bindingdb_data=False,
-                 grep_path='grep',
                  run_main=True
                  ):
         self.use_existing_bindingdb_data = use_existing_bindingdb_data
-        self.grep_path = grep_path
         self.now = datetime.datetime.utcnow()
         crawldata_row = models.CrawlData.query.first()
         self.current_crawl_number = crawldata_row.current_crawl_number

@@ -33,7 +33,7 @@ test:
   imports:
     - targetexplorer
   commands:
-    - nosetests targetexplorer -v --exe
+    - nosetests targetexplorer -v --exe -a unit
 
 about:
   home: https://github.com/choderalab/targetexplorer

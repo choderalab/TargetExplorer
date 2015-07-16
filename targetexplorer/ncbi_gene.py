@@ -7,7 +7,7 @@ import pandas as pd
 
 class GatherNCBIGene(object):
     def __init__(self,
-                 use_existing_gene2pubmed,
+                 use_existing_gene2pubmed=False,
                  run_main=True
                  ):
         if run_main:

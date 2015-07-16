@@ -2,6 +2,7 @@ import datetime
 import targetexplorer
 from targetexplorer.flaskapp import db, models
 from targetexplorer.core import read_project_config, logger
+from targetexplorer.utils import DatabaseException
 
 
 class Commit(object):
@@ -37,7 +38,7 @@ class Commit(object):
                 logger.info('data_type "%s" PASS: current data (%s) is newer than safe-crawl data (%s)' % (data_type, current_crawl_datatype_datestamp.strftime(targetexplorer.core.datestamp_format_string), self.safe_crawl_datestamp.strftime(targetexplorer.core.datestamp_format_string)))
 
         if data_problem:
-            raise Exception('Commit aborted.')
+            raise DatabaseException('Commit aborted.')
         else:
             logger.info('Proceeding to commit to master db...')
 
