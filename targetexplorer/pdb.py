@@ -13,7 +13,12 @@ from targetexplorer.core import logger
 
 
 class GatherPDB(object):
-    def __init__(self, run_main=True):
+    def __init__(self, structure_dirs=None, run_main=True):
+        if type(structure_dirs) == str:
+            self.structure_dirs = [structure_dirs]
+        else:
+            self.structure_dirs = structure_dirs
+
         if run_main:
             self.main()
 
@@ -43,11 +48,17 @@ class GatherPDB(object):
         db_pdb_rows = models.PDB.query.filter_by(crawl_number=current_crawl_number).all()
 
         # prepare a dict for each PDB row to be passed to the function extract_pdb_data
-        def dictify_pdb_row(pdb_row):
+        db_pdb_dicts = []
+        for pdb_row in db_pdb_rows:
             dbentry = models.DBEntry.query.filter_by(id=pdb_row.dbentry_id).first()
             uniprot_row = dbentry.uniprot.first()
             canon_isoform_row = dbentry.uniprotisoforms.filter_by(canonical=True).first()
-            chain_data = [{'chain_row_id': chain_row.id, 'chain_id': chain_row.chain_id} for chain_row in pdb_row.chains]
+            chain_data = [
+                {
+                    'chain_row_id': chain_row.id,
+                    'chain_id': chain_row.chain_id
+                } for chain_row in pdb_row.chains
+            ]
             pdb_dict = {
                 'pdb_row_id': pdb_row.id,
                 'pdbid': pdb_row.pdbid,
@@ -55,11 +66,11 @@ class GatherPDB(object):
                 'entry_name': uniprot_row.entry_name,
                 'seq': canon_isoform_row.sequence,
                 'chain_data': chain_data,
+                'structure_dirs': self.structure_dirs
             }
-            return pdb_dict
+            db_pdb_dicts.append(pdb_dict)
 
-        db_pdb_dicts = map(dictify_pdb_row, db_pdb_rows)
-
+        # TODO multiprocessing is causing problems with tests. Maybe refactor to use mpi4py instead?
         # Use multiprocessor pool to retrieve various data for each PDB
         # pool = Pool()
         results = map(extract_pdb_data, db_pdb_dicts)
@@ -116,6 +127,7 @@ class Extract_PDB_Results(object):
     def add_structure_results(self, structures):
         self.structures.append(structures)
 
+
 class Structure_Data(object):
     '''
     Class for communicating PDB structure data
@@ -132,6 +144,7 @@ class Structure_Data(object):
     def add_pdbcompoundID(self, pdbcompoundID):
         self.pdbcompoundID = pdbcompoundID
 
+
 class Chain_Data(object):
     '''
     Class for communicating PDB chain data
@@ -146,16 +159,17 @@ class Chain_Data(object):
         self.ss_aln=ss_aln
         self.exception_message=exception_message
 
+
 def extract_pdb_data(pdb_dict):
     '''Extract data for a single PDB structure
     '''
-    # pdbid, ac, entry_name, seq, chain_ids
     pdb_row_id = pdb_dict['pdb_row_id']
     pdbid = pdb_dict['pdbid']
     ac = pdb_dict['ac']
     entry_name = pdb_dict['entry_name']
     seq = pdb_dict['seq']
     chain_data = pdb_dict['chain_data']
+    structure_dirs = pdb_dict['structure_dirs']
 
     # if entry_name != 'MLKL_HUMAN':
     #     return None
@@ -170,7 +184,7 @@ def extract_pdb_data(pdb_dict):
     # ========
 
     # TODO define this via project metadata .yaml file.
-    structure_paths = ['/Users/partond/tmp/kinome-MSMSeeder/structures/pdb', '/Users/partond/tmp/kinome-MSMSeeder/structures/sifts']
+    # structure_dirs = ['/Users/partond/tmp/kinome-MSMSeeder/structures/pdb', '/Users/partond/tmp/kinome-MSMSeeder/structures/sifts']
 
     local_pdb_filepath = os.path.join('external-data', 'PDB', pdbid + '.pdb.gz')
     local_sifts_filepath = os.path.join('external-data', 'SIFTS', pdbid + '.xml.gz')
@@ -183,14 +197,15 @@ def extract_pdb_data(pdb_dict):
 
     # If not, search any user-defined paths and create a symlink if found
     if search_for_pdb:
-        for structure_dir in structure_paths:
-            pdb_filepath = os.path.join(structure_dir, pdbid + '.pdb.gz')
-            if os.path.exists(pdb_filepath):
-                if os.path.getsize(pdb_filepath) > 0:
-                    if os.path.exists(local_pdb_filepath):
-                        os.remove(local_pdb_filepath)
-                    os.symlink(pdb_filepath, local_pdb_filepath)
-                    break
+        if structure_dirs:
+            for structure_dir in structure_dirs:
+                pdb_filepath = os.path.join(structure_dir, pdbid + '.pdb.gz')
+                if os.path.exists(pdb_filepath):
+                    if os.path.getsize(pdb_filepath) > 0:
+                        if os.path.exists(local_pdb_filepath):
+                            os.remove(local_pdb_filepath)
+                        os.symlink(pdb_filepath, local_pdb_filepath)
+                        break
 
         # If still not found, download the PDB file
         if not os.path.exists(local_pdb_filepath):
@@ -208,14 +223,15 @@ def extract_pdb_data(pdb_dict):
 
     # If not, search any user-defined paths and create a symlink if found
     if search_for_sifts:
-        for structure_dir in structure_paths:
-            sifts_filepath = os.path.join(structure_dir, pdbid + '.xml.gz')
-            if os.path.exists(sifts_filepath):
-                if os.path.getsize(sifts_filepath) > 0:
-                    if os.path.exists(local_sifts_filepath):
-                        os.remove(local_sifts_filepath)
-                    os.symlink(sifts_filepath, local_sifts_filepath)
-                    break
+        if structure_dirs:
+            for structure_dir in structure_dirs:
+                sifts_filepath = os.path.join(structure_dir, pdbid + '.xml.gz')
+                if os.path.exists(sifts_filepath):
+                    if os.path.getsize(sifts_filepath) > 0:
+                        if os.path.exists(local_sifts_filepath):
+                            os.remove(local_sifts_filepath)
+                        os.symlink(sifts_filepath, local_sifts_filepath)
+                        break
 
         # If still not found, download the SIFTS XML file
         if not os.path.exists(local_sifts_filepath):

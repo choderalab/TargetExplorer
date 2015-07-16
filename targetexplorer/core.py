@@ -12,7 +12,8 @@ import logging
 datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 
 project_config_filename = 'project_config.yaml'
-
+database_filename = 'database.db'
+wsgi_filename = 'webapi-wsgi.py'
 external_data_dirpath = 'external-data'
 
 # =========

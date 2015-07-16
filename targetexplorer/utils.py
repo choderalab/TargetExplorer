@@ -1,5 +1,6 @@
-import targetexplorer
 import os
+import json
+import targetexplorer
 from pkg_resources import resource_filename
 
 
@@ -20,18 +21,23 @@ def get_installed_resource_filepath(relative_path):
     --------
     get_installed_resource_filename('resources/template-wsgi.py')
     """
-
     fn = resource_filename(targetexplorer.__name__, relative_path)
-
     if not os.path.exists(fn):
         raise ValueError(
             "Sorry! {0} does not exist."
             "If you just added it, you'll have to re-install".format(relative_path)
         )
-
     return fn
 
 
 installation_testdir_filepath = get_installed_resource_filepath(
     os.path.join('resources', 'testdir')
 )
+
+
+def json_dump_pretty(obj, filepath):
+    json.dump(obj, filepath, indent=4, separators=(',', ': '))
+
+
+class DatabaseException(Exception):
+    pass

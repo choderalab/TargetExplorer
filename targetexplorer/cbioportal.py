@@ -2,27 +2,37 @@ import urllib2
 import re
 import os
 import datetime
+import json
+import gzip
 from lxml import etree
 from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath
-from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json
+from targetexplorer.utils import json_dump_pretty
+from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json, build_oncotator_search_string
 from targetexplorer.flaskapp import models, db
 
 
 external_data_dir = os.path.join(external_data_dirpath, 'cBioPortal')
-external_data_filepath = os.path.join(external_data_dir, 'cbioportal-mutations.xml')
+external_cbioportal_data_filepath = os.path.join(external_data_dir, 'cbioportal-mutations.xml')
+external_oncotator_data_filepath = os.path.join(external_data_dir, 'oncotator-data.json.gz')
 
 ensembl_transcript_id_regex = re.compile('(ENS[A-Z]{0,3}T[0-9]{11})')
 
 
 class GatherCbioportalData(object):
     def __init__(self,
-                 use_existing_data=False,
+                 use_existing_cbioportal_data=False,
+                 use_existing_oncotator_data=False,
                  write_extended_mutation_txt_files=False,
                  run_main=True
                  ):
-
-        self.use_existing_data = use_existing_data
+        self.use_existing_cbioportal_data = use_existing_cbioportal_data
+        self.use_existing_oncotator_data = use_existing_oncotator_data
         self.write_extended_mutation_txt_files = write_extended_mutation_txt_files
+        if os.path.exists(external_oncotator_data_filepath):
+            with gzip.open(external_oncotator_data_filepath) as oncotator_data_file:
+                self.existing_oncotator_data = json.load(oncotator_data_file)
+        else:
+            self.existing_oncotator_data = {}
 
         if not os.path.exists(external_data_dir):
             os.mkdir(external_data_dir)
@@ -38,6 +48,7 @@ class GatherCbioportalData(object):
             self.get_hgnc_gene_symbols_from_db()
             self.get_mutation_data_as_xml()
             self.extract_mutation_data()
+            self.write_oncotator_data()
             self.finish()
 
     def get_hgnc_gene_symbols_from_db(self):
@@ -56,59 +67,22 @@ class GatherCbioportalData(object):
         ]
 
     def get_mutation_data_as_xml(self):
-        if os.path.exists(external_data_filepath) and self.use_existing_data:
-            print 'cBioPortal data file found at:', external_data_filepath
+        if os.path.exists(external_cbioportal_data_filepath) and self.use_existing_cbioportal_data:
+            print 'cBioPortal data file found at:', external_cbioportal_data_filepath
         else:
             print 'Retrieving new cBioPortal data file from server...'
             self.cancer_studies = get_cancer_studies()
             retrieve_mutants_xml(
-                external_data_filepath,
+                external_cbioportal_data_filepath,
                 self.cancer_studies,
                 self.hgnc_gene_symbols,
                 write_extended_mutation_txt_files=self.write_extended_mutation_txt_files,
             )
 
-        self.xmltree = etree.parse(external_data_filepath, xml_parser).getroot()
+        # import shutil
+        # shutil.copy(external_data_filepath, '/Users/partond/tmp')
 
-    def get_oncotator_data(self, chromosome_index, chromosome_startpos,
-                                                 chromosome_endpos, reference_allele, variant_allele
-                                                 ):
-        oncotator_query_str = '_'.join([
-            str(chromosome_index),
-            str(chromosome_startpos),
-            str(chromosome_endpos),
-            reference_allele,
-            variant_allele,
-        ])
-        oncotator_data = retrieve_oncotator_mutation_data_as_json(oncotator_query_str)
-        oncotator_ensembl_transcript_id = oncotator_data.get('transcript_id')
-        if oncotator_ensembl_transcript_id is None:
-            return None
-        if oncotator_ensembl_transcript_id != oncotator_data.get('annotation_transcript'):
-            print(
-                'WARNING: oncotator transcript_id {0} does not match annotation_transcript {1}'.format(
-                    oncotator_data['transcript_id'],
-                    oncotator_data['annotation_transcript'],
-                )
-            )
-
-        # example: 'ENST00000318560.5'
-        ensembl_transcript_regex_match = re.match(
-            ensembl_transcript_id_regex, oncotator_ensembl_transcript_id
-        )
-        if ensembl_transcript_regex_match is None:
-            return None
-        protein_change = oncotator_data['protein_change']
-        protein_change_regex_match = re.match('p.([A-Z])([0-9]+)([A-Z])', protein_change)
-        if protein_change_regex_match is None:
-            return None
-        reference_aa, aa_pos, variant_aa = protein_change_regex_match.groups()
-        return {
-            'ensembl_transcript_id': ensembl_transcript_regex_match.groups(0)[0],
-            'reference_aa': reference_aa,
-            'aa_pos': int(aa_pos),
-            'variant_aa': variant_aa
-        }
+        self.xmltree = etree.parse(external_cbioportal_data_filepath, xml_parser).getroot()
 
     def extract_mutation_data(self):
         # for gene_node in self.xmltree.findall('gene'):
@@ -190,6 +164,68 @@ class GatherCbioportalData(object):
                                     mutation_row.uniprot_domain = domain
 
                 db.session.add(mutation_row)
+
+    def get_oncotator_data(
+            self,
+            chromosome_index,
+            chromosome_startpos,
+            chromosome_endpos,
+            reference_allele,
+            variant_allele
+            ):
+        oncotator_search_string = build_oncotator_search_string(
+            chromosome_index,
+            chromosome_startpos,
+            chromosome_endpos,
+            reference_allele,
+            variant_allele
+        )
+
+        if (self.use_existing_oncotator_data and self.existing_oncotator_data
+            and oncotator_search_string in self.existing_oncotator_data):
+                oncotator_data = self.existing_oncotator_data[oncotator_search_string]
+        else:
+            oncotator_data = retrieve_oncotator_mutation_data_as_json(
+                chromosome_index,
+                chromosome_startpos,
+                chromosome_endpos,
+                reference_allele,
+                variant_allele
+            )
+            self.existing_oncotator_data[oncotator_search_string] = oncotator_data
+
+        oncotator_ensembl_transcript_id = oncotator_data.get('transcript_id')
+        if oncotator_ensembl_transcript_id is None:
+            return None
+        if oncotator_ensembl_transcript_id != oncotator_data.get('annotation_transcript'):
+            print(
+                'WARNING: oncotator transcript_id {0} does not match annotation_transcript {1}'.format(
+                    oncotator_data['transcript_id'],
+                    oncotator_data['annotation_transcript'],
+                )
+            )
+
+        # example: 'ENST00000318560.5'
+        ensembl_transcript_regex_match = re.match(
+            ensembl_transcript_id_regex, oncotator_ensembl_transcript_id
+        )
+        if ensembl_transcript_regex_match is None:
+            return None
+        protein_change = oncotator_data['protein_change']
+        protein_change_regex_match = re.match('p.([A-Z])([0-9]+)([A-Z])', protein_change)
+        if protein_change_regex_match is None:
+            return None
+        reference_aa, aa_pos, variant_aa = protein_change_regex_match.groups()
+        return {
+            'ensembl_transcript_id': ensembl_transcript_regex_match.groups(0)[0],
+            'reference_aa': reference_aa,
+            'aa_pos': int(aa_pos),
+            'variant_aa': variant_aa
+        }
+
+    def write_oncotator_data(self):
+        with gzip.open(external_oncotator_data_filepath, 'w') as external_oncotator_data_file:
+            json_dump_pretty(self.existing_oncotator_data, external_oncotator_data_file)
 
     def finish(self):
         # update db datestamps

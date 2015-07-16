@@ -3,7 +3,7 @@ import shutil
 import datetime
 import targetexplorer
 from targetexplorer.utils import get_installed_resource_filepath
-from targetexplorer.core import write_yaml_file, logger
+from targetexplorer.core import write_yaml_file, logger, project_config_filename, database_filename, external_data_dirpath, wsgi_filename
 
 
 class InitProject(object):
@@ -25,18 +25,20 @@ class InitProject(object):
             self.mk_project_config_file()
             self.write_wsgi_file()
             self.create_db()
-            initialize_crawldata_and_datestamps()
+            self.initialize_crawldata_and_datestamps()
             self.finish()
 
     def setup(self):
-        self.targetexplorer_install_dir = os.path.abspath(os.path.join(os.path.dirname(targetexplorer.__file__)))
-        self.project_config_filename = 'project_config.yaml'
-        self.sqlalchemy_uri = 'sqlite:///' + os.path.join(self.project_path, 'database.db')
-        self.wsgi_filepath = 'webapi-wsgi.py'
+        self.targetexplorer_install_dir = os.path.abspath(
+            os.path.join(os.path.dirname(targetexplorer.__file__))
+        )
+        self.project_config_filename = project_config_filename
+        self.sqlalchemy_uri = 'sqlite:///' + os.path.join(self.project_path, database_filename)
+        self.wsgi_filepath = wsgi_filename
 
     def mk_project_dirs(self):
-        if not os.path.exists('external-data'):
-            os.mkdir('external-data')
+        if not os.path.exists(external_data_dirpath):
+            os.mkdir(external_data_dirpath)
 
     def mk_project_config_file(self):
         config_data = {
@@ -59,25 +61,27 @@ class InitProject(object):
             shutil.copy(template_wsgi_filepath, self.wsgi_filepath)
 
     def create_db(self):
-        from targetexplorer.flaskapp import db
+        from targetexplorer.flaskapp import db, app
+        app.config.update(
+            SQLALCHEMY_DATABASE_URI=self.sqlalchemy_uri
+        )
         db.create_all()
+
+    def initialize_crawldata_and_datestamps(self):
+        """Add crawldata and empty datestamps row"""
+        from targetexplorer.flaskapp import db, models
+        current_crawl_number = 0
+        safe_crawl_number = -1
+        now = datetime.datetime.utcnow()
+        crawldata_row = models.CrawlData(
+            current_crawl_number=current_crawl_number,
+            safe_crawl_number=safe_crawl_number,
+            safe_crawl_datestamp=now,
+        )
+        db.session.add(crawldata_row)
+        datestamps_row = models.DateStamps(crawl_number=current_crawl_number)
+        db.session.add(datestamps_row)
+        db.session.commit()
 
     def finish(self):
         logger.info('Done.')
-
-
-def initialize_crawldata_and_datestamps():
-    """Add crawldata and empty datestamps row"""
-    from targetexplorer.flaskapp import db, models
-    current_crawl_number = 0
-    safe_crawl_number = -1
-    now = datetime.datetime.utcnow()
-    crawldata_row = models.CrawlData(
-        current_crawl_number=current_crawl_number,
-        safe_crawl_number=safe_crawl_number,
-        safe_crawl_datestamp=now,
-    )
-    db.session.add(crawldata_row)
-    datestamps_row = models.DateStamps(crawl_number=current_crawl_number)
-    db.session.add(datestamps_row)
-    db.session.commit()
