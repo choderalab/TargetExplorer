@@ -11,10 +11,10 @@ fi
 
 
 if [[ "2.7 3.3 3.4" =~ "$python" ]]; then
-    conda install --yes --quiet binstar
-    echo "Attempting to upload to binstar:"
-    echo "binstar -t [BINSTAR_TOKEN] upload -u choderalab -p targetexplorer-dev $HOME/miniconda/conda-bld/linux-64/targetexplorer-*"
-    binstar -t $BINSTAR_TOKEN upload -u choderalab -p targetexplorer-dev $HOME/miniconda/conda-bld/linux-64/targetexplorer-*
+    conda install --yes --quiet conda-server
+    echo "Attempting to upload to conda-server:"
+    echo "conda-server -t [BINSTAR_TOKEN] upload -u choderalab -p targetexplorer-dev $HOME/miniconda/conda-bld/linux-64/targetexplorer-*"
+    conda-server -t $BINSTAR_TOKEN upload -u choderalab -p targetexplorer-dev $HOME/miniconda/conda-bld/linux-64/targetexplorer-*
 fi
 
 if [[ "$python" != "2.7" ]]; then

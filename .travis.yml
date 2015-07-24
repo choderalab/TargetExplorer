@@ -5,7 +5,7 @@ branches:
     - master
 
 install:
-  - source devtools/ci/install.sh
+  - source devtools/travis-ci/install.sh
   - export PYTHONUNBUFFERED=true
 
 script:
@@ -22,7 +22,7 @@ env:
 
 after_success:
   - echo "after_success"
-  - source devtools/ci/after_success.sh
+  - source devtools/travis-ci/after_success.sh
   - conda config --add channels http://conda.anaconda.org/choderalab
   - conda install --yes nose
   - conda install --yes --use-local targetexplorer-dev
