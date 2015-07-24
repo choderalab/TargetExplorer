@@ -14,7 +14,7 @@ if [[ "2.7 3.3 3.4" =~ "$python" ]]; then
 conda install --yes --quiet conda-server
 echo "Attempting to upload to conda-server:"
 echo "conda-server -t [BINSTAR_TOKEN]  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*"
-ls $HOME/miniconda/conda-bld/linux-64/targetexplorer-*
+conda-server -h
 conda-server -t $BINSTAR_TOKEN  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*
 fi
 
