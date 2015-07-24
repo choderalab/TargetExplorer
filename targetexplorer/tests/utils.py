@@ -18,14 +18,30 @@ from targetexplorer.commit import Commit
 
 @contextmanager
 def projecttest_context(set_up_project_stage='init'):
+    """
+    Context manager used within TargetExplorer testing framework.
+    Uses the SetUpSampleProject class to set up a TargetExplorer database at various points of
+    completion, within a temporary directory set up by the nose plugin `setup_tmp_db_plugin`.
+
+    The following command will set up the database at the point after retrieval of UniProt data:
+
+    >>> with projecttest_context(set_up_project_stage='uniprot'):
+    >>>     ...
+
+    See docs for SetUpSampleProject for other stages which can be set up.
+    """
+    # Set up
     with open(installation_testdir_filepath) as installation_testdir_file:
         temp_dir = installation_testdir_file.read()
     cwd = os.getcwd()
     os.chdir(temp_dir)
 
     set_up_sample_project(stage=set_up_project_stage)
+
+    # Test is run at this point
     yield
 
+    # Tear down
     db.drop_all()
     db.create_all()
     os.chdir(cwd)
@@ -38,6 +54,23 @@ def set_up_sample_project(stage='init'):
 
 
 class SetUpSampleProject(object):
+    """
+    Uses reference data files to set up a TargetExplorer database at various points of completion.
+    The following commands will set up the database at the point after retrieval of UniProt data:
+
+    >>> sample_project = SetUpSampleProject()
+    >>> sample_project.uniprot()
+
+    Other stages which can be set up are:
+    * 'blank' - just a blank database file; no contained data
+    * 'init' - as if user had run DoraInit.py
+    * 'uniprot' - as if user had run DoraInit.py, then DoraGatherUniProt.py
+    * 'pdb' - as if user had run above scripts, then DoraGatherPDB.py
+    * 'ncbi_gene' - etc.
+    * 'bindingdb' - etc.
+    * 'cbioportal' - etc.
+    * 'committed' - as if all gather scripts have been run, and DoraCommit.py
+    """
     def __init__(self):
         self.structure_dirs = get_installed_resource_filepath(
             os.path.join('resources', 'structures')

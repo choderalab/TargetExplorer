@@ -21,13 +21,13 @@ def get_installed_resource_filepath(relative_path):
     --------
     get_installed_resource_filename('resources/template-wsgi.py')
     """
-    fn = resource_filename(targetexplorer.__name__, relative_path)
-    if not os.path.exists(fn):
+    filepath = resource_filename(targetexplorer.__name__, relative_path)
+    if not os.path.exists(filepath):
         raise ValueError(
             "Sorry! {0} does not exist."
             "If you just added it, you'll have to re-install".format(relative_path)
         )
-    return fn
+    return filepath
 
 
 installation_testdir_filepath = get_installed_resource_filepath(

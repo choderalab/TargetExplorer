@@ -9,6 +9,6 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 project_config = read_project_config()
 app.config.update(
-    SQLALCHEMY_DATABASE_URI=project_config.get('sqlalchemy_uri')
+    SQLALCHEMY_DATABASE_URI=project_config.get('sqlalchemy_database_uri')
 )
 import models

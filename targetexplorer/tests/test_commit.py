@@ -18,5 +18,6 @@ def test_premature_commit():
     with projecttest_context(set_up_project_stage='uniprot'):
         try:
             Commit()
+            raise Exception('Premature commit was not supposed to be successful!')
         except DatabaseException:
             pass

@@ -21,12 +21,12 @@ class SetUpTmpDbPlugin(Plugin):
         with open(installation_testdir_filepath, 'w') as installation_testdir_file:
             installation_testdir_file.write(self.temp_dir)
         os.chdir(self.temp_dir)
-        ip = InitProject(db_name='test', run_main=False)
-        ip.setup()
-        ip.mk_project_dirs()
-        ip.mk_project_config_file()
-        ip.write_wsgi_file()
-        ip.create_db()
+        init_project = InitProject(db_name='test', run_main=False)
+        init_project.setup()
+        init_project.mk_project_dirs()
+        init_project.mk_project_config_file()
+        init_project.write_wsgi_file()
+        init_project.create_db()
 
     def finalize(self, result):
         shutil.rmtree(self.temp_dir)
