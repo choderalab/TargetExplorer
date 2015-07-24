@@ -30,10 +30,10 @@ class InitProject(object):
 
     def setup(self):
         self.targetexplorer_install_dir = os.path.abspath(
-            os.path.join(os.path.dirname(targetexplorer.__file__))
+            os.path.dirname(targetexplorer.__file__)
         )
         self.project_config_filename = project_config_filename
-        self.sqlalchemy_uri = 'sqlite:///' + os.path.join(self.project_path, database_filename)
+        self.sqlalchemy_database_uri = 'sqlite:///' + os.path.join(self.project_path, database_filename)
         self.wsgi_filepath = wsgi_filename
 
     def mk_project_dirs(self):
@@ -43,7 +43,7 @@ class InitProject(object):
     def mk_project_config_file(self):
         config_data = {
             'db_name': self.db_name,
-            'sqlalchemy_uri': self.sqlalchemy_uri,
+            'sqlalchemy_database_uri': self.sqlalchemy_database_uri,
             'dbapi_name': self.db_name + 'DBAPI',
             'ncrawls_to_save': self.ncrawls_to_save,
             'uniprot_query': self.uniprot_query,
@@ -63,7 +63,7 @@ class InitProject(object):
     def create_db(self):
         from targetexplorer.flaskapp import db, app
         app.config.update(
-            SQLALCHEMY_DATABASE_URI=self.sqlalchemy_uri
+            SQLALCHEMY_DATABASE_URI=self.sqlalchemy_database_uri
         )
         db.create_all()
 

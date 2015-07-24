@@ -20,12 +20,20 @@ external_data_dirpath = 'external-data'
 # =========
 
 def read_project_config():
-    if not os.path.exists(project_config_filename):
-        return dict()
+    """
+    Tries to import a project config file and return the data as a dict.
+    If no config file is found, then an empty dict is returned.
 
-    with open(project_config_filename) as config_file:
-        config = yaml.load(config_file)
-    return config
+    Returns
+    -------
+    dict
+    """
+    if os.path.exists(project_config_filename):
+        with open(project_config_filename) as config_file:
+            config = yaml.load(config_file)
+        return config
+    else:
+        return dict()
 
 
 xml_parser = etree.XMLParser(remove_blank_text=True, huge_tree=True)
