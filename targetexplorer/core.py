@@ -12,6 +12,7 @@ import logging
 datestamp_format_string = '%Y-%m-%d %H:%M:%S UTC'
 
 project_config_filename = 'project_config.yaml'
+manual_overrides_filename = 'manual_overrides.yaml'
 database_filename = 'database.db'
 wsgi_filename = 'webapi-wsgi.py'
 external_data_dirpath = 'external-data'
@@ -31,6 +32,23 @@ def read_project_config():
     if os.path.exists(project_config_filename):
         with open(project_config_filename) as config_file:
             config = yaml.load(config_file)
+        return config
+    else:
+        return dict()
+
+
+def read_manual_overrides():
+    """
+    Tries to import a manual overrides file and return the data as a dict.
+    If no config file is found, then an empty dict is returned.
+
+    Returns
+    -------
+    dict
+    """
+    if os.path.exists(manual_overrides_filename):
+        with open(manual_overrides_filename) as manual_overrides_file:
+            config = yaml.load(manual_overrides_file)
         return config
     else:
         return dict()

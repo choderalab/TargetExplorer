@@ -151,7 +151,7 @@ class GatherCbioportalData(object):
                         ).first()
                         if ((matching_ensembl_transcript_row is not None) and
                                 (matching_ensembl_transcript_row.uniprotisoform is not None) and
-                                matching_ensembl_transcript_row.uniprotisoform.canonical):
+                                matching_ensembl_transcript_row.uniprotisoform.is_canonical):
                             mutation_row.dbentry = matching_ensembl_transcript_row.ensembl_gene.dbentry
 
                             # is mutation within a uniprot domain?
@@ -236,9 +236,9 @@ class GatherCbioportalData(object):
 
 
 def get_cancer_studies():
-    '''
+    """
     Get list of all cancer studies available via cBioPortal
-    '''
+    """
     cancer_studies_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getCancerStudies'
 
     response = urllib2.urlopen(cancer_studies_url)
@@ -254,9 +254,9 @@ def get_cancer_studies():
 
 
 def get_genetic_profile_ids(cancer_study):
-    '''
+    """
     For a given cancer study, return a list of available genetic_profile_ids (e.g. 'laml_tcga_pub_mutations')
-    '''
+    """
     genetic_profile_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getGeneticProfiles&cancer_study_id={0}'.format(cancer_study)
     response = urllib2.urlopen(genetic_profile_url)
     page = response.read(100000000000)
@@ -270,7 +270,7 @@ def get_genetic_profile_ids(cancer_study):
 
 
 def get_profile_data(case_set_id, genetic_profile_id, entrez_gene_ids):
-    '''
+    """
     For each cancer study and each genetic_profile_id, get mutation data for all genes
 
     ___Note on case_set_ids___
@@ -283,7 +283,7 @@ def get_profile_data(case_set_id, genetic_profile_id, entrez_gene_ids):
     These comprise cancer_study + '_' + profile_type
     profile_type is e.g. 'mutations', 'gistic', 'methylation'
     Some cancer studies may only include a limited set of profile_types. For CNAs, some carry the 'gistic' type, some the 'cna_rae' type or 'cna_consensus'. TODO look more at these. Other types include 'log2CNA'
-    '''
+    """
     # TODO probably deprecate this once get_mutations and get_CNAs are ready
 
     gene_list_string = '+'.join( [ str(gene_id) for gene_id in entrez_gene_ids ] )
@@ -299,38 +299,6 @@ def get_profile_data(case_set_id, genetic_profile_id, entrez_gene_ids):
         gene_mutations[gene] = mutations
 
     return gene_mutations
-
-
-def retrieve_mutation_datatxt(case_set_id, genetic_profile_id, gene_ids):
-    '''
-    Queries cBioPortal for "Mutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
-    Returns the data file as a list of text lines.
-    '''
-    gene_ids_string = '+'.join(gene_ids)
-    mutation_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getProfileData&case_set_id=%(case_set_id)s&genetic_profile_id=%(genetic_profile_id)s&gene_list=%(gene_ids_string)s' % vars()
-    response = urllib2.urlopen(mutation_url)
-    page = response.read(1000000000)
-    lines = page.splitlines()
-    return lines
-
-
-def retrieve_extended_mutation_datatxt(case_set_id, genetic_profile_id, gene_ids, write_to_filepath=False):
-    '''
-    Queries cBioPortal for "ExtendedMutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
-    Returns the data file as a list of text lines.
-    '''
-    gene_ids_string = '+'.join(gene_ids)
-    mutation_url = 'http://www.cbioportal.org/public-portal/webservice.do' \
-                   '?cmd=getMutationData&case_set_id={0}&genetic_profile_id={1}&gene_list={2}'.format(
-        case_set_id, genetic_profile_id, gene_ids_string
-    )
-    response = urllib2.urlopen(mutation_url)
-    page = response.read(1000000000)
-    if write_to_filepath:
-        with open(write_to_filepath, 'w') as ofile:
-            ofile.write(page)
-    lines = page.splitlines()
-    return lines
 
 
 def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
@@ -528,12 +496,77 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
     # ===========
 
 
+def retrieve_mutation_datatxt(case_set_id,
+                              genetic_profile_id,
+                              gene_ids,
+                              portal_version='public-portal',
+                              ):
+    """
+    Queries cBioPortal for "Mutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
+    Returns the data file as a list of text lines.
+    """
+    gene_ids_string = '+'.join(gene_ids)
+    mutation_url = 'http://www.cbioportal.org/{0}/' \
+                   'webservice.do' \
+                   '?cmd=getProfileData' \
+                   '&case_set_id=%(case_set_id)s' \
+                   '&genetic_profile_id=%(genetic_profile_id)s' \
+                   '&gene_list=%(gene_ids_string)s'.format(
+                       portal_version,
+                       case_set_id,
+                       genetic_profile_id,
+                       gene_ids_string
+                   )
+    response = urllib2.urlopen(mutation_url)
+    page = response.read(1000000000)
+    lines = page.splitlines()
+    return lines
+
+
+def retrieve_extended_mutation_datatxt(case_set_id,
+                                       genetic_profile_id,
+                                       gene_ids,
+                                       portal_version='public-portal',
+                                       write_to_filepath=False
+                                       ):
+    """
+    Queries cBioPortal for "ExtendedMutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
+    Returns the data file as a list of text lines.
+
+    Parameters
+    ----------
+    portal_version: str
+        'public-portal': use only public cBioPortal data
+        'private': use private cBioPortal data
+    write_to_filepath: str (or False)
+    """
+    gene_ids_string = '+'.join(gene_ids)
+    mutation_url = 'http://www.cbioportal.org/{0}/' \
+                   'webservice.do' \
+                   '?cmd=getMutationData' \
+                   '&case_set_id={1}' \
+                   '&genetic_profile_id={2}' \
+                   '&gene_list={3}'.format(
+                       portal_version,
+                       case_set_id,
+                       genetic_profile_id,
+                       gene_ids_string
+                   )
+    response = urllib2.urlopen(mutation_url)
+    page = response.read(1000000000)
+    if write_to_filepath:
+        with open(write_to_filepath, 'w') as ofile:
+            ofile.write(page)
+    lines = page.splitlines()
+    return lines
+
+
 def match_dual_consecutive_aa_change(aa_change_string):
-    '''
+    """
     Matches an aa_change string of the type: '324_325LA>FS'
     Returns True for a match, False for a non-match.
     Checks the aas are consecutive.
-    '''
+    """
     # searches for the 'LA>FS' type pattern - putting the regex in parentheses means that the matched pattern will also be returned in the list
     match = re.match('^[0-9]+_[0-9]+[A-Z][A-Z]>[A-Z][A-Z]', aa_change_string) # ['324_325', 'LA>FS', '']
 
@@ -551,10 +584,10 @@ def match_dual_consecutive_aa_change(aa_change_string):
 
 
 def split_dual_consecutive_aa_change(aa_change_string):
-    '''
+    """
     For an aa_change string of the type: '324_325LA>FS'
     Splits into two aa_changes, e.g. ['L324F', 'A325S']
-    '''
+    """
     # searches for the 'LA>FS' type pattern - putting the regex in parentheses means that the matched pattern will also be returned in the list
     aa_change_string_split = re.split('([A-Z][A-Z]>[A-Z][A-Z])', aa_change_string) # ['324_325', 'LA>FS', '']
     positions = aa_change_string_split[0].split('_') # ['324', '325']
@@ -564,9 +597,9 @@ def split_dual_consecutive_aa_change(aa_change_string):
 
 
 def percent_cases_with_mutations(gene_node):
-    '''
+    """
     Calculates the percentage of cases with mutations for a given gene node (kinDB XML style), and across all cancer studies with data contained in the node.
-    '''
+    """
     cancer_studies = set([x.get('study') for x in gene_node.findall('mutants/mutant')])
     if len(cancer_studies) == 0:
         return None

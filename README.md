@@ -9,52 +9,41 @@ Authors
 -------
 
 * Daniel L. Parton | daniel.parton@choderalab.org
+* Mehtap Isik | mehtap.isik@choderalab.org
 * John D. Chodera | john.chodera@choderalab.org
 
 Overview
 --------
 
-Database framework for storing genomic, structural and functional data for a
-given protein family, with RESTful API.
-
-The code is built on [Flask](http://flask.pocoo.org/) (a Python web framework)
-and [SQLAlchemy](http://www.sqlalchemy.org/) (an object-relational mapper which
-maps between SQL databases and Python objects).
+The code is built using the [Flask](http://flask.pocoo.org/) a Python web framework
+and [SQLAlchemy](http://www.sqlalchemy.org/) - an object-relational mapper which
+maps between Python objects and SQL databases.
 
 The database is generated using a series of scripts which gather in data from
 various public web resources. The first script to run is DoraInit.py, which
 initializes the necessary files and directory structure for a new database.
 This should be followed by DoraGatherUniProt.py, which retrieves a set of
 [UniProt](http://www.uniprot.org/) entries defined by a given search term.
-Subsequent scripts (once they have been migrated over from the old _XML_
-branch) add in data from various other databases such as the
+Subsequent scripts add in data from various other databases such as the
 [PDB](http://www.rcsb.org), [NCBI Gene](http://www.ncbi.nlm.nih.gov/gene),
 [cBioPortal](http://www.cbioportal.org), and
 [BindingDB](http://www.bindingdb.org/bind/index.jsp). Finally, DoraCommit.py is
-used to carry out a sanity check on the new data; if this passes, the new data
-will be exposed through the API.
+used to ensure that all gather scripts have been run since the last commit;
+if this passes, the new data is *committed*, meaning it can then be exposed through the API.
 
 A [frontend web client](https://github.com/choderalab/kinomeDB-webclient) is
-currently in development, and an early working version can be seen here:
+currently in development.
 
-http://plfah2.mskcc.org/kinomeDB/
+Installation using Anaconda (recommended approach)
+--------------------------------------------------
 
-Manifest
---------
+First install [Anaconda](https://store.continuum.io/cshop/anaconda/) - a free and awesome Python
+distribution for scientific and data-intensive applications.
 
-scripts/ - scripts for generating and analyzing the database
-
-TargetExplorer/ - main code library
-
-flask\_app/ - data model and Flask HTTP server (master)
-
-resources/ - other miscellaneous files
-
-Dependencies
-------------
-
-* BioPython, v1.62 or higher
-* Various other Python packages commonly used in scientific computing. Recommended aproach is to install either Continuum Anaconda (https://store.continuum.io/) or Enthought Canopy (https://www.enthought.com/products/canopy/)
+```.sh
+conda config --add channels http://anaconda.org/choderalab
+conda install targetexplorer
+```
 
 Notes on database generation process
 ------------------------------------

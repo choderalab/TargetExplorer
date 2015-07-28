@@ -52,7 +52,7 @@ class GatherPDB(object):
         for pdb_row in db_pdb_rows:
             dbentry = models.DBEntry.query.filter_by(id=pdb_row.dbentry_id).first()
             uniprot_row = dbentry.uniprot.first()
-            canon_isoform_row = dbentry.uniprotisoforms.filter_by(canonical=True).first()
+            canon_isoform_row = dbentry.uniprotisoforms.filter_by(is_canonical=True).first()
             chain_data = [
                 {
                     'chain_row_id': chain_row.id,

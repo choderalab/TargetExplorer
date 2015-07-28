@@ -3,7 +3,8 @@ import urllib
 import urllib2
 import datetime
 from lxml import etree
-from targetexplorer.core import external_data_dirpath, xml_parser, logger, xpath_match_regex_case_sensitive
+from targetexplorer.core import external_data_dirpath, xml_parser, logger
+from targetexplorer.core import xpath_match_regex_case_sensitive, read_manual_overrides
 from targetexplorer.flaskapp import db, models
 
 # This dict converts family information listed in UniProt in the similarity comments to codes similar to those used in the kinase.com poster
@@ -22,15 +23,13 @@ kinase_family_uniprot_similarity_text = {
 
 
 class GatherUniProt(object):
-    def __init__(
-            self,
-            uniprot_query=None,
-            uniprot_domain_regex=None,
-            use_existing_data=False,
-            count_nonselected_domain_names=False,
-            ignore_uniprot_pdbs=None,
-            run_main=True,
-    ):
+    def __init__(self,
+                 uniprot_query=None,
+                 uniprot_domain_regex=None,
+                 use_existing_data=False,
+                 count_nonselected_domain_names=False,
+                 run_main=True,
+                 ):
         """
         Parameters
         ----------
@@ -40,21 +39,19 @@ class GatherUniProt(object):
             e.g. '^Protein kinase(?!; truncated)(?!; inactive)'
         use_existing_data: bool
         count_nonselected_domain_names: bool
-        ignore_uniprot_pdbs: list of str
-            e.g. ['1GQ5']
         run_main: bool
-        :return:
         """
         self.uniprot_query = uniprot_query
         self.uniprot_domain_regex = uniprot_domain_regex
-        self.ignore_uniprot_pdbs = [] if ignore_uniprot_pdbs is None else ignore_uniprot_pdbs
         self.use_existing_data = use_existing_data
         self.count_nonselected_domain_names = count_nonselected_domain_names
         if run_main:
             self.setup()
+            self.setup_manual_overrides()
             self.get_uniprot_data()
             self.extract_uniprot_entries_and_domains()
-            self.analyze_domain_selections()
+            if self.uniprot_domain_regex:
+                self.analyze_domain_selections()
             for uniprot_entry in self.uniprot_entries:
                 self.extract_detailed_uniprot_data(uniprot_entry)
             self.commit_to_db()
@@ -62,7 +59,6 @@ class GatherUniProt(object):
     def setup(self):
         self.uniprot_data_dir = os.path.join(external_data_dirpath, 'UniProt')
         if not os.path.exists(self.uniprot_data_dir):
-            # print os.listdir('.')
             os.mkdir(self.uniprot_data_dir)
         self.uniprot_xml_out_filepath = os.path.join(self.uniprot_data_dir, 'uniprot-search.xml')
         self.domain_names_filename = 'selected_domain_names.txt'
@@ -71,6 +67,15 @@ class GatherUniProt(object):
         crawldata_row = models.CrawlData.query.first()
         self.current_crawl_number = crawldata_row.current_crawl_number
         logger.info('Current crawl number: {0}'.format(self.current_crawl_number))
+
+    # TODO ?put this in __init__
+    def setup_manual_overrides(self):
+        self.manual_overrides = read_manual_overrides()
+        self.skip_uniprot_entries = self.manual_overrides.get('skip_uniprot_entries')
+        self.pseudodomain_manual_annotations = self.manual_overrides.get('pseudodomains')
+        self.ncbi_gene_id_manual_annotations = self.manual_overrides.get('ncbi_gene_ids')
+        self.skip_ncbi_gene_entries = self.manual_overrides.get('skip_ncbi_gene_entries')
+        self.skip_pdbs = self.manual_overrides.get('skip_pdbs')
 
     def get_uniprot_data(self):
         if os.path.exists(self.uniprot_xml_out_filepath) and self.use_existing_data:
@@ -90,14 +95,24 @@ class GatherUniProt(object):
     def extract_uniprot_entries_and_domains(self):
         self.uniprot_entries = self.uniprot_xml.findall('entry')
         self.nuniprot_entries = len(self.uniprot_entries)
-        self.selected_domains = self.uniprot_xml.xpath(
-            'entry/feature[@type="domain"][match_regex(@description, "%s")]' % self.uniprot_domain_regex,
-            extensions = {
-                (None, 'match_regex'): xpath_match_regex_case_sensitive
-            }
-        )
+
+        # TODO remove
+        if self.uniprot_domain_regex is not None:
+            self.selected_domains = self.uniprot_xml.xpath(
+                'entry/feature[@type="domain"][match_regex(@description, "{0}")]'.format(
+                    self.uniprot_domain_regex
+                ),
+                extensions={
+                    (None, 'match_regex'): xpath_match_regex_case_sensitive
+                }
+            )
+        else:
+            self.selected_domains = []
 
     def analyze_domain_selections(self):
+        """
+        Prints useful info on the domains selected by uniprot_domain_regex
+        """
         selected_domain_names = list(set(
             [d.get('description') for d in self.selected_domains]
         ))
@@ -160,6 +175,14 @@ class GatherUniProt(object):
         # = IDs and names =
         ac = uniprot_entry_node.findtext('./accession')
         entry_name = uniprot_entry_node.findtext('./name')
+        if self.skip_uniprot_entries and entry_name in self.skip_uniprot_entries:
+            skip_message = self.skip_uniprot_entries[entry_name]
+            logger.info(
+                'OVERRIDE: Skipping UniProt entry {0} - reason: {1}'.format(
+                    entry_name, skip_message
+                )
+            )
+            return
         recommended_name = uniprot_entry_node.findtext('./protein/recommendedName/fullName')
         gene_name_nodes = uniprot_entry_node.findall('./gene/name')
         gene_name_data = []
@@ -226,7 +249,7 @@ class GatherUniProt(object):
         uniprotisoform = models.UniProtIsoform(
             crawl_number=self.current_crawl_number,
             ac=ac+'-1',
-            canonical=True,
+            is_canonical=True,
             length=canseq_length,
             mass=canseq_mass,
             date_modified=canseq_date_modified,
@@ -255,12 +278,12 @@ class GatherUniProt(object):
                 models.UniProtIsoformNote(
                     crawl_number=self.current_crawl_number, note=node.text
                 ) for node in uniprot_isoform_node.findall('note')
-            ]
+                ]
             if seq_node.get('type') != 'displayed':
                 uniprotisoform = models.UniProtIsoform(
                     crawl_number=self.current_crawl_number,
                     ac=isoform_ac,
-                    canonical=False
+                    is_canonical=False
                 )
 
             isoforms.append((uniprotisoform, notes))
@@ -278,71 +301,42 @@ class GatherUniProt(object):
         else:
             selected_domains = uniprot_entry_node.findall('feature[@type="domain"]')
 
-
-
-
-        # = Exceptions =
-        # TODO Please for the love of god refactor - these exceptions should be specified by the user, probably in project_config.yaml
-
         # Skip if no matching domains found
         if len(selected_domains) < 1:
-            return
-
-        # XXX exception for SG196_HUMAN, which does not have protein kinase activity, and acts as a mannose kinase instead
-        if entry_name == 'SG196_HUMAN':
-            print 'Skipping kinase as it does not have protein kinase activity (instead acts as a mannose kinase):', ac
-            return
-
-        # In cases where > 1 PK domain is found, add a warning to the DB entry. In some cases, a pseudokinase is present - these domains are not added.
-        warnings_node = etree.Element('warnings')
-        if len(selected_domains) > 1:
-            if uniprot_entry_node.findtext('name') == 'E2AK4_HUMAN':
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". "Protein kinase 1" is considered to be a pseudokinase domain. "Protein kinase 2" is considered active. Only the active PK domain is included in this DB.'
-                selected_domains.pop(0)
-            elif uniprot_entry_node.findtext('name') in ['JAK1_HUMAN','JAK2_HUMAN','JAK3_HUMAN']:
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Janus (Jak) tyrosine kinases (JAK1, JAK2 and JAK3) each contain a tyrosine kinase domain adjacent to a catalytically inactive pseudokinase domain. The pseudokinase domain interacts with and negatively regulates the active domain. The pseudokinase domain is the first one in the sequence. Only the active PK domain is included in this DB.'
-                selected_domains.pop(0)
-            elif uniprot_entry_node.findtext('name') in ['KS6A1_HUMAN','KS6A2_HUMAN','KS6A3_HUMAN','KS6A4_HUMAN','KS6A5_HUMAN','KS6A6_HUMAN']:
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Upon extracellular signal or mitogen stimulation, phosphorylated at Thr-573 in the C-terminal kinase domain (CTKD) by MAPK1/ERK2 and MAPK3/ERK1. The activated CTKD then autophosphorylates Ser-380, allowing binding of PDPK1, which in turn phosphorylates Ser-221 in the N-terminal kinase domain (NTKD) leading to the full activation of the protein and subsequent phosphorylation of the substrates by the NTKD. Both PK domains are included in this DB.'
-            elif uniprot_entry_node.findtext('name') == 'KS6C1_HUMAN':
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". The first protein kinase domain appears to be a pseudokinase domain as it does not contain the classical characteristics, such as the ATP-binding motif, ATP-binding site and active site. Only "Protein kinase 2" is included in this DB.'
-                selected_domains.pop(0)
-            elif uniprot_entry_node.findtext('name') == 'OBSCN_HUMAN':
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Neither are described as pseudokinases, although are not specifically described as catalytically active either. Both PK domains are included in this DB.'
-            elif uniprot_entry_node.findtext('name') == 'SPEG_HUMAN':
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Neither are described as pseudokinases. Both PK domains are included in this DB.'
-            elif uniprot_entry_node.findtext('name') == 'TAF1_HUMAN':
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Neither are described as pseudokinases. Both PK domains are included in this DB.'
-            elif uniprot_entry_node.findtext('name') == 'TYK2_HUMAN':
-                etree.SubElement(warnings_node,'warning').text = 'Kinase is annotated in UniProt wth both "Protein kinase 1" and "Protein kinase 2". Neither are described as pseudokinases. Both PK domains are included in this DB.'
-            else:
-                etree.SubElement(warnings_node,'warning').text = 'Kinase contains > 1 "Protein kinase*" domain. Not checked manually yet.'
-                #raise Exception, 'More than 1 domain found containing "Protein kinase". Please check the following kinase and adjust the script: %s' % entry_name
-        # And a couple of cases with one PK domain which are considered inactive. These kinase entries are removed completely.
-        if selected_domains[0].get('description') == 'Protein kinase; truncated':
-            # PLK5_HUMAN. Kinase considered inactive. Protein kinase domain is truncated. Remove it.
-            print('Skipping kinase as PK domain is truncated and considered inactive: {0}'.format(ac))
-            return
-        elif selected_domains[0].get('description') == 'Protein kinase; inactive':
-            # PTK7_HUMAN. Kinase considered inactive. Remove it.
-            print('Skipping kinase as PK domain is considered inactive: {0}'.format(ac))
             return
 
         # Finally, add the domains to the new database
         domains_data = []
         for x_iter, x in enumerate(selected_domains):
             # First calculate the PK domain length and sequence
-            description = x.get('description')
+            domain_description = x.get('description')
             begin = int(x.find('./location/begin').get('position'))
             end = int(x.find('./location/end').get('position'))
             length = end - begin + 1
-            targetid = entry_name + '_D' + str(x_iter)
+            domain_id = entry_name + '_D' + str(x_iter)
             domain_seq = canonical_sequence[begin-1:end]
+
+            if (self.pseudodomain_manual_annotations
+                and entry_name in self.pseudodomain_manual_annotations
+                and domain_description == self.pseudodomain_manual_annotations[entry_name].get('description')
+                ):
+                pseudodomain_notes = self.pseudodomain_manual_annotations[entry_name].get('message')
+                logger.info(
+                    'OVERRIDE: Labeling domain "{0}" as a pseudodomain - reason: {1}'.format(
+                        domain_id,
+                        pseudodomain_notes
+                    )
+                )
+                is_pseudodomain = True
+            else:
+                is_pseudodomain = False
 
             domain_obj = models.UniProtDomain(
                 crawl_number=self.current_crawl_number,
-                targetid=targetid,
-                description=description,
+                targetid=domain_id,
+                description=domain_description,
+                is_pseudodomain=is_pseudodomain,
+                pseudodomain_notes=pseudodomain_notes if is_pseudodomain else None,
                 begin=begin,
                 end=end,
                 length=length,
@@ -353,27 +347,37 @@ class GatherUniProt(object):
         # = References to other DBs =
         # NCBI Gene
         ncbi_gene_entries = []
-        GeneIDs = [
-            x.get('id') for x in uniprot_entry_node.findall(
-                './dbReference[@type="GeneID"]'
-            )
+        gene_ids = [
+            int(x.get('id')) for x in uniprot_entry_node.findall('./dbReference[@type="GeneID"]')
         ]
-        # XXX: exceptions for kinases which have no GeneIDs annotated; LMTK3 RefSeq status is PROVISIONAL; RIPK4 presumably RefSeq sequence is not an exact match; SIK3 RefSeq status is VALIDATED
-        # Will add these manually, since we are mainly using GeneID to collect publications currently
-        if entry_name == 'LMTK3_HUMAN':
-            GeneIDs = ['114783']
-        if entry_name == 'RIPK4_HUMAN':
-            GeneIDs = ['54101']
-        if entry_name == 'SIK3_HUMAN':
-            GeneIDs = ['23387']
-        for GeneID in GeneIDs:
-            # XXX: exceptions for SGK3_HUMAN and TNI3K_HUMAN, which have two GeneIDs annotated; in each case, one is a readthrough fusion protein - ignore these GeneIDs
-            if GeneID in ['100533105', '100526835']:
+
+        # manual annotations
+        if self.ncbi_gene_id_manual_annotations and entry_name in self.ncbi_gene_id_manual_annotations:
+            gene_ids = self.ncbi_gene_id_manual_annotations[entry_name].get('gene_ids')
+            gene_ids_message = self.ncbi_gene_id_manual_annotations[entry_name].get('message')
+            logger.info(
+                'OVERRIDE: Manually annotating Gene IDs for entry {0} - reason: {1}'.format(
+                    entry_name, gene_ids_message
+                )
+            )
+
+        for gene_id in gene_ids:
+            # manual override skips
+            if self.skip_ncbi_gene_entries and gene_id in self.skip_ncbi_gene_entries:
+                skip_gene_id_message = self.skip_ncbi_gene_entries[gene_id]
+                logger.info(
+                    'OVERRIDE: Skipping Gene ID {0} for entry {1} - reason: {2}'.format(
+                        gene_id,
+                        entry_name,
+                        skip_gene_id_message
+                    )
+                )
                 continue
+
             ncbi_gene_entries.append(
                 models.NCBIGeneEntry(
                     crawl_number=self.current_crawl_number,
-                    gene_id=GeneID
+                    gene_id=gene_id
                 )
             )
 
@@ -458,8 +462,15 @@ class GatherUniProt(object):
         pdb_data = []
         for p in pdbs:
             pdbid = p.get('id')
-            if pdbid in self.ignore_uniprot_pdbs:
+            if self.skip_pdbs and pdbid in self.skip_pdbs:
+                skip_pdb_message = self.skip_pdbs[pdbid]
+                logger.info(
+                    'OVERRIDE: Skipping PDB {0} for entry {1} - reason: {2}'.format(
+                        pdbid, entry_name, skip_pdb_message
+                    )
+                )
                 continue
+
             pdb_method = p.find('property[@type="method"]').get('value')
             resolution_node = p.find('property[@type="resolution"]')
             resolution = resolution_node.get('value') if resolution_node != None else None
@@ -671,7 +682,7 @@ e.g. ACC+ID (from)
     }
 
     url_query = urllib.urlencode(query_params)
-    request = urllib2.Request(url,url_query)
+    request = urllib2.Request(url, url_query)
     request.add_header('User-Agent', 'Python contact')
     response = urllib2.urlopen(request)
     page = response.read(200000)
@@ -681,7 +692,6 @@ e.g. ACC+ID (from)
     for l in range(len(retrieved_data)):
         retrieved_data[l] = retrieved_data[l].split('\t')[1]
 
-    #print url_query
     return retrieved_data
 
 
@@ -704,7 +714,7 @@ def retrieve_uniprotACs(query_data):
         }
         
         url_query = urllib.urlencode(query_params)
-        request = urllib2.Request(url,url_query)
+        request = urllib2.Request(url, url_query)
         request.add_header('User-Agent', 'Python contact')
         response = urllib2.urlopen(request)
         page = response.read(200000)
@@ -732,7 +742,7 @@ def query_uniprot_multiple(query_params):
     for q in query_params:
         
         url_query = urllib.urlencode(q)
-        request = urllib2.Request(url,url_query)
+        request = urllib2.Request(url, url_query)
         request.add_header('User-Agent', 'Python contact')
         response = urllib2.urlopen(request)
         page = response.read(200000)
@@ -755,7 +765,7 @@ def query_uniprot(query_params):
     url = 'http://www.uniprot.org/uniprot/'
 
     url_query = urllib.urlencode(query_params)
-    request = urllib2.Request(url,url_query)
+    request = urllib2.Request(url, url_query)
     request.add_header('User-Agent', 'Python contact')
     response = urllib2.urlopen(request)
     page = response.read(200000)
