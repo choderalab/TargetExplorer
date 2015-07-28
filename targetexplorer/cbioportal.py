@@ -229,8 +229,8 @@ class GatherCbioportalData(object):
 
     def finish(self):
         # update db datestamps
-        current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=self.current_crawl_number).first()
-        current_crawl_datestamp_row.cbioportal_datestamp = self.now
+        datestamp_row = models.DateStamps.query.filter_by(crawl_number=self.current_crawl_number).first()
+        datestamp_row.cbioportal_datestamp = self.now
         db.session.commit()
         print 'Done.'
 
