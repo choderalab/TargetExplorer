@@ -1,8 +1,9 @@
 from targetexplorer.flaskapp import models
 from targetexplorer.tests.utils import projecttest_context
-from targetexplorer.cbioportal import GatherCbioportalData
+from targetexplorer.cbioportal import GatherCbioportalData, retrieve_extended_mutation_datatxt
 from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json
 from nose.plugins.attrib import attr
+from nose.plugins.skip import SkipTest
 
 
 @attr('network')
@@ -15,6 +16,32 @@ def test_retrieve_oncotator_mutation_data_as_json():
         'G'
     )
     assert oncotator_result.get('transcript_id') == 'ENST00000275493.2'
+
+
+@attr('network')
+def test_retrieve_extended_mutation_datatxt():
+    lines = retrieve_extended_mutation_datatxt(
+        'gbm_tcga_all',
+        'gbm_tcga_mutations',
+        ['EGFR', 'PTEN']
+    )
+    assert len(lines) > 0
+
+
+@attr('private_cbioportal')
+def test_retrieve_extended_mutation_datatxt_private_portal():
+    """
+    So far seems to be impossible to access private data via web API.
+    """
+    raise SkipTest
+    lines = retrieve_extended_mutation_datatxt(
+        'gbm_tcga_all',
+        'gbm_tcga_mutations',
+        ['EGFR', 'PTEN'],
+        portal_version='private'
+    )
+    print '\n'.join(lines)
+    assert len(lines) > 0
 
 
 @attr('unit')

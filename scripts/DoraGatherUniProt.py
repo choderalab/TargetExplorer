@@ -22,7 +22,6 @@ GatherUniProt(
     count_nonselected_domain_names=args.count_nonselected_domain_names,
     uniprot_query=project_config['uniprot_query'],
     uniprot_domain_regex=project_config['uniprot_domain_regex'],
-    ignore_uniprot_pdbs=project_config['ignore_uniprot_pdbs'],
 )
 
 print('Done.')
