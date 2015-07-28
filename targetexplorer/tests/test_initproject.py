@@ -1,6 +1,7 @@
 import os
 from targetexplorer.tests.utils import projecttest_context
-from targetexplorer.core import project_config_filename, database_filename, external_data_dirpath, wsgi_filename
+from targetexplorer.core import project_config_filename, database_filename, external_data_dirpath
+from targetexplorer.core import wsgi_filename, manual_overrides_filename
 from targetexplorer.initproject import InitProject
 from nose.plugins.attrib import attr
 from targetexplorer.flaskapp import app, models
@@ -14,6 +15,7 @@ def test_init_project():
         assert os.path.exists(database_filename)
         assert os.path.exists(external_data_dirpath)
         assert os.path.exists(wsgi_filename)
+        assert os.path.exists(manual_overrides_filename)
         assert app.config.get('SQLALCHEMY_DATABASE_URI') is not None
         crawldata_row = models.CrawlData.query.first()
         assert crawldata_row is not None
