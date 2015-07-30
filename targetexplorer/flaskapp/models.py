@@ -40,6 +40,7 @@ class DateStamps(db.Model):
     ncbi_gene_datestamp = db.Column(db.DateTime)
     bindingdb_datestamp = db.Column(db.DateTime)
     cbioportal_datestamp = db.Column(db.DateTime)
+    chembl_datestamp = db.Column(db.DateTime)
     commit_datestamp = db.Column(db.DateTime)
     def __repr__(self):
         return '<DB DateStamps crawl number %d>' % self.crawl_number
@@ -69,6 +70,7 @@ class DBEntry(db.Model):
     hgnc_entries = db.relationship('HGNCEntry', backref='dbentry', lazy='dynamic')
     bindingdb_bioassays = db.relationship('BindingDBBioassay', backref='dbentry', lazy='dynamic')
     cbioportal_mutations = db.relationship('CbioportalMutation', backref='dbentry', lazy='dynamic')
+    chembl_target = db.relationship('ChemblTarget', backref='dbentry', lazy='dynamic')
     def __repr__(self):
         return '<DBEntry %d>' % self.id
 
@@ -376,6 +378,16 @@ class CbioportalMutation(db.Model):
     cbioportal_case_id = db.Column(db.Integer, db.ForeignKey('cbioportal_case.id'))
     def __repr__(self):
         return '<CbioportalMutation ID {0} type {1} aa_change {2} in_uniprot_domain {3}>'.format(self.id, self.type, self.oncotator_aa_pos, self.in_uniprot_domain)
+
+class ChemblTarget(db.Model):
+    __tablename__= "chembl_target"
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    target_chembl_id = db.Column(db.Text)
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    def __repr__(self):
+        return '<Chembl Table ID {0}. target_chembl_id {1}>'.format(self.id, self.target_chembl_id)
+
 
 
 _module_local_names = [key for key in locals().keys()]
