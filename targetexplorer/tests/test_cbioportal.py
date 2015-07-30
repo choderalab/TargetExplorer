@@ -54,7 +54,7 @@ def test_gather_cbioportal():
         ).first()
         assert isinstance(first_mutation_row, models.CbioportalMutation)
         assert isinstance(first_mutation_in_domain_row.oncotator_aa_pos, int)
-        assert first_mutation_in_domain_row.uniprot_domain.targetid == 'ABL1_HUMAN_D0'
+        assert first_mutation_in_domain_row.uniprotdomain.description == 'SH2'
 
 
 @attr('network')
@@ -67,4 +67,4 @@ def test_gather_cbioportal_using_network():
         ).first()
         assert isinstance(first_mutation_row, models.CbioportalMutation)
         assert isinstance(first_mutation_in_domain_row.oncotator_aa_pos, int)
-        assert first_mutation_in_domain_row.uniprot_domain.targetid == 'ABL1_HUMAN_D0'
+        assert first_mutation_in_domain_row.uniprotdomain.description == 'SH2'

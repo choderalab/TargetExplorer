@@ -5,7 +5,7 @@ from flask_sqlalchemy import _BoundDeclarativeMeta
 frontend2backend_mappings = {
     'ac': ['UniProt', 'ac'],
     'name': ['UniProt', 'entry_name'],
-    'target': ['UniProtDomain', 'targetid'],
+    'domain': ['UniProtDomain', 'domain_id'],
     'npdbs': ['DBEntry', 'npdbs'],
     'ndomains': ['DBEntry', 'ndomains'],
     'nisoforms': ['DBEntry', 'nisoforms'],
@@ -70,7 +70,7 @@ class DBEntry(db.Model):
     bindingdb_bioassays = db.relationship('BindingDBBioassay', backref='dbentry', lazy='dynamic')
     cbioportal_mutations = db.relationship('CbioportalMutation', backref='dbentry', lazy='dynamic')
     def __repr__(self):
-        return '<DBEntry %d>' % self.id
+        return '<DBEntry {}>'.format(self.id)
 
 
 class UniProt(db.Model):
@@ -84,7 +84,7 @@ class UniProt(db.Model):
     ncbi_taxonid = db.Column(db.String(64))
     taxon_name_scientific = db.Column(db.String(120))
     taxon_name_common = db.Column(db.String(120))
-    lineage = db.Column(db.Text) # ascending comma-separated values
+    lineage = db.Column(db.Text)   # ascending comma-separated values
     last_uniprot_update = db.Column(db.String(64))
     isoforms = db.relationship('UniProtIsoform', backref='uniprot_entry', lazy='dynamic')
     domains = db.relationship('UniProtDomain', backref='uniprot_entry', lazy='dynamic')
@@ -142,8 +142,9 @@ class UniProtDomain(db.Model):
     __tablename__ = 'uniprotdomain'
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
+    domain_id = db.Column(db.Integer)
+    target_id = db.Column(db.String(64))   # ABL1_HUMAN_D0 (Protein kinase)
     is_target_domain = db.Column(db.Boolean)
-    targetid = db.Column(db.String(64))
     description = db.Column(db.Text())
     begin = db.Column(db.Integer)
     end = db.Column(db.Integer)
@@ -151,7 +152,8 @@ class UniProtDomain(db.Model):
     sequence = db.Column(db.Text)
     is_pseudodomain = db.Column(db.Boolean)
     pseudodomain_notes = db.Column(db.Text)
-    cbioportal_mutations = db.relationship('CbioportalMutation', backref='uniprot_domain', lazy='dynamic')
+    pdb_chains = db.relationship('PDBChain', backref='uniprotdomain', lazy='dynamic')
+    cbioportal_mutations = db.relationship('CbioportalMutation', backref='uniprotdomain', lazy='dynamic')
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
     uniprot_id = db.Column(db.Integer, db.ForeignKey('uniprot.id'))
     def __repr__(self):
@@ -210,7 +212,6 @@ class PDBChain(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
     chain_id = db.Column(db.String(64))
-    domain_id = db.Column(db.Integer)
     begin = db.Column(db.Integer)
     end = db.Column(db.Integer)
     experimental_seq = db.Column(db.Text)
@@ -220,6 +221,7 @@ class PDBChain(db.Model):
     observed_seq_aln = db.Column(db.Text)
     observed_ss_aln = db.Column(db.Text)
     pdb_id = db.Column(db.Integer, db.ForeignKey('pdb.id'))
+    uniprotdomain_id = db.Column(db.Integer, db.ForeignKey('uniprotdomain.id'))
     def __repr__(self):
         return '<PDBChain ID %r>' % self.chain_id
 
@@ -372,7 +374,7 @@ class CbioportalMutation(db.Model):
     oncotator_ensembl_transcript_id = db.Column(db.Text)
     in_uniprot_domain = db.Column(db.Boolean)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
-    uniprot_domain_id = db.Column(db.Integer, db.ForeignKey('uniprotdomain.id'))
+    uniprotdomain_id = db.Column(db.Integer, db.ForeignKey('uniprotdomain.id'))
     cbioportal_case_id = db.Column(db.Integer, db.ForeignKey('cbioportal_case.id'))
     def __repr__(self):
         return '<CbioportalMutation ID {0} type {1} aa_change {2} in_uniprot_domain {3}>'.format(self.id, self.type, self.oncotator_aa_pos, self.in_uniprot_domain)

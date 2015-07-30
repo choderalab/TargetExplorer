@@ -2,6 +2,7 @@ import os
 import urllib
 import urllib2
 import datetime
+import re
 from lxml import etree
 from targetexplorer.core import external_data_dirpath, xml_parser, logger
 from targetexplorer.core import xpath_match_regex_case_sensitive, read_manual_overrides
@@ -211,25 +212,25 @@ class GatherUniProt(object):
         functions = []
         disease_associations = []
         subcellular_locations = []
-        for x in uniprot_entry_node.findall('./comment[@type="function"]'):
+        for domain in uniprot_entry_node.findall('./comment[@type="function"]'):
             functions.append(
                 models.UniProtFunction(
                     crawl_number=self.current_crawl_number,
-                    function=x.findtext('./text')
+                    function=domain.findtext('./text')
                 )
             )
-        for x in uniprot_entry_node.findall('./comment[@type="disease"]'):
+        for domain in uniprot_entry_node.findall('./comment[@type="disease"]'):
             disease_associations.append(
                 models.UniProtDiseaseAssociation(
                     crawl_number=self.current_crawl_number,
-                    disease_association=x.findtext('./text')
+                    disease_association=domain.findtext('./text')
                 )
             )
-        for x in uniprot_entry_node.findall('./comment[@type="subcellular location"]'):
+        for domain in uniprot_entry_node.findall('./comment[@type="subcellular location"]'):
             subcellular_locations.append(
                 models.UniProtSubcellularLocation(
                     crawl_number=self.current_crawl_number,
-                    subcellular_location=x.findtext('./subcellularLocation/location')
+                    subcellular_location=domain.findtext('./subcellularLocation/location')
                 )
             )
 
@@ -291,29 +292,35 @@ class GatherUniProt(object):
         # = UniProt "Protein kinase" domain annotations =
         # XXX TODO Generalize
 
-        if self.uniprot_domain_regex != None:
-            selected_domains = uniprot_entry_node.xpath(
-                'feature[@type="domain"][match_regex(@description, "{0}")]'.format(
-                    self.uniprot_domain_regex
-                ),
-                extensions={(None, 'match_regex'): xpath_match_regex_case_sensitive}
-            )
-        else:
-            selected_domains = uniprot_entry_node.findall('feature[@type="domain"]')
+        # if self.uniprot_domain_regex != None:
+        #     selected_domains = uniprot_entry_node.xpath(
+        #         'feature[@type="domain"][match_regex(@description, "{0}")]'.format(
+        #             self.uniprot_domain_regex
+        #         ),
+        #         extensions={(None, 'match_regex'): xpath_match_regex_case_sensitive}
+        #     )
+        # else:
+        domains = uniprot_entry_node.findall('feature[@type="domain"]')
 
         # Skip if no matching domains found
-        if len(selected_domains) < 1:
+        if len(domains) < 1:
             return
 
         # Finally, add the domains to the new database
-        domains_data = []
-        for x_iter, x in enumerate(selected_domains):
+        domain_objs = []
+        target_iter = 0
+        for domain_id, domain in enumerate(domains):
             # First calculate the PK domain length and sequence
-            domain_description = x.get('description')
-            begin = int(x.find('./location/begin').get('position'))
-            end = int(x.find('./location/end').get('position'))
+            domain_description = domain.get('description')
+            if self.uniprot_domain_regex and re.match(self.uniprot_domain_regex, domain_description):
+                is_target_domain = True
+                target_id = entry_name + '_D' + str(target_iter)
+                target_iter += 1
+            else:
+                is_target_domain = False
+            begin = int(domain.find('./location/begin').get('position'))
+            end = int(domain.find('./location/end').get('position'))
             length = end - begin + 1
-            domain_id = entry_name + '_D' + str(x_iter)
             domain_seq = canonical_sequence[begin-1:end]
 
             if (self.pseudodomain_manual_annotations
@@ -323,7 +330,7 @@ class GatherUniProt(object):
                 pseudodomain_notes = self.pseudodomain_manual_annotations[entry_name].get('message')
                 logger.info(
                     'OVERRIDE: Labeling domain "{0}" as a pseudodomain - reason: {1}'.format(
-                        domain_id,
+                        target_id,
                         pseudodomain_notes
                     )
                 )
@@ -333,7 +340,9 @@ class GatherUniProt(object):
 
             domain_obj = models.UniProtDomain(
                 crawl_number=self.current_crawl_number,
-                targetid=domain_id,
+                domain_id=domain_id,
+                target_id=target_id if is_target_domain else None,
+                is_target_domain=is_target_domain,
                 description=domain_description,
                 is_pseudodomain=is_pseudodomain,
                 pseudodomain_notes=pseudodomain_notes if is_pseudodomain else None,
@@ -342,13 +351,13 @@ class GatherUniProt(object):
                 length=length,
                 sequence=domain_seq
             )
-            domains_data.append(domain_obj)
+            domain_objs.append(domain_obj)
 
         # = References to other DBs =
         # NCBI Gene
         ncbi_gene_entries = []
         gene_ids = [
-            int(x.get('id')) for x in uniprot_entry_node.findall('./dbReference[@type="GeneID"]')
+            int(domain.get('id')) for domain in uniprot_entry_node.findall('./dbReference[@type="GeneID"]')
         ]
 
         # manual annotations
@@ -476,36 +485,38 @@ class GatherUniProt(object):
             resolution = resolution_node.get('value') if resolution_node != None else None
             chains_span_str = p.find('property[@type="chains"]').get('value')
             chains_span = parse_uniprot_pdbref_chains(chains_span_str)
-            chain_objs = []
+            chain_data_dicts = []
             for c in chains_span.keys():
                 chain_id = c
                 pdb_begin = chains_span[c][0]
                 pdb_end = chains_span[c][1]
                 # Use the begin and end info to decide if this pdb chain includes the pk_domain. But we will get other sequence info from sifts XML files, using gather-pdb.py
                 # Have to check against each PK domain
-                for domain_id, domain in enumerate(domains_data):
+                for domain in domain_objs:
                     pk_begin = domain.begin
                     pk_end = domain.end
                     if (pdb_begin < pk_begin+30) & (pdb_end > pk_end-30):
-                        chain_obj = models.PDBChain(
+                        chain_data_dict = models.PDBChain(
                             crawl_number=self.current_crawl_number,
                             chain_id=chain_id,
-                            domain_id=domain_id,
                             begin=pdb_begin,
                             end=pdb_end
                         )
-                        chain_objs.append(chain_obj)
+                        chain_data_dicts.append({
+                            'chain_obj': chain_data_dict,
+                            'domain_obj': domain
+                        })
                     else:
                         continue
 
-            if len(chain_objs) > 0:
+            if len(chain_data_dicts) > 0:
                 pdb_obj = models.PDB(
                     crawl_number=self.current_crawl_number,
                     pdbid=pdbid,
                     method=pdb_method,
                     resolution=resolution
                 )
-                pdb_data.append({'pdb_obj': pdb_obj, 'chain_objs': chain_objs})
+                pdb_data.append({'pdb_obj': pdb_obj, 'chain_data_dicts': chain_data_dicts})
 
         # ========
         # Construct data objects and add to db
@@ -514,7 +525,7 @@ class GatherUniProt(object):
         dbentry = models.DBEntry(
             crawl_number=self.current_crawl_number,
             npdbs=len(pdb_data),
-            ndomains=len(domains_data),
+            ndomains=len(domain_objs),
             nisoforms=len(isoforms),
             nfunctions=len(functions),
             ndiseaseassociations=len(disease_associations),
@@ -556,17 +567,21 @@ class GatherUniProt(object):
             for note_obj in notes:
                 note_obj.uniprotisoform = isoform_obj
                 db.session.add(note_obj)
-        for domain_obj in domains_data:
+        for domain_obj in domain_objs:
             domain_obj.dbentry = dbentry
             domain_obj.uniprot_entry = uniprot
             db.session.add(domain_obj)
         for pdb_data_dict in pdb_data:
             pdb_obj = pdb_data_dict['pdb_obj']
-            chain_objs = pdb_data_dict['chain_objs']
+            chain_data_dicts = pdb_data_dict['chain_data_dicts']
             pdb_obj.dbentry = dbentry
             db.session.add(pdb_obj)
-            for chain_obj in chain_objs:
+            for chain_data_dict in chain_data_dicts:
+                chain_obj = chain_data_dict['chain_obj']
+                domain_obj = chain_data_dict['domain_obj']
+                # import ipdb; ipdb.set_trace()
                 chain_obj.pdb = pdb_obj
+                chain_obj.uniprotdomain = domain_obj
                 db.session.add(chain_obj)
         for gene_name_obj in gene_name_data:
             gene_name_obj.dbentry = dbentry
@@ -593,7 +608,10 @@ class GatherUniProt(object):
             )
             ensembl_transcript_uniprot_isoform_ac = ensembl_data[ensembl_transcript_id]['uniprot_isoform_ac']
             if ensembl_transcript_uniprot_isoform_ac is not None:
-                matching_uniprot_isoform_obj = [isoform[0] for isoform in isoforms if isoform[0].ac == ensembl_transcript_uniprot_isoform_ac]
+                matching_uniprot_isoform_obj = [
+                    isoform[0] for isoform in isoforms
+                    if isoform[0].ac == ensembl_transcript_uniprot_isoform_ac
+                ]
                 if len(matching_uniprot_isoform_obj) != 0:
                     ensembl_transcript_row.uniprotisoform = matching_uniprot_isoform_obj[0]
             db.session.add(ensembl_transcript_row)
