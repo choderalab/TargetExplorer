@@ -1,7 +1,9 @@
 import os
 import json
-import targetexplorer
+import logging
 from pkg_resources import resource_filename
+import targetexplorer
+from targetexplorer.core import logger
 
 
 def get_installed_resource_filepath(relative_path):
@@ -41,3 +43,19 @@ def json_dump_pretty(obj, filepath):
 
 class DatabaseException(Exception):
     pass
+
+
+def set_loglevel(loglevel):
+    """
+    Set minimum level for logging
+    >>> set_loglevel('info')   # log all messages except debugging messages. This is generally the default.
+    >>> set_loglevel('debug')   # log all messages, including debugging messages
+
+    Parameters
+    ----------
+    loglevel: str
+        {debug|info|warning|error|critical}
+    """
+    if loglevel is not None:
+        loglevel_obj = getattr(logging, loglevel.upper())
+        logger.setLevel(loglevel_obj)

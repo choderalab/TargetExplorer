@@ -80,7 +80,7 @@ def listall():
     safe_crawl_number = crawldata.safe_crawl_number
 
     # = Query the UniProt table =
-    uniprot_values = [values for values in models.UniProt.query.filter_by(crawl_number=safe_crawl_number).values(models.UniProt.ac, models.UniProt.entry_name)]
+    uniprot_values = [values for values in models.UniProtEntry.query.filter_by(crawl_number=safe_crawl_number).values(models.UniProtEntry.ac, models.UniProtEntry.entry_name)]
 
     # = Construct the data structure for holding the results, to be returned as JSON =
     results_obj = {
@@ -126,8 +126,8 @@ def get_dbentry():
             abort(404)
 
     # = Search the UniProt table using the query AC =
-    model_request_field = getattr(models.UniProt, request_field)
-    uniprot = models.UniProt.query.filter(model_request_field==request_value, models.UniProt.crawl_number==safe_crawl_number).first()
+    model_request_field = getattr(models.UniProtEntry, request_field)
+    uniprot = models.UniProtEntry.query.filter(model_request_field==request_value, models.UniProtEntry.crawl_number==safe_crawl_number).first()
     try: assert uniprot != None
     except AssertionError as e: e.message = 'Database entry not found'; raise e
 
@@ -221,7 +221,7 @@ def query_db():
     targets_obj = {'results': []}
 
     for db_entry in results:
-        uniprot = db.session.query(models.UniProt).filter_by(dbentry_id=db_entry.id).first()
+        uniprot = db.session.query(models.UniProtEntry).filter_by(dbentry_id=db_entry.id).first()
         domain_targetids = [domain_row.targetid for domain_row in uniprot.domains]
         target_obj = {
             'ac': uniprot.ac,

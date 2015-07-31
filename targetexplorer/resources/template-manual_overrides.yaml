@@ -1,0 +1,23 @@
+# Add manual overrides in the same format as the commented lines below
+
+skip_uniprot_entries:
+    #SG196_HUMAN: Mannose kinase, not a protein kinase.
+
+pseudodomains:
+    #JAK1_HUMAN:
+        #description: Protein kinase 1
+        #message: The pseudokinase domain interacts with and negatively regulates the active domain.
+
+ncbi_gene_ids:
+    #LMTK3_HUMAN:
+        #gene_ids:
+            #- 114783
+        #message: RefSeq status is PROVISIONAL
+
+skip_ncbi_gene_entries:
+    ## SGK3_HUMAN
+    #100533105: two GeneIDs annotated; one is a readthrough fusion protein
+
+skip_pdbs:
+    #1GQ5: Structure contains only a tiny fragment
+
