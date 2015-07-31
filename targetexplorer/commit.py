@@ -25,7 +25,7 @@ class Commit(object):
         and whether they have been updated in the correct order
         """
         data_problem = False
-        for data_type in ['uniprot', 'ncbi_gene', 'bindingdb', 'pdb', 'cbioportal']:
+        for data_type in ['uniprot', 'ncbi_gene', 'bindingdb', 'pdb', 'cbioportal', 'chembl']:
             datestamp_type = data_type + '_datestamp'
             current_crawl_datatype_datestamp = getattr(self.current_crawl_datestamps_row, datestamp_type)
             if current_crawl_datatype_datestamp == None:

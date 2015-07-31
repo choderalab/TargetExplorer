@@ -71,6 +71,7 @@ class DBEntry(db.Model):
     bindingdb_bioassays = db.relationship('BindingDBBioassay', backref='dbentry', lazy='dynamic')
     cbioportal_mutations = db.relationship('CbioportalMutation', backref='dbentry', lazy='dynamic')
     chembl_target = db.relationship('ChemblTarget', backref='dbentry', lazy='dynamic')
+    chembl_bioactivity = db.relationship('ChemblBioactivity', backref='dbentry', lazy='dynamic')
     def __repr__(self):
         return '<DBEntry %d>' % self.id
 
@@ -380,15 +381,41 @@ class CbioportalMutation(db.Model):
         return '<CbioportalMutation ID {0} type {1} aa_change {2} in_uniprot_domain {3}>'.format(self.id, self.type, self.oncotator_aa_pos, self.in_uniprot_domain)
 
 class ChemblTarget(db.Model):
-    __tablename__= "chembl_target"
+    __tablename__= "chembl_targets"
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
     target_chembl_id = db.Column(db.Text)
     dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    chembl_bioactivity = db.relationship('ChemblBioactivity', backref='chembl_target', lazy='dynamic')
     def __repr__(self):
-        return '<Chembl Table ID {0}. target_chembl_id {1}>'.format(self.id, self.target_chembl_id)
+        return '<Chembl_target ID {0}. target_chembl_id {1}>'.format(self.id, self.target_chembl_id)
 
+class ChemblBioactivity(db.Model):
+    __tablename__="chembl_bioactivities"
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    assay_chembl_id = db.Column(db.Text)
+    assay_type = db.Column(db.Text)
+    bioactivity_type = db.Column(db.Text)
+    compound_chembl_id = db.Column(db.Text)
+    binding_operator = db.Column(db.Text)
+    binding_value = db.Column(db.Text)
+    target_chembl_id = db.Column(b.Integer, db.ForeignKey('dbentry.id'))
+    dbentry_id = db.Column(db.Integer, db.ForeignKey('dbentry.id'))
+    def __repr__(self):
+        return '<Chembl_bioactivity table ID {0}. assay_chembl_id {1}>'.format(self.id, self.assay_chembl_id)
 
+class ChemblCompound(db.Model):
+    __tablename__="chembl_compounds"
+    id = db.Column(db.Integer, primary_key=True)
+    crawl_number = db.Column(db.Integer)
+    compound_chembl_id = db.Column(db.Text)
+    known_drug = db.Column(db.Text)
+    molecular_weight = db.Column(db.Integer)
+    smiles = db.Column(db.Text)
+    inchi_key = db.Column(db.Text)
+    def __repr__(self):
+        return '<Chembl_compound table ID {0}. compound_chembl_id {1}>'.format(self.id, self.compound_chembl_id)
 
 _module_local_names = [key for key in locals().keys()]
 table_class_names = [
