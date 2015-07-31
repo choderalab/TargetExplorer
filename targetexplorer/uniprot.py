@@ -202,7 +202,7 @@ class GatherUniProt(object):
 
         # = Taxonomy =
         uniprot_organism_node = uniprot_entry_node.find('organism')
-        ncbi_taxonid = uniprot_organism_node.find('dbReference[@type="NCBI Taxonomy"]').get('id')
+        ncbi_taxon_id = uniprot_organism_node.find('dbReference[@type="NCBI Taxonomy"]').get('id')
         taxon_name_scientific = uniprot_organism_node.findtext('name[@type="scientific"]')
         taxon_name_common = uniprot_organism_node.findtext('name[@type="common"]')
         lineage = uniprot_organism_node.find('lineage')
@@ -247,7 +247,7 @@ class GatherUniProt(object):
         canseq_mass = uniprot_canonical_sequence_node.get('mass')
         canseq_date_modified = uniprot_canonical_sequence_node.get('modified')
         canseq_version = uniprot_canonical_sequence_node.get('version')
-        uniprotisoform = models.UniProtIsoform(
+        uniprot_isoform = models.UniProtIsoform(
             crawl_number=self.current_crawl_number,
             ac=ac+'-1',
             is_canonical=True,
@@ -258,7 +258,7 @@ class GatherUniProt(object):
             sequence=canonical_sequence
         )
         # empty list for notes (which do not exist for the canonical sequence)
-        isoforms.append((uniprotisoform, []))
+        isoforms.append((uniprot_isoform, []))
 
         # = Alternative isoforms =
         # Canonical isoform is given the attrib type="displayed", meaning that the sequence is displayed in the HTML version of the entry
@@ -281,13 +281,13 @@ class GatherUniProt(object):
                 ) for node in uniprot_isoform_node.findall('note')
                 ]
             if seq_node.get('type') != 'displayed':
-                uniprotisoform = models.UniProtIsoform(
+                uniprot_isoform = models.UniProtIsoform(
                     crawl_number=self.current_crawl_number,
                     ac=isoform_ac,
                     is_canonical=False
                 )
 
-            isoforms.append((uniprotisoform, notes))
+            isoforms.append((uniprot_isoform, notes))
 
         # = UniProt "Protein kinase" domain annotations =
         # XXX TODO Generalize
@@ -470,12 +470,12 @@ class GatherUniProt(object):
         )
         pdb_data = []
         for p in pdbs:
-            pdbid = p.get('id')
-            if self.skip_pdbs and pdbid in self.skip_pdbs:
-                skip_pdb_message = self.skip_pdbs[pdbid]
+            pdb_id = p.get('id')
+            if self.skip_pdbs and pdb_id in self.skip_pdbs:
+                skip_pdb_message = self.skip_pdbs[pdb_id]
                 logger.info(
                     'OVERRIDE: Skipping PDB {0} for entry {1} - reason: {2}'.format(
-                        pdbid, entry_name, skip_pdb_message
+                        pdb_id, entry_name, skip_pdb_message
                     )
                 )
                 continue
@@ -510,9 +510,9 @@ class GatherUniProt(object):
                         continue
 
             if len(chain_data_dicts) > 0:
-                pdb_obj = models.PDB(
+                pdb_obj = models.PDBEntry(
                     crawl_number=self.current_crawl_number,
-                    pdbid=pdbid,
+                    pdb_id=pdb_id,
                     method=pdb_method,
                     resolution=resolution
                 )
@@ -522,82 +522,82 @@ class GatherUniProt(object):
         # Construct data objects and add to db
         # ========
 
-        dbentry = models.DBEntry(
+        db_entry = models.DBEntry(
             crawl_number=self.current_crawl_number,
             npdbs=len(pdb_data),
             ndomains=len(domain_objs),
             nisoforms=len(isoforms),
             nfunctions=len(functions),
-            ndiseaseassociations=len(disease_associations),
+            ndisease_associations=len(disease_associations),
         )
-        db.session.add(dbentry)
-        uniprot = models.UniProt(
+        db.session.add(db_entry)
+        uniprot_entry = models.UniProtEntry(
             crawl_number=self.current_crawl_number,
             ac=ac,
             entry_name=entry_name,
             last_uniprot_update=last_uniprot_update,
-            ncbi_taxonid=ncbi_taxonid,
-            dbentry=dbentry,
+            ncbi_taxon_id=ncbi_taxon_id,
+            db_entry=db_entry,
             recommended_name=recommended_name,
             taxon_name_scientific=taxon_name_scientific,
             taxon_name_common=taxon_name_common,
             lineage=lineage_csv,
         )
         if family:
-            uniprot.family = family
-        db.session.add(uniprot)
+            uniprot_entry.family = family
+        db.session.add(uniprot_entry)
         for function_obj in functions:
-            function_obj.dbentry = dbentry
-            function_obj.uniprot_entry = uniprot
+            function_obj.db_entry = db_entry
+            function_obj.uniprot_entry = uniprot_entry
             db.session.add(function_obj)
         for disease_association_obj in disease_associations:
-            disease_association_obj.dbentry = dbentry
-            disease_association_obj.uniprot_entry = uniprot
+            disease_association_obj.db_entry = db_entry
+            disease_association_obj.uniprot_entry = uniprot_entry
             db.session.add(disease_association_obj)
         for subcellular_location_obj in subcellular_locations:
-            subcellular_location_obj.dbentry = dbentry
-            subcellular_location_obj.uniprot_entry = uniprot
+            subcellular_location_obj.db_entry = db_entry
+            subcellular_location_obj.uniprot_entry = uniprot_entry
             db.session.add(subcellular_location_obj)
         for isoform_data in isoforms:
             isoform_obj = isoform_data[0]
             notes = isoform_data[1]
-            isoform_obj.dbentry = dbentry
-            isoform_obj.uniprot_entry = uniprot
+            isoform_obj.db_entry = db_entry
+            isoform_obj.uniprot_entry = uniprot_entry
             db.session.add(isoform_obj)
             for note_obj in notes:
                 note_obj.uniprotisoform = isoform_obj
                 db.session.add(note_obj)
         for domain_obj in domain_objs:
-            domain_obj.dbentry = dbentry
-            domain_obj.uniprot_entry = uniprot
+            domain_obj.db_entry = db_entry
+            domain_obj.uniprot_entry = uniprot_entry
             db.session.add(domain_obj)
         for pdb_data_dict in pdb_data:
             pdb_obj = pdb_data_dict['pdb_obj']
             chain_data_dicts = pdb_data_dict['chain_data_dicts']
-            pdb_obj.dbentry = dbentry
+            pdb_obj.db_entry = db_entry
             db.session.add(pdb_obj)
             for chain_data_dict in chain_data_dicts:
                 chain_obj = chain_data_dict['chain_obj']
                 domain_obj = chain_data_dict['domain_obj']
                 # import ipdb; ipdb.set_trace()
-                chain_obj.pdb = pdb_obj
-                chain_obj.uniprotdomain = domain_obj
+                chain_obj.pdb_entry = pdb_obj
+                chain_obj.uniprot_domain = domain_obj
                 db.session.add(chain_obj)
         for gene_name_obj in gene_name_data:
-            gene_name_obj.dbentry = dbentry
+            gene_name_obj.db_entry = db_entry
             db.session.add(gene_name_obj)
         for NCBIGeneEntry in ncbi_gene_entries:
-            NCBIGeneEntry.dbentry = dbentry
+            NCBIGeneEntry.db_entry = db_entry
             db.session.add(NCBIGeneEntry)
         for HGNCEntry in hgnc_entries:
-            HGNCEntry.dbentry = dbentry
+            HGNCEntry.db_entry = db_entry
             db.session.add(HGNCEntry)
         for ensembl_transcript_id in ensembl_data:
             ensembl_gene_id = ensembl_data[ensembl_transcript_id]['gene']
             ensembl_gene_row = models.EnsemblGene(
                 crawl_number=self.current_crawl_number,
                 gene_id=ensembl_gene_id,
-                dbentry=dbentry,
+                db_entry=db_entry,
             )
             db.session.add(ensembl_gene_row)
 
@@ -613,7 +613,7 @@ class GatherUniProt(object):
                     if isoform[0].ac == ensembl_transcript_uniprot_isoform_ac
                 ]
                 if len(matching_uniprot_isoform_obj) != 0:
-                    ensembl_transcript_row.uniprotisoform = matching_uniprot_isoform_obj[0]
+                    ensembl_transcript_row.uniprot_isoform = matching_uniprot_isoform_obj[0]
             db.session.add(ensembl_transcript_row)
 
             ensembl_protein_id = ensembl_data[ensembl_transcript_id]['protein']

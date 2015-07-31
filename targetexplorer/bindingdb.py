@@ -44,21 +44,21 @@ class GatherBindingDB(object):
 
     def get_uniprot_acs_from_db(self):
         self.db_uniprot_acs = [
-            value_tuple[0] for value_tuple in models.UniProt.query.filter_by(
+            value_tuple[0] for value_tuple in models.UniProtEntry.query.filter_by(
                 crawl_number=self.current_crawl_number
-            ).values(models.UniProt.ac)
+            ).values(models.UniProtEntry.ac)
         ]
 
     def create_db_rows(self, extracted_bindingdb_data):
         # for bindingdb_data_tuple in extracted_bindingdb_data:
         for ac, bioassays_data in extracted_bindingdb_data.iteritems():
             # ac, bioassays_data = bindingdb_data_tuple
-            db_uniprot_row = models.UniProt.query.filter_by(
+            db_uniprot_row = models.UniProtEntry.query.filter_by(
                 crawl_number=self.current_crawl_number, ac=ac
             ).first()
-            dbentry_id = db_uniprot_row.dbentry_id
-            dbentry_row = models.DBEntry.query.filter_by(id=dbentry_id).first()
-            dbentry_row.nbioassays = len(bioassays_data)
+            db_entry_id = db_uniprot_row.db_entry_id
+            db_entry_row = models.DBEntry.query.filter_by(id=db_entry_id).first()
+            db_entry_row.nbioassays = len(bioassays_data)
 
             for bioassay_data in bioassays_data:
                 bindingdb_bioassay_obj = models.BindingDBBioassay(
@@ -81,7 +81,7 @@ class GatherBindingDB(object):
                     kon=bioassay_data['kon'],
                     koff=bioassay_data['koff'],
 
-                    dbentry=dbentry_row,
+                    db_entry=db_entry_row,
                 )
                 db.session.add(bindingdb_bioassay_obj)
 

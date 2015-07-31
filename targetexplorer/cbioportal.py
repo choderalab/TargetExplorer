@@ -55,9 +55,9 @@ class GatherCbioportalData(object):
         # required to query cBioPortal
         self.db_uniprot_acs = [
             value_tuple[0] for value_tuple
-            in models.UniProt.query.filter_by(
+            in models.UniProtEntry.query.filter_by(
                 crawl_number=self.current_crawl_number
-            ).values(models.UniProt.ac)
+            ).values(models.UniProtEntry.ac)
         ]
         self.hgnc_gene_symbols = [
             value_tuple[0] for value_tuple
@@ -150,18 +150,18 @@ class GatherCbioportalData(object):
                             transcript_id=ensembl_transcript_id
                         ).first()
                         if ((matching_ensembl_transcript_row is not None) and
-                                (matching_ensembl_transcript_row.uniprotisoform is not None) and
-                                matching_ensembl_transcript_row.uniprotisoform.is_canonical):
-                            mutation_row.dbentry = matching_ensembl_transcript_row.ensembl_gene.dbentry
+                                (matching_ensembl_transcript_row.uniprot_isoform is not None) and
+                                matching_ensembl_transcript_row.uniprot_isoform.is_canonical):
+                            mutation_row.db_entry = matching_ensembl_transcript_row.ensembl_gene.db_entry
 
                             # is mutation within a uniprot domain?
-                            matching_uniprot_domains = matching_ensembl_transcript_row.ensembl_gene.dbentry.uniprotdomains.all()
+                            matching_uniprot_domains = matching_ensembl_transcript_row.ensembl_gene.db_entry.uniprot_domains.all()
                             for domain in matching_uniprot_domains:
                                 if aa_pos >= domain.begin and aa_pos <= domain.end:
                                     if mutation_row.oncotator_reference_aa != mutation_row.cbioportal_aa_change_string[0]:
                                         continue
                                     mutation_row.in_uniprot_domain = True
-                                    mutation_row.uniprotdomain = domain
+                                    mutation_row.uniprot_domain = domain
 
                 db.session.add(mutation_row)
 
