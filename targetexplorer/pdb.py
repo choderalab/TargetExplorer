@@ -45,14 +45,14 @@ class GatherPDB(object):
         # ====================
 
         # first get a list of PDB rows from the db
-        db_pdb_rows = models.PDB.query.filter_by(crawl_number=current_crawl_number).all()
+        db_pdb_rows = models.PDBEntry.query.filter_by(crawl_number=current_crawl_number).all()
 
         # prepare a dict for each PDB row to be passed to the function extract_pdb_data
         db_pdb_dicts = []
         for pdb_row in db_pdb_rows:
-            dbentry = models.DBEntry.query.filter_by(id=pdb_row.dbentry_id).first()
-            uniprot_row = dbentry.uniprot.first()
-            canon_isoform_row = dbentry.uniprotisoforms.filter_by(is_canonical=True).first()
+            db_entry = models.DBEntry.query.filter_by(id=pdb_row.db_entry_id).first()
+            uniprot_row = db_entry.uniprot.first()
+            canon_isoform_row = db_entry.uniprot_isoforms.filter_by(is_canonical=True).first()
             chain_data = [
                 {
                     'chain_row_id': chain_row.id,
@@ -61,7 +61,7 @@ class GatherPDB(object):
             ]
             pdb_dict = {
                 'pdb_row_id': pdb_row.id,
-                'pdbid': pdb_row.pdbid,
+                'pdb_id': pdb_row.pdb_id,
                 'ac': uniprot_row.ac,
                 'entry_name': uniprot_row.entry_name,
                 'seq': canon_isoform_row.sequence,
@@ -77,7 +77,7 @@ class GatherPDB(object):
 
         for pdb_results in results:
             pdb_row_id = pdb_results['pdb_row_id']
-            pdb_row = models.PDB.query.filter_by(id=pdb_row_id).first()
+            pdb_row = models.PDBEntry.query.filter_by(id=pdb_row_id).first()
 
             if 'exception_message' in pdb_results and pdb_results.get('exception_message') == 'SIFTS file could not be downloaded':
                 db.session.delete(pdb_row)
@@ -164,7 +164,7 @@ def extract_pdb_data(pdb_dict):
     '''Extract data for a single PDB structure
     '''
     pdb_row_id = pdb_dict['pdb_row_id']
-    pdbid = pdb_dict['pdbid']
+    pdb_id = pdb_dict['pdb_id']
     ac = pdb_dict['ac']
     entry_name = pdb_dict['entry_name']
     seq = pdb_dict['seq']
@@ -174,7 +174,7 @@ def extract_pdb_data(pdb_dict):
     # if entry_name != 'MLKL_HUMAN':
     #     return None
     #
-    # if pdbid != '2ITN':
+    # if pdb_id != '2ITN':
     #     return None
 
     # ========
@@ -186,8 +186,8 @@ def extract_pdb_data(pdb_dict):
     # TODO define this via project metadata .yaml file.
     # structure_dirs = ['/Users/partond/tmp/kinome-MSMSeeder/structures/pdb', '/Users/partond/tmp/kinome-MSMSeeder/structures/sifts']
 
-    local_pdb_filepath = os.path.join('external-data', 'PDB', pdbid + '.pdb.gz')
-    local_sifts_filepath = os.path.join('external-data', 'SIFTS', pdbid + '.xml.gz')
+    local_pdb_filepath = os.path.join('external-data', 'PDB', pdb_id + '.pdb.gz')
+    local_sifts_filepath = os.path.join('external-data', 'SIFTS', pdb_id + '.xml.gz')
 
     # Check if PDB file/symlink already exists and is not empty
     search_for_pdb = True
@@ -199,7 +199,7 @@ def extract_pdb_data(pdb_dict):
     if search_for_pdb:
         if structure_dirs:
             for structure_dir in structure_dirs:
-                pdb_filepath = os.path.join(structure_dir, pdbid + '.pdb.gz')
+                pdb_filepath = os.path.join(structure_dir, pdb_id + '.pdb.gz')
                 if os.path.exists(pdb_filepath):
                     if os.path.getsize(pdb_filepath) > 0:
                         if os.path.exists(local_pdb_filepath):
@@ -210,7 +210,7 @@ def extract_pdb_data(pdb_dict):
         # If still not found, download the PDB file
         if not os.path.exists(local_pdb_filepath):
             print 'Downloading PDB file and saving as:', local_pdb_filepath
-            page = retrieve_pdb(pdbid, compressed='yes')
+            page = retrieve_pdb(pdb_id, compressed='yes')
             # download and write compressed file
             with open(local_pdb_filepath, 'wb') as local_pdb_file:
                 local_pdb_file.write(page)
@@ -225,7 +225,7 @@ def extract_pdb_data(pdb_dict):
     if search_for_sifts:
         if structure_dirs:
             for structure_dir in structure_dirs:
-                sifts_filepath = os.path.join(structure_dir, pdbid + '.xml.gz')
+                sifts_filepath = os.path.join(structure_dir, pdb_id + '.xml.gz')
                 if os.path.exists(sifts_filepath):
                     if os.path.getsize(sifts_filepath) > 0:
                         if os.path.exists(local_sifts_filepath):
@@ -237,13 +237,13 @@ def extract_pdb_data(pdb_dict):
         if not os.path.exists(local_sifts_filepath):
             print 'Downloading SIFTS file (compressed) and saving as:', local_sifts_filepath
             try:
-                page = retrieve_sifts(pdbid)
+                page = retrieve_sifts(pdb_id)
             except urllib2.URLError as urlerror:
                 if urlerror.reason == 'ftp error: [Errno ftp error] 550 Failed to change directory.':
                     # Check the PDB file has definitely been downloaded. If so, then the problem is probably that the SIFTS people have not yet created the file for this PDB entry, or they have not added it to their server yet.
                     if os.path.exists(local_pdb_filepath):
                         # In this case, just add a message telling the script to delete this PDB structure from the DB. The continue clause skips to the end of the function.
-                        print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdbid
+                        print '%s SIFTS file could not be downloaded - this PDB entry will be deleted from the DB' % pdb_id
                         return {'pdb_row_id': pdb_row_id, 'exception_message': 'SIFTS file could not be downloaded'}
                     else:
                         raise urlerror
@@ -261,21 +261,23 @@ def extract_pdb_data(pdb_dict):
 
     pdbparser = Bio.PDB.PDBParser(QUIET=True)
     with gzip.open(local_pdb_filepath) as local_pdb_file:
-        pdbdata = pdbparser.get_structure(pdbid, local_pdb_file)
+        pdbdata = pdbparser.get_structure(pdb_id, local_pdb_file)
     pdbheader = pdbparser.get_header()
     # Bio PDB compound structure: {'compound': {'1': {'chain': 'a, b'}}}
     pdb_compounds = pdbheader['compound']
-    for pdb_compound_id in pdb_compounds.keys():
-        try:
+    matching_pdb_compound_id = None
+    try:
+        for pdb_compound_id in pdb_compounds.keys():
             for pdb_chain_id in pdb_compounds[pdb_compound_id]['chain'].split(', '):
                 if pdb_chain_id in db_chain_ids_lower:
                     matching_pdb_compound_id = pdb_compound_id
                     break
-        except Exception as e:
-            print 'ERROR for entry %s PDB %s. PDB header dict as parsed by BioPython follows:' % (entry_name, pdbid)
-            print pdbheader
-            print traceback.format_exc()
-            raise e
+        assert matching_pdb_compound_id is not None
+    except Exception as e:
+        print 'ERROR for entry %s PDB %s. PDB header dict as parsed by BioPython follows:' % (entry_name, pdb_id)
+        print pdbheader
+        print traceback.format_exc()
+        raise e
 
     expression_data = {}
     # Bio PDB source structure: {'source': {'1': {'expression_system': 'escherichia coli'}}}
@@ -296,8 +298,8 @@ def extract_pdb_data(pdb_dict):
     for chain_dict in chain_data:
         chain_row_id = chain_dict['chain_row_id']
         chain_id = chain_dict['chain_id']
-        logger.debug(entry_name, ac, pdbid, chain_id)
-        pdb_chain_dict = extract_sifts_seq(local_sifts_filepath, ac, entry_name, pdbid, chain_id, seq)
+        logger.debug(entry_name, ac, pdb_id, chain_id)
+        pdb_chain_dict = extract_sifts_seq(local_sifts_filepath, ac, entry_name, pdb_id, chain_id, seq)
         results['chain_dicts'][chain_row_id] = pdb_chain_dict
 
     return results
@@ -355,7 +357,7 @@ def retrieve_pdb(pdb_id,compressed='no'):
     return pdb_file
 
 
-def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, chain_id, uniprot_sequence):
+def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdb_id, chain_id, uniprot_sequence):
     exception_message = None
 
     sifts = etree.fromstring( gzip.open(sifts_filepath, 'r').read() )
@@ -369,7 +371,7 @@ def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, cha
     first_matching_uniprot_resi = sifts.find('entity[@type="protein"]/segment/listResidue/residue/crossRefDb[@dbSource="PDB"][@dbChainId="%s"]/../crossRefDb[@dbSource="UniProt"]' % chain_id)
     sifts_uniprot_ac = first_matching_uniprot_resi.get('dbAccessionId')
     if uniprot_ac != sifts_uniprot_ac:
-        print 'PDB %s chain %s picked up from UniProt entry %s %s. Non-matching UniProtAC in sifts: %s. This chain will be deleted when rewriting the database.' %  (pdbid, chain_id, uniprot_entry_name, uniprot_ac, sifts_uniprot_ac)
+        logger.info('PDB %s chain %s picked up from UniProt entry %s %s. Non-matching UniProtAC in sifts: %s. This chain will be deleted.' % (pdb_id, chain_id, uniprot_entry_name, uniprot_ac, sifts_uniprot_ac))
         exception_message = 'DELETE_ME'
 
     #
@@ -400,7 +402,7 @@ def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, cha
         ss = r.findtext('residueDetail[@property="codeSecondaryStructure"]')
         resname = r.attrib['dbResName'] 
         if resname == None:
-            print 'ERROR: UniProt crossref not found for conflicting residue!', uniprot_ac, pdbid, chain_id, r.attrib
+            print 'ERROR: UniProt crossref not found for conflicting residue!', uniprot_ac, pdb_id, chain_id, r.attrib
             raise Exception
         try:
             # Note that this BioPython dict converts a modified aa to the single-letter code of its unmodified parent (e.g. "TPO":"T")
@@ -432,9 +434,10 @@ def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, cha
 
         # Also save the pdb resids, which we will use later
         pdb_resid = r.find('crossRefDb[@dbSource="PDB"]').attrib['dbResNum']
+        # TODO need to generalize this. Shift to manual_overrides.yaml or do something else? In the short-term, perhaps just skip these PDBs?
         # Some pdb resids are e.g. '464A'
         if pdb_resid.isdigit() == False:
-            if pdbid in ['1O6L','2JDO','2JDR','2UW9','2X39','2XH5']: # These pdbs include three residues with pdb resids 464A, 464B, 464C, (all with UniProt crossrefs) then continues from 465. We will change this so that the pdb resids continue to iterate
+            if pdb_id in ['1O6L','2JDO','2JDR','2UW9','2X39','2XH5']: # These pdbs include three residues with pdb resids 464A, 464B, 464C, (all with UniProt crossrefs) then continues from 465. We will change this so that the pdb resids continue to iterate
                 corrected_pdb_resids = {'464A':465, '464B':466, '464C':467}
                 if pdb_resid in corrected_pdb_resids.keys():
                     pdb_resid = corrected_pdb_resids[pdb_resid]
@@ -446,7 +449,7 @@ def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, cha
         try:
             experimental_sequence_pdb_resids.append( int(pdb_resid) )
         except:
-            print 'Problem converting pdb_resid into int.', uniprot_ac, pdbid, chain_id, pdb_resid
+            print 'Problem converting pdb_resid into int.', uniprot_ac, pdb_id, chain_id, pdb_resid
             raise Exception
 
         # Also add residue to experimental_sequence_aln. Residues which do not match the uniprot sequence (and thus do not have a uniprot crossref) will be added later
@@ -483,7 +486,7 @@ def extract_sifts_seq(sifts_filepath, uniprot_ac, uniprot_entry_name, pdbid, cha
     # Now we add the residues which do not have a UniProt crossref
     # ======
 
-    #print e, uniprot_ac, pdbid, chain_id
+    #print e, uniprot_ac, pdb_id, chain_id
     #print experimental_sequence
     #print ''.join(experimental_sequence_aln_conflicts)
 

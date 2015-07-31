@@ -5,8 +5,8 @@ import datetime
 import json
 import gzip
 from lxml import etree
-from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath
-from targetexplorer.utils import json_dump_pretty
+from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath, logger
+from targetexplorer.utils import json_dump_pretty, set_loglevel
 from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json, build_oncotator_search_string
 from targetexplorer.flaskapp import models, db
 
@@ -55,9 +55,9 @@ class GatherCbioportalData(object):
         # required to query cBioPortal
         self.db_uniprot_acs = [
             value_tuple[0] for value_tuple
-            in models.UniProt.query.filter_by(
+            in models.UniProtEntry.query.filter_by(
                 crawl_number=self.current_crawl_number
-            ).values(models.UniProt.ac)
+            ).values(models.UniProtEntry.ac)
         ]
         self.hgnc_gene_symbols = [
             value_tuple[0] for value_tuple
@@ -150,12 +150,12 @@ class GatherCbioportalData(object):
                             transcript_id=ensembl_transcript_id
                         ).first()
                         if ((matching_ensembl_transcript_row is not None) and
-                                (matching_ensembl_transcript_row.uniprotisoform is not None) and
-                                matching_ensembl_transcript_row.uniprotisoform.is_canonical):
-                            mutation_row.dbentry = matching_ensembl_transcript_row.ensembl_gene.dbentry
+                                (matching_ensembl_transcript_row.uniprot_isoform is not None) and
+                                matching_ensembl_transcript_row.uniprot_isoform.is_canonical):
+                            mutation_row.db_entry = matching_ensembl_transcript_row.ensembl_gene.db_entry
 
                             # is mutation within a uniprot domain?
-                            matching_uniprot_domains = matching_ensembl_transcript_row.ensembl_gene.dbentry.uniprotdomains.all()
+                            matching_uniprot_domains = matching_ensembl_transcript_row.ensembl_gene.db_entry.uniprot_domains.all()
                             for domain in matching_uniprot_domains:
                                 if aa_pos >= domain.begin and aa_pos <= domain.end:
                                     if mutation_row.oncotator_reference_aa != mutation_row.cbioportal_aa_change_string[0]:
@@ -500,6 +500,7 @@ def retrieve_mutation_datatxt(case_set_id,
                               genetic_profile_id,
                               gene_ids,
                               portal_version='public-portal',
+                              verbose=False,
                               ):
     """
     Queries cBioPortal for "Mutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
@@ -509,14 +510,17 @@ def retrieve_mutation_datatxt(case_set_id,
     mutation_url = 'http://www.cbioportal.org/{0}/' \
                    'webservice.do' \
                    '?cmd=getProfileData' \
-                   '&case_set_id=%(case_set_id)s' \
-                   '&genetic_profile_id=%(genetic_profile_id)s' \
-                   '&gene_list=%(gene_ids_string)s'.format(
+                   '&case_set_id={1}' \
+                   '&genetic_profile_id={2}' \
+                   '&gene_list={3}'.format(
                        portal_version,
                        case_set_id,
                        genetic_profile_id,
                        gene_ids_string
                    )
+    if verbose:
+        set_loglevel('debug')
+        logger.debug(mutation_url)
     response = urllib2.urlopen(mutation_url)
     page = response.read(1000000000)
     lines = page.splitlines()

@@ -55,8 +55,8 @@ class GatherNCBIGene(object):
 
             # iterate through the db Gene IDs
             i = 0
-            # dbentry_npubs: npubs for each DBEntry, hashed by DBEntry.id
-            dbentry_npubs = {}
+            # db_entry_npubs: npubs for each DBEntry, hashed by DBEntry.id
+            db_entry_npubs = {}
             for db_gene_id in db_gene_ids:
                 # check if the db Gene ID is present in the gene2pubmed data
                 if db_gene_id in pmids_by_gene_id:
@@ -66,18 +66,18 @@ class GatherNCBIGene(object):
                     db_ncbi_gene_entry = models.NCBIGeneEntry.query.filter_by(crawl_number=current_crawl_number, gene_id=db_gene_id).first()
 
                     # initialize the npubs counter for the corresponding DBEntry, if necessary
-                    if db_ncbi_gene_entry.dbentry_id not in dbentry_npubs:
-                        dbentry_npubs[db_ncbi_gene_entry.dbentry_id] = 0
+                    if db_ncbi_gene_entry.db_entry_id not in db_entry_npubs:
+                        db_entry_npubs[db_ncbi_gene_entry.db_entry_id] = 0
 
                     # matching_pmids may be a single PMID (type:int) or a series of PMIDs (type:pd.Series)
                     if type(matching_pmids) == pd.Series:
-                        dbentry_npubs[db_ncbi_gene_entry.dbentry_id] += len(matching_pmids)
+                        db_entry_npubs[db_ncbi_gene_entry.db_entry_id] += len(matching_pmids)
                         for pmid in matching_pmids:
                             # create NCBIGenePublication object and add to db
                             ncbi_gene_publication_obj = models.NCBIGenePublication(crawl_number=current_crawl_number, pmid=pmid, ncbi_gene_entry=db_ncbi_gene_entry)
                             db.session.add(ncbi_gene_publication_obj)
                     else:
-                        dbentry_npubs[db_ncbi_gene_entry.dbentry_id] += 1
+                        db_entry_npubs[db_ncbi_gene_entry.db_entry_id] += 1
                         # create NCBIGenePublication object and add to db
                         ncbi_gene_publication_obj = models.NCBIGenePublication(crawl_number=current_crawl_number, pmid=matching_pmids, ncbi_gene_entry=db_ncbi_gene_entry)
                         db.session.add(ncbi_gene_publication_obj)
@@ -87,11 +87,11 @@ class GatherNCBIGene(object):
                 if i % 100 == 0 or i == len(db_gene_ids):
                     print '%d/%d Gene IDs searched' % (i, len(db_gene_ids))
 
-            for dbentry in models.DBEntry.query.filter_by(crawl_number=current_crawl_number).all():
-                if dbentry.id in dbentry_npubs:
-                    dbentry.npubs = dbentry_npubs[dbentry.id]
+            for db_entry in models.DBEntry.query.filter_by(crawl_number=current_crawl_number).all():
+                if db_entry.id in db_entry_npubs:
+                    db_entry.npubs = db_entry_npubs[db_entry.id]
                 else:
-                    dbentry.npubs = 0
+                    db_entry.npubs = 0
 
             # ==============================================================
             # Update db NCBI Gene datestamp

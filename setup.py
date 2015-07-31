@@ -109,7 +109,12 @@ setup(
     license='GPLv2',
     long_description = read_readme('README.md'),
     packages = find_packages(),
-    package_data = {'targetexplorer': ['resources/structures/*', 'resources/*.gz', 'resources/*.py', 'resources/testdir']},
+    package_data = {
+        'targetexplorer': [
+            'resources/structures/*', 'resources/*.gz', 'resources/*.py', 'resources/*.yaml',
+            'resources/testdir'
+        ]
+    },
     scripts = ['scripts/DoraInit.py', 'scripts/DoraGatherUniProt.py', 'scripts/DoraGatherPDB.py', 'scripts/DoraGatherNCBIGene.py', 'scripts/DoraGatherBindingDB.py', 'scripts/DoraGathercBioPortal.py', 'scripts/DoraGatherChEMBL.py', 'scripts/DoraCommit.py'],
     entry_points = {'nose.plugins.0.10':
         [

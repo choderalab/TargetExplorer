@@ -3,17 +3,17 @@ import shutil
 import datetime
 import targetexplorer
 from targetexplorer.utils import get_installed_resource_filepath
-from targetexplorer.core import write_yaml_file, logger, project_config_filename, database_filename, external_data_dirpath, wsgi_filename
+from targetexplorer.core import write_yaml_file, logger, project_config_filename, database_filename
+from targetexplorer.core import external_data_dirpath, wsgi_filename, manual_overrides_filename
 
 
 class InitProject(object):
-    def __init__(
-            self, db_name=None, project_path=None,
-            uniprot_query='EXAMPLE... mnemonic:ABL1_HUMAN',
-            uniprot_domain_regex='EXAMPLE... ^Protein kinase(?!; truncated)(?!; inactive)',
-            ncrawls_to_save=5,
-            run_main=True
-    ):
+    def __init__(self, db_name=None, project_path=None,
+                 uniprot_query='EXAMPLE... mnemonic:ABL1_HUMAN',
+                 uniprot_domain_regex='EXAMPLE... ^Protein kinase(?!; truncated)(?!; inactive)',
+                 ncrawls_to_save=5,
+                 run_main=True
+                 ):
         self.db_name = db_name
         self.project_path = os.getcwd() if project_path is None else project_path
         self.uniprot_query = uniprot_query
@@ -24,6 +24,7 @@ class InitProject(object):
             self.mk_project_dirs()
             self.mk_project_config_file()
             self.write_wsgi_file()
+            self.write_manual_overrides_file()
             self.create_db()
             self.initialize_crawldata_and_datestamps()
             self.finish()
@@ -32,33 +33,38 @@ class InitProject(object):
         self.targetexplorer_install_dir = os.path.abspath(
             os.path.dirname(targetexplorer.__file__)
         )
-        self.project_config_filename = project_config_filename
         self.sqlalchemy_database_uri = 'sqlite:///' + os.path.join(self.project_path, database_filename)
-        self.wsgi_filepath = wsgi_filename
 
     def mk_project_dirs(self):
         if not os.path.exists(external_data_dirpath):
             os.mkdir(external_data_dirpath)
 
     def mk_project_config_file(self):
-        config_data = {
-            'db_name': self.db_name,
-            'sqlalchemy_database_uri': self.sqlalchemy_database_uri,
-            'dbapi_name': self.db_name + 'DBAPI',
-            'ncrawls_to_save': self.ncrawls_to_save,
-            'uniprot_query': self.uniprot_query,
-            'uniprot_domain_regex': self.uniprot_domain_regex,
-            'ignore_uniprot_pdbs': None,
-        }
-        write_yaml_file(config_data, self.project_config_filename)
+        if not os.path.exists(project_config_filename):
+            config_data = {
+                'db_name': self.db_name,
+                'sqlalchemy_database_uri': self.sqlalchemy_database_uri,
+                'dbapi_name': self.db_name + 'DBAPI',
+                'ncrawls_to_save': self.ncrawls_to_save,
+                'uniprot_query': self.uniprot_query,
+                'uniprot_domain_regex': self.uniprot_domain_regex,
+                'ignore_uniprot_pdbs': None,
+            }
+            write_yaml_file(config_data, project_config_filename)
 
     def write_wsgi_file(self):
-        if not os.path.exists(self.wsgi_filepath):
+        if not os.path.exists(wsgi_filename):
             template_wsgi_filepath = get_installed_resource_filepath(
                 os.path.join('resources', 'template-wsgi.py')
             )
+            shutil.copy(template_wsgi_filepath, wsgi_filename)
 
-            shutil.copy(template_wsgi_filepath, self.wsgi_filepath)
+    def write_manual_overrides_file(self):
+        if not os.path.exists(manual_overrides_filename):
+            template_manual_overrides_filepath = get_installed_resource_filepath(
+                os.path.join('resources', 'template-manual_overrides.yaml')
+            )
+            shutil.copy(template_manual_overrides_filepath, manual_overrides_filename)
 
     def create_db(self):
         from targetexplorer.flaskapp import db, app

@@ -27,20 +27,16 @@ def test_gather_pdb():
             os.path.join('resources', 'structures')
         )
         GatherPDB(structure_dirs=pdb_and_sifts_structure_files_dir)
-        first_pdb_row = models.PDB.query.first()
-        assert isinstance(first_pdb_row, models.PDB)
-        all_pdb_rows = models.PDB.query.all()
-        assert '1OPL' in [pdb.pdbid for pdb in all_pdb_rows]
+        first_pdb_chain = models.PDBChain.query.first()
+        assert first_pdb_chain.observed_seq_aln_exp is not None
 
 
 @attr('network')
 def test_gather_pdb_using_network():
     with projecttest_context(set_up_project_stage='uniprot'):
         GatherPDB()
-        first_pdb_row = models.PDB.query.first()
-        assert isinstance(first_pdb_row, models.PDB)
-        all_pdb_rows = models.PDB.query.all()
-        assert '1OPL' in [pdb.pdbid for pdb in all_pdb_rows]
+        first_pdb_chain = models.PDBChain.query.first()
+        assert first_pdb_chain.observed_seq_aln_exp is not None
 
 
 @attr('unit')
