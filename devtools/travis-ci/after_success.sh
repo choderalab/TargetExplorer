@@ -15,7 +15,7 @@ conda install --yes --quiet conda-server
 echo "Attempting to upload to conda-server:"
 echo "conda-server -t [BINSTAR_TOKEN]  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*"
 conda-server -h
-conda-server -t $BINSTAR_TOKEN  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*
+conda-server -t ${BINSTAR_TOKEN}  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*.tar.bz2
 fi
 
 if [[ "$python" != "2.7" ]]; then
