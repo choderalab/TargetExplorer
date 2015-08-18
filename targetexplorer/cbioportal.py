@@ -181,7 +181,6 @@ class GatherCbioportalData(object):
             reference_allele,
             variant_allele
         )
-        import ipdb; ipdb.set_trace()
 
         if (
                 self.use_existing_oncotator_data and self.existing_oncotator_data

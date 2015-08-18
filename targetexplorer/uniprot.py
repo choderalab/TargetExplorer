@@ -579,7 +579,6 @@ class GatherUniProt(object):
             for chain_data_dict in chain_data_dicts:
                 chain_obj = chain_data_dict['chain_obj']
                 domain_obj = chain_data_dict['domain_obj']
-                # import ipdb; ipdb.set_trace()
                 chain_obj.pdb_entry = pdb_obj
                 chain_obj.uniprot_domain = domain_obj
                 db.session.add(chain_obj)
