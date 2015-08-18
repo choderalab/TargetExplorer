@@ -23,8 +23,10 @@ class GatherCbioportalData(object):
                  use_existing_cbioportal_data=False,
                  use_existing_oncotator_data=False,
                  write_extended_mutation_txt_files=False,
-                 run_main=True
+                 run_main=True,
+                 commit_to_db=True
                  ):
+        self.commit_to_db = commit_to_db
         self.use_existing_cbioportal_data = use_existing_cbioportal_data
         self.use_existing_oncotator_data = use_existing_oncotator_data
         self.write_extended_mutation_txt_files = write_extended_mutation_txt_files
@@ -39,7 +41,6 @@ class GatherCbioportalData(object):
 
         self.now = datetime.datetime.utcnow()
 
-        # get current crawl number
         crawldata_row = models.CrawlData.query.first()
         self.current_crawl_number = crawldata_row.current_crawl_number
         print('Current crawl number: {0}'.format(self.current_crawl_number))
@@ -52,7 +53,7 @@ class GatherCbioportalData(object):
             self.finish()
 
     def get_hgnc_gene_symbols_from_db(self):
-        # required to query cBioPortal
+        # HGNC gene symbols are necessary to query cBioPortal
         self.db_uniprot_acs = [
             value_tuple[0] for value_tuple
             in models.UniProtEntry.query.filter_by(
@@ -180,9 +181,12 @@ class GatherCbioportalData(object):
             reference_allele,
             variant_allele
         )
+        import ipdb; ipdb.set_trace()
 
-        if (self.use_existing_oncotator_data and self.existing_oncotator_data
-            and oncotator_search_string in self.existing_oncotator_data):
+        if (
+                self.use_existing_oncotator_data and self.existing_oncotator_data
+                and oncotator_search_string in self.existing_oncotator_data
+                ):
                 oncotator_data = self.existing_oncotator_data[oncotator_search_string]
         else:
             oncotator_data = retrieve_oncotator_mutation_data_as_json(
@@ -231,7 +235,8 @@ class GatherCbioportalData(object):
         # update db datestamps
         datestamp_row = models.DateStamps.query.filter_by(crawl_number=self.current_crawl_number).first()
         datestamp_row.cbioportal_datestamp = self.now
-        db.session.commit()
+        if self.commit_to_db:
+            db.session.commit()
         print 'Done.'
 
 

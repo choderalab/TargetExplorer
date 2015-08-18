@@ -39,7 +39,7 @@ def projecttest_context(set_up_project_stage='init'):
     set_up_sample_project(stage=set_up_project_stage)
 
     # Test is run at this point
-    yield
+    yield temp_dir
 
     # Tear down
     db.drop_all()
@@ -48,6 +48,9 @@ def projecttest_context(set_up_project_stage='init'):
 
 
 def set_up_sample_project(stage='init'):
+    """
+    Wrapper function for SetUpSampleProject
+    """
     sample_project = SetUpSampleProject()
     setup_method = getattr(sample_project, stage)
     setup_method()
