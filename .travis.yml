@@ -34,5 +34,4 @@ script:
   - source devtools/travis-ci/test.sh
 
 after_success:
-  - echo "after_success"
-  - bash devtools/travis-ci/after_success.sh
+  - source devtools/travis-ci/after_success.sh
