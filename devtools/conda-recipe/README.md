@@ -5,7 +5,7 @@ The installation on travis-ci is done by building the conda package, installing
 it, running the tests, and then if successful pushing the package to binstar
 (and the docs to AWS S3). The binstar auth token is generated using:
 ```
-binstar auth -n targetexplorer -o choderalab --max-age 22896000 -c --scopes api:write
+binstar auth -n targetexplorer -o choderalab --max-age 22896000 -c --scopes api:write --name travis-targetexplorer
 ```
 and should then be saved in the environment variable `BINSTAR_TOKEN`.
 
