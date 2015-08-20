@@ -11,7 +11,7 @@ argparser.add_argument(
 )
 argparser.add_argument(
     '--nocommit',
-    help='Run script, but do not commit to database.',
+    help='Run script, but do not commit anything to database.',
     action='store_true',
     default=False
 )
@@ -20,5 +20,5 @@ args = argparser.parse_args()
 GatherCbioportalData(
     use_existing_cbioportal_data=args.use_existing_data,
     use_existing_oncotator_data=args.use_existing_data,
-    commit_to_db=args.nocommit
+    commit_to_db=not args.nocommit
 )
