@@ -438,6 +438,12 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
         lines = retrieve_mutation_datatxt(case_set_id, genetic_profile_id, gene_ids)
         print 'Done retrieving Mutation data from cBioPortal.'
 
+         # edit this part later - MI
+        if lines == ['Error: Invalid case_set_id:  lgggbm_tcga_pub_sequenced.']:
+            print 'WARNING - this is the error we want to solve!!!'
+            continue
+
+
         # First two lines are header info
         # Third line contains the case_ids, tab-separated
         case_ids_returned = lines[2].split('\t')[2:]

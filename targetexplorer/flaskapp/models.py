@@ -76,8 +76,8 @@ class DBEntry(db.Model):
     hgnc_entries = db.relationship('HGNCEntry', backref='db_entry', lazy='dynamic')
     bindingdb_bioassays = db.relationship('BindingDBBioassay', backref='db_entry', lazy='dynamic')
     cbioportal_mutations = db.relationship('CbioportalMutation', backref='db_entry', lazy='dynamic')
-    chembl_target = db.relationship('ChemblTarget', backref='dbentry', lazy='dynamic')
-    chembl_bioactivity = db.relationship('ChemblBioactivity', backref='dbentry', lazy='dynamic')
+    chembl_target = db.relationship('ChemblTarget', backref='db_entry', lazy='dynamic')
+    chembl_bioactivity = db.relationship('ChemblBioactivity', backref='db_entry', lazy='dynamic')
     def __repr__(self):
         return '<DBEntry {}>'.format(self.id)
 
@@ -395,7 +395,7 @@ class ChemblTarget(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     crawl_number = db.Column(db.Integer)
     target_chembl_id = db.Column(db.Text)
-    dbentry_id = db.Column(db.Integer, db.ForeignKey('db_entries.id'))
+    db_entry_id = db.Column(db.Integer, db.ForeignKey('db_entries.id'))
     chembl_bioactivity = db.relationship('ChemblBioactivity', backref='chembl_targets', lazy='dynamic')
     def __repr__(self):
         return '<Chembl_target ID {0}. target_chembl_id {1}>'.format(self.id, self.target_chembl_id)
@@ -411,7 +411,7 @@ class ChemblBioactivity(db.Model):
     binding_operator = db.Column(db.Text)
     binding_value = db.Column(db.Text)
     target_chembl_id = db.Column(db.Integer, db.ForeignKey('chembl_targets.id'))
-    dbentry_id = db.Column(db.Integer, db.ForeignKey('db_entries.id'))
+    db_entry_id = db.Column(db.Integer, db.ForeignKey('db_entries.id'))
     chembl_compound = db.relationship('ChemblCompound', backref='chembl_bioactivities', lazy='dynamic')
     def __repr__(self):
         return '<Chembl_bioactivity table ID {0}. assay_chembl_id {1}>'.format(self.id, self.assay_chembl_id)
