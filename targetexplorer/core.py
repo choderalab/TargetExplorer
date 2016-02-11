@@ -136,60 +136,60 @@ def seq2pretty_html(seq, aa_css_class_list=None):
 
 
 aa_css_classes = {
-    'A':'c1',   # aromatic
-    'C':'c2',   # cysteine
-    'H':'c0',   # hydrophobic
-    '+':'c5',   # positive
-    '-':'c4',   # negative
-    'P':'c7',   # polar
-    '0':'gr',   # gap
-    'x':'bl'
+    'A': 'c1',   # aromatic
+    'C': 'c2',   # cysteine
+    'H': 'c0',   # hydrophobic
+    '+': 'c5',   # positive
+    '-': 'c4',   # negative
+    'P': 'c7',   # polar
+    '0': 'gr',   # gap
+    'x': 'bl'
 }
 
 aa_types = {
-    'A':'H',   # hydrophobic
-    'C':'C',   # cysteine
-    'D':'-',   # negative
-    'E':'-',
-    'F':'A',   # aromatic
-    'G':'P',   # polar
-    'H':'+',   # positive
-    'I':'H',
-    'K':'+',
-    'L':'H',
-    'M':'H',
-    'N':'P',
-    'P':'H',
-    'Q':'P',
-    'R':'+',
-    'S':'P',
-    'T':'P',
-    'V':'H',
-    'W':'A',
-    'Y':'A',
-    'X':'x',
-    '-':'0',   # gap
-    'x':'x',   # UNK (unknown) - present in 3LZB
-    'a':'x',   # lower case represents conflicting residues
-    'c':'x',
-    'd':'x',
-    'e':'x',
-    'f':'x',
-    'g':'x',
-    'h':'x',
-    'i':'x',
-    'k':'x',
-    'l':'x',
-    'm':'x',
-    'n':'x',
-    'p':'x',
-    'q':'x',
-    'r':'x',
-    's':'x',
-    't':'x',
-    'v':'x',
-    'w':'x',
-    'y':'x'
+    'A': 'H',   # hydrophobic
+    'C': 'C',   # cysteine
+    'D': '-',   # negative
+    'E': '-',
+    'F': 'A',   # aromatic
+    'G': 'P',   # polar
+    'H': '+',   # positive
+    'I': 'H',
+    'K': '+',
+    'L': 'H',
+    'M': 'H',
+    'N': 'P',
+    'P': 'H',
+    'Q': 'P',
+    'R': '+',
+    'S': 'P',
+    'T': 'P',
+    'V': 'H',
+    'W': 'A',
+    'Y': 'A',
+    'X': 'x',
+    '-': '0',   # gap
+    'x': 'x',   # UNK (unknown) - present in 3LZB
+    'a': 'x',   # lower case represents conflicting residues
+    'c': 'x',
+    'd': 'x',
+    'e': 'x',
+    'f': 'x',
+    'g': 'x',
+    'h': 'x',
+    'i': 'x',
+    'k': 'x',
+    'l': 'x',
+    'm': 'x',
+    'n': 'x',
+    'p': 'x',
+    'q': 'x',
+    'r': 'x',
+    's': 'x',
+    't': 'x',
+    'v': 'x',
+    'w': 'x',
+    'y': 'x'
 }
 
 
@@ -250,9 +250,9 @@ def seqwrap(sequence, add_star=False):
 
 
 def write_css_stylesheet(filepath):
-    '''
+    """
     Write a CSS stylesheet containing classes with custom colors for displaying alignments.
-    '''
+    """
     css_text = '''.ali {
     font-family:Lucida Console,monospace;
     font-size:16px;
