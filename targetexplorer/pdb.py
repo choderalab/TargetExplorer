@@ -13,7 +13,8 @@ from targetexplorer.core import logger
 
 
 class GatherPDB(object):
-    def __init__(self, structure_dirs=None, run_main=True):
+    def __init__(self, structure_dirs=None, run_main=True, commit_to_db=True):
+        self.commit_to_db = commit_to_db
         if type(structure_dirs) == str:
             self.structure_dirs = [structure_dirs]
         else:
@@ -105,7 +106,8 @@ class GatherPDB(object):
 
         current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()
         current_crawl_datestamp_row.pdb_datestamp = now
-        db.session.commit()
+        if self.commit_to_db:
+            db.session.commit()
         print 'Done.'
 
 
