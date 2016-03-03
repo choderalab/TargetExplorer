@@ -1,23 +1,20 @@
+#!/bin/bash
 echo $TRAVIS_PULL_REQUEST $TRAVIS_BRANCH
 
-if [[ "$TRAVIS_PULL_REQUEST" == "true" ]]; then
-    echo "This is a pull request. No deployment will be done."; exit 0
-fi
+deploy="true"
 
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+    echo "This is a pull request. No deployment will be done."
+    deploy="false"
+fi
 
 if [[ "$TRAVIS_BRANCH" != "master" ]]; then
-    echo "No deployment on BRANCH='$TRAVIS_BRANCH'"; exit 0
+    echo "No deployment on BRANCH='$TRAVIS_BRANCH'"
+    deploy="false"
 fi
 
+echo $deploy
 
-if [[ "2.7 3.3 3.4" =~ "$python" ]]; then
-conda install --yes --quiet conda-server
-echo "Attempting to upload to conda-server:"
-echo "conda-server -t [BINSTAR_TOKEN]  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*"
-conda-server -h
-conda-server -t $BINSTAR_TOKEN  upload --force -u choderalab $HOME/miniconda/conda-bld/linux-64/targetexplorer-*
-fi
-
-if [[ "$python" != "2.7" ]]; then
-    echo "No deploy on PYTHON_VERSION=${python}"; exit 0
+if [[ "$deploy" == "true" ]]; then
+    binstar -t $BINSTAR_TOKEN upload --force -u choderalab -p targetexplorer-dev $HOME/miniconda/conda-bld/linux-64/targetexplorer-dev-*
 fi

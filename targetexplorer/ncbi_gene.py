@@ -8,8 +8,10 @@ import pandas as pd
 class GatherNCBIGene(object):
     def __init__(self,
                  use_existing_gene2pubmed=False,
-                 run_main=True
+                 run_main=True,
+                 commit_to_db=True
                  ):
+        self.commit_to_db = commit_to_db
         if run_main:
             external_data_dir = 'external-data'
             ncbi_gene_data_dir = os.path.join(external_data_dir, 'NCBI_Gene')
@@ -99,7 +101,8 @@ class GatherNCBIGene(object):
 
             current_crawl_datestamp_row = models.DateStamps.query.filter_by(crawl_number=current_crawl_number).first()
             current_crawl_datestamp_row.ncbi_gene_datestamp = now
-            db.session.commit()
+            if self.commit_to_db:
+                db.session.commit()
             print 'Done.'
 
 

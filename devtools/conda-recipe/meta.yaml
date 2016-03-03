@@ -2,8 +2,8 @@ package:
   name: targetexplorer-dev
   version: !!str dev
 
-# source:
-#   git_url: https://github.com/choderalab/TargetExplorer
+source:
+  path: ../..
 
 build:
   preserve_egg_dir: True
@@ -26,14 +26,6 @@ requirements:
     # - numpy
     - lxml
     - pyyaml
-
-test:
-  requires:
-    - nose
-  imports:
-    - targetexplorer
-  commands:
-    - nosetests targetexplorer -v --exe -a unit
 
 about:
   home: https://github.com/choderalab/targetexplorer

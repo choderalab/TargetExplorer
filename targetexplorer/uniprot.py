@@ -30,6 +30,7 @@ class GatherUniProt(object):
                  use_existing_data=False,
                  count_nonselected_domain_names=False,
                  run_main=True,
+                 commit_to_db=True
                  ):
         """
         Parameters
@@ -42,6 +43,7 @@ class GatherUniProt(object):
         count_nonselected_domain_names: bool
         run_main: bool
         """
+        self.commit_to_db = commit_to_db
         self.uniprot_query = uniprot_query
         self.uniprot_domain_regex = uniprot_domain_regex
         self.use_existing_data = use_existing_data
@@ -55,7 +57,7 @@ class GatherUniProt(object):
                 self.analyze_domain_selections()
             for uniprot_entry in self.uniprot_entries:
                 self.extract_detailed_uniprot_data(uniprot_entry)
-            self.commit_to_db()
+            self.commit()
 
     def setup(self):
         self.uniprot_data_dir = os.path.join(external_data_dirpath, 'UniProt')
@@ -407,6 +409,7 @@ class GatherUniProt(object):
         )
 
         ensembl_data = {}
+        ensembl_transcript_matched_to_uniprot_isoform = False
         for transcript_node in ensembl_transcript_nodes:
             ensembl_transcript_id = transcript_node.get('id')
 
@@ -431,6 +434,11 @@ class GatherUniProt(object):
             uniprot_isoform_molecule_node = transcript_node.find('molecule')
             if uniprot_isoform_molecule_node is not None:
                 uniprot_isoform_ac = uniprot_isoform_molecule_node.get('id')
+                if uniprot_isoform_ac == isoforms[0][0].ac:
+                    ensembl_transcript_matched_to_uniprot_isoform = True
+            elif uniprot_isoform_molecule_node is None and ensembl_transcript_matched_to_uniprot_isoform is False:
+                uniprot_isoform_ac = isoforms[0][0].ac
+                ensembl_transcript_matched_to_uniprot_isoform = True
             else:
                 uniprot_isoform_ac = None
 
@@ -579,7 +587,6 @@ class GatherUniProt(object):
             for chain_data_dict in chain_data_dicts:
                 chain_obj = chain_data_dict['chain_obj']
                 domain_obj = chain_data_dict['domain_obj']
-                # import ipdb; ipdb.set_trace()
                 chain_obj.pdb_entry = pdb_obj
                 chain_obj.uniprot_domain = domain_obj
                 db.session.add(chain_obj)
@@ -625,13 +632,14 @@ class GatherUniProt(object):
             )
             db.session.add(ensembl_protein_row)
 
-    def commit_to_db(self):
+    def commit(self):
         # update db UniProt datestamp
         current_crawl_datestamp_row = models.DateStamps.query.filter_by(
             crawl_number=self.current_crawl_number
         ).first()
         current_crawl_datestamp_row.uniprot_datestamp = self.now
-        db.session.commit()
+        if self.commit_to_db:
+            db.session.commit()
 
 
 def parse_uniprot_pdbref_chains(chains_span_str):

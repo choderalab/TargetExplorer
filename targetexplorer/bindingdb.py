@@ -13,8 +13,10 @@ bindingdb_matches_filepath = os.path.join(bindingdb_data_dir, 'bindingdb-matches
 class GatherBindingDB(object):
     def __init__(self,
                  use_existing_bindingdb_data=False,
-                 run_main=True
+                 run_main=True,
+                 commit_to_db=True
                  ):
+        self.commit_to_db = commit_to_db
         self.use_existing_bindingdb_data = use_existing_bindingdb_data
         self.now = datetime.datetime.utcnow()
         crawldata_row = models.CrawlData.query.first()
@@ -28,7 +30,7 @@ class GatherBindingDB(object):
                 self.db_uniprot_acs
             )
             self.create_db_rows(extracted_bindingdb_data)
-            self.commit_to_db()
+            self.commit()
 
     def setup(self):
         if not os.path.exists(bindingdb_data_dir):
@@ -85,12 +87,13 @@ class GatherBindingDB(object):
                 )
                 db.session.add(bindingdb_bioassay_obj)
 
-    def commit_to_db(self):
+    def commit(self):
         current_crawl_datestamp_row = models.DateStamps.query.filter_by(
             crawl_number=self.current_crawl_number
         ).first()
         current_crawl_datestamp_row.bindingdb_datestamp = self.now
-        db.session.commit()
+        if self.commit_to_db:
+            db.session.commit()
         print 'Done.'
 
 

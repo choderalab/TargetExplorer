@@ -50,6 +50,8 @@ def test_gather_uniprot():
         first_pdb_chain = models.PDBChain.query.first()
         assert first_pdb_chain.uniprot_domain.domain_id == 1
         first_uniprot_isoform = models.UniProtIsoform.query.first()
+        assert first_uniprot_isoform.uniprot_entry.entry_name == 'ABL1_HUMAN'
+        assert first_uniprot_isoform.is_canonical
         assert first_uniprot_isoform.ensembl_transcripts.first().transcript_id == 'ENST00000318560'
 
 
@@ -77,9 +79,17 @@ def test_gather_uniprot_using_network():
         first_uniprot_entry = models.UniProtEntry.query.first()
         first_uniprot_domain = models.UniProtDomain.query.first()
         first_target_domain = models.UniProtDomain.query.filter_by(is_target_domain=True).first()
-        first_pdb_chain = models.PDBChain.query.first()
         assert first_uniprot_entry.entry_name == 'ABL1_HUMAN'
         assert first_uniprot_domain.domain_id == 0
         assert first_target_domain.target_id == 'ABL1_HUMAN_D0'
         assert first_target_domain.domain_id == 2
+        first_pdb_entry = models.PDBEntry.query.first()
+        assert first_pdb_entry.chains.first() is not None
+        all_pdb_entries = models.PDBEntry.query.all()
+        assert '1OPL' in [pdb_entry.pdb_id for pdb_entry in all_pdb_entries]
+        first_pdb_chain = models.PDBChain.query.first()
         assert first_pdb_chain.uniprot_domain.domain_id == 1
+        first_uniprot_isoform = models.UniProtIsoform.query.first()
+        assert first_uniprot_isoform.uniprot_entry.entry_name == 'ABL1_HUMAN'
+        assert first_uniprot_isoform.is_canonical
+        assert first_uniprot_isoform.ensembl_transcripts.first().transcript_id == 'ENST00000318560'

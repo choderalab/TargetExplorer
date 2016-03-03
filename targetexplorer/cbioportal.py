@@ -5,6 +5,8 @@ import datetime
 import json
 import gzip
 from lxml import etree
+import numpy as np
+import pandas as pd
 from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath, logger
 from targetexplorer.utils import json_dump_pretty, set_loglevel
 from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json, build_oncotator_search_string
@@ -23,8 +25,10 @@ class GatherCbioportalData(object):
                  use_existing_cbioportal_data=False,
                  use_existing_oncotator_data=False,
                  write_extended_mutation_txt_files=False,
-                 run_main=True
+                 run_main=True,
+                 commit_to_db=True
                  ):
+        self.commit_to_db = commit_to_db
         self.use_existing_cbioportal_data = use_existing_cbioportal_data
         self.use_existing_oncotator_data = use_existing_oncotator_data
         self.write_extended_mutation_txt_files = write_extended_mutation_txt_files
@@ -39,7 +43,6 @@ class GatherCbioportalData(object):
 
         self.now = datetime.datetime.utcnow()
 
-        # get current crawl number
         crawldata_row = models.CrawlData.query.first()
         self.current_crawl_number = crawldata_row.current_crawl_number
         print('Current crawl number: {0}'.format(self.current_crawl_number))
@@ -52,7 +55,7 @@ class GatherCbioportalData(object):
             self.finish()
 
     def get_hgnc_gene_symbols_from_db(self):
-        # required to query cBioPortal
+        # HGNC gene symbols are necessary to query cBioPortal
         self.db_uniprot_acs = [
             value_tuple[0] for value_tuple
             in models.UniProtEntry.query.filter_by(
@@ -181,8 +184,10 @@ class GatherCbioportalData(object):
             variant_allele
         )
 
-        if (self.use_existing_oncotator_data and self.existing_oncotator_data
-            and oncotator_search_string in self.existing_oncotator_data):
+        if (
+                self.use_existing_oncotator_data and self.existing_oncotator_data
+                and oncotator_search_string in self.existing_oncotator_data
+                ):
                 oncotator_data = self.existing_oncotator_data[oncotator_search_string]
         else:
             oncotator_data = retrieve_oncotator_mutation_data_as_json(
@@ -231,7 +236,8 @@ class GatherCbioportalData(object):
         # update db datestamps
         datestamp_row = models.DateStamps.query.filter_by(crawl_number=self.current_crawl_number).first()
         datestamp_row.cbioportal_datestamp = self.now
-        db.session.commit()
+        if self.commit_to_db:
+            db.session.commit()
         print 'Done.'
 
 
@@ -625,3 +631,118 @@ def percent_cases_with_mutations(gene_node):
     percent_cases_with_mutations = (float(nmutants) / float(num_in_cohort)) * 100.
     return percent_cases_with_mutations
 
+
+class AddCbioportalMAFData(object):
+    def __init__(self,
+                 maf_filepath=None,
+                 run_main=True,
+                 commit_to_db=True
+                 ):
+        self.maf_filepath = maf_filepath
+        self.commit_to_db = commit_to_db
+        self.aa_change_regex = re.compile('^p\.([0-9A-Z]*)')
+        self.aa_change_split_regex = re.compile('^([A-Z]+)([0-9]+)([A-Z]+)')
+
+        crawldata_row = models.CrawlData.query.first()
+        self.current_crawl_number = crawldata_row.current_crawl_number
+
+        if run_main:
+            self.parse_maf_file()
+            self.extract_mutation_data()
+            self.finish()
+
+    def parse_maf_file(self):
+        self.maf_df = pd.read_csv(self.maf_filepath, sep='\t', skiprows=0, header=1)
+
+    def extract_mutation_data(self):
+        case_rows = {}
+        n_mutations_added = 0
+        for maf_index_row_tuple in self.maf_df.iterrows():
+            maf_row = maf_index_row_tuple[1]
+            # hgnc_symbol = maf_row.Hugo_Symbol
+            oncotator_ensembl_transcript_id = maf_row.Transcript_ID
+            matching_db_ensembl_transcript_row = models.EnsemblTranscript.query.filter_by(
+                transcript_id=oncotator_ensembl_transcript_id
+            ).first()
+            if matching_db_ensembl_transcript_row is None:
+                continue
+            study = 'internal'
+            case_id = maf_row.Tumor_Sample_Barcode
+            if case_id not in case_rows:
+                case_rows[case_id] = models.CbioportalCase(
+                     crawl_number=self.current_crawl_number, case_id=case_id, study=study
+                )
+                db.session.add(case_rows[case_id])
+
+            type = maf_row.Variant_Classification
+            chromosome_index = maf_row.Chromosome
+            chromosome_startpos = maf_row.Start_Position
+            chromosome_endpos = maf_row.End_Position
+            reference_dna_allele = maf_row.Reference_Allele
+            if maf_row.Tumor_Seq_Allele1 != reference_dna_allele:
+                variant_dna_allele = maf_row.Tumor_Seq_Allele1
+            elif maf_row.Tumor_Seq_Allele2 != reference_dna_allele:
+                variant_dna_allele = maf_row.Tumor_Seq_Allele2
+            else:
+                variant_dna_allele = maf_row.Tumor_Seq_Allele1
+            cbioportal_aa_change_string = None
+            oncotator_reference_aa = None
+            oncotator_aa_pos = None
+            oncotator_variant_aa = None
+            if maf_row.Amino_Acid_Change is not np.nan:
+                aa_change_regex_match = re.match(self.aa_change_regex, maf_row.Amino_Acid_Change)
+                if aa_change_regex_match:
+                    cbioportal_aa_change_string = aa_change_regex_match.groups()[0]
+                    if type == 'Missense_Mutation':
+                        aa_change_split_regex_match = re.match(
+                            self.aa_change_split_regex, cbioportal_aa_change_string
+                        )
+                        if aa_change_split_regex_match:
+                            oncotator_reference_aa = aa_change_split_regex_match.groups()[0]
+                            oncotator_aa_pos = int(aa_change_split_regex_match.groups()[1])
+                            oncotator_variant_aa = aa_change_split_regex_match.groups()[2]
+            validation_status = maf_row.Validation_Status
+            functional_impact_score = maf_row['MA:FImpact']
+            print type, cbioportal_aa_change_string, oncotator_reference_aa, oncotator_aa_pos, oncotator_variant_aa
+
+            mutation_row = models.CbioportalMutation(
+                crawl_number=self.current_crawl_number,
+                type=type,
+                cbioportal_aa_change_string=cbioportal_aa_change_string,
+                mutation_origin=None,
+                validation_status=validation_status,
+                functional_impact_score=functional_impact_score,
+                chromosome_index=chromosome_index,
+                chromosome_startpos=chromosome_startpos,
+                chromosome_endpos=chromosome_endpos,
+                reference_dna_allele=reference_dna_allele,
+                variant_dna_allele=variant_dna_allele,
+                oncotator_aa_pos=oncotator_aa_pos,
+                oncotator_reference_aa=oncotator_reference_aa,
+                oncotator_variant_aa=oncotator_variant_aa,
+                oncotator_ensembl_transcript_id=oncotator_ensembl_transcript_id,
+                db_entry=matching_db_ensembl_transcript_row.ensembl_gene.db_entry,
+                cbioportal_case=case_rows[case_id],
+                in_uniprot_domain=False,
+            )
+
+            # is mutation within a uniprot domain?
+            matching_uniprot_domains = matching_db_ensembl_transcript_row.ensembl_gene.db_entry.uniprot_domains.all()
+            for domain in matching_uniprot_domains:
+                if oncotator_aa_pos >= domain.begin and oncotator_aa_pos <= domain.end:
+                    if oncotator_reference_aa != cbioportal_aa_change_string[0]:
+                        continue
+                    mutation_row.in_uniprot_domain = True
+                    mutation_row.uniprot_domain = domain
+
+            db.session.add(mutation_row)
+            n_mutations_added += 1
+
+        logger.info('From {} mutation annotations, added {} mutations and {} cases.'.format(
+            len(self.maf_df), n_mutations_added, len(case_rows))
+        )
+
+    def finish(self):
+        if self.commit_to_db:
+            db.session.commit()
+        print 'Done.'
