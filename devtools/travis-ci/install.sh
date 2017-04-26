@@ -1,21 +1,14 @@
 #!/bin/bash
-# Temporarily change directory to $HOME to install software
-pushd .
-cd $HOME
-
-# Install miniconda
-MINICONDA=Miniconda2-latest-Linux-x86_64.sh
-MINICONDA_HOME=$HOME/miniconda
+MINICONDA=Miniconda-latest-Linux-x86_64.sh
 MINICONDA_MD5=$(curl -s http://repo.continuum.io/miniconda/ | grep -A3 $MINICONDA | sed -n '4p' | sed -n 's/ *<td>\(.*\)<\/td> */\1/p')
-wget https://repo.continuum.io/miniconda/$MINICONDA
+wget http://repo.continuum.io/miniconda/$MINICONDA
 if [[ $MINICONDA_MD5 != $(md5sum $MINICONDA | cut -d ' ' -f 1) ]]; then
     echo "Miniconda MD5 mismatch"
     exit 1
 fi
-bash $MINICONDA -b -p $MINICONDA_HOME
+bash $MINICONDA -b
 
-
-export PATH=$MINICONDA_HOME/bin:$PATH
+export PATH=$HOME/miniconda/bin:$PATH
 
 sudo apt-get update
 
