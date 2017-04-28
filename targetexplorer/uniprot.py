@@ -474,7 +474,7 @@ class GatherUniProt(object):
         # = PDB entries (from UniProt XML) =
         # keep X-ray and NMR structures (not "Model")
         pdbs = uniprot_entry_node.xpath(
-            './dbReference[@type="PDB"]/property[@type="method"][@value="X-ray" or @value="NMR"]/property[@type="chain"][@value!="None"]/..'
+            './dbReference[@type="PDB"]/property[@type="method"][@value="X-ray" or @value="NMR"]/..'
         )
         pdb_data = []
         for p in pdbs:
