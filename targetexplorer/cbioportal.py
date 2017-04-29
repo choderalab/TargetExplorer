@@ -361,7 +361,8 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
             continue
         if lines[0][0:25] == '# Warning:  Unknown gene:':
             print lines[0]
-            raise Exception
+            #raise Exception
+            continue 
         print 'Done retrieving ExtendedMutation data from cBioPortal.'
 
         # These dicts will be used later to assign percent_in_cohort values for a given mutation by matching case_id and aa_change
