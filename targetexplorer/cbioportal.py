@@ -1,5 +1,6 @@
 import urllib2
 import time
+import random
 import re
 import os
 import datetime
@@ -535,6 +536,18 @@ def retrieve_mutation_datatxt(case_set_id,
     return lines
 
 
+def chunk_generator(list_name, n_per_chunk):
+
+    """
+
+    :param list_name: name of list to chunk over
+    :param n_per_chunk: number of elements per chunk
+    :return: generator with chunked lists of n_per_chunk size. Last chunk may not be evenly sized
+    """
+    for i in xrange(0, len(list_name), n_per_chunk):
+        yield list_name[i:i + n_per_chunk]
+
+
 def retrieve_extended_mutation_datatxt(case_set_id,
                                        genetic_profile_id,
                                        gene_ids,
@@ -552,10 +565,11 @@ def retrieve_extended_mutation_datatxt(case_set_id,
         'private': use private cBioPortal data
     write_to_filepath: str (or False)
     """
-    lines_list = list()
-    #gene_ids_string = '+'.join(gene_ids)
-    for gene_id in gene_ids:
-        gene_ids_string = gene_id
+    lines_list = []
+
+    chunks = chunk_generator(gene_ids, 100)
+    for i, chunk in enumerate(chunks):
+        gene_ids_string = '+'.join(chunk)
         mutation_url = 'http://www.cbioportal.org/{0}/' \
                        'webservice.do' \
                        '?cmd=getMutationData' \
@@ -573,8 +587,12 @@ def retrieve_extended_mutation_datatxt(case_set_id,
             with open(write_to_filepath, 'w') as ofile:
                 ofile.write(page)
         lines = page.splitlines()
-        lines_list.extend(lines)
-        time.sleep(0.5)
+        if i == 0:
+            lines_list.extend(lines)
+        else:
+            lines_list.extend(lines[2:])
+        time.sleep(random.uniform(0, 0.1))
+    print(lines_list)
     return lines_list
 
 
