@@ -476,6 +476,7 @@ class GatherUniProt(object):
         pdbs = uniprot_entry_node.xpath(
             './dbReference[@type="PDB"]/property[@type="method"][@value="X-ray" or @value="NMR"]/..'
         )
+
         pdb_data = []
         for p in pdbs:
             pdb_id = p.get('id')

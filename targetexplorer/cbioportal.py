@@ -1,4 +1,5 @@
 import urllib2
+import time
 import re
 import os
 import datetime
@@ -362,7 +363,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
         if lines[0][0:25] == '# Warning:  Unknown gene:':
             print lines[0]
             #raise Exception
-            continue 
+            continue
         print 'Done retrieving ExtendedMutation data from cBioPortal.'
 
         # These dicts will be used later to assign percent_in_cohort values for a given mutation by matching case_id and aa_change
@@ -551,25 +552,30 @@ def retrieve_extended_mutation_datatxt(case_set_id,
         'private': use private cBioPortal data
     write_to_filepath: str (or False)
     """
-    gene_ids_string = '+'.join(gene_ids)
-    mutation_url = 'http://www.cbioportal.org/{0}/' \
-                   'webservice.do' \
-                   '?cmd=getMutationData' \
-                   '&case_set_id={1}' \
-                   '&genetic_profile_id={2}' \
-                   '&gene_list={3}'.format(
-                       portal_version,
-                       case_set_id,
-                       genetic_profile_id,
-                       gene_ids_string
-                   )
-    response = urllib2.urlopen(mutation_url)
-    page = response.read(1000000000)
-    if write_to_filepath:
-        with open(write_to_filepath, 'w') as ofile:
-            ofile.write(page)
-    lines = page.splitlines()
-    return lines
+    lines_list = list()
+    #gene_ids_string = '+'.join(gene_ids)
+    for gene_id in gene_ids:
+        gene_ids_string = gene_id
+        mutation_url = 'http://www.cbioportal.org/{0}/' \
+                       'webservice.do' \
+                       '?cmd=getMutationData' \
+                       '&case_set_id={1}' \
+                       '&genetic_profile_id={2}' \
+                       '&gene_list={3}'.format(
+                           portal_version,
+                           case_set_id,
+                           genetic_profile_id,
+                           gene_ids_string
+                       )
+        response = urllib2.urlopen(mutation_url)
+        page = response.read(1000000000)
+        if write_to_filepath:
+            with open(write_to_filepath, 'w') as ofile:
+                ofile.write(page)
+        lines = page.splitlines()
+        lines_list.extend(lines)
+        time.sleep(0.5)
+    return lines_list
 
 
 def match_dual_consecutive_aa_change(aa_change_string):
