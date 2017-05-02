@@ -360,6 +360,10 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
             gene_ids,
             write_to_filepath=txt_output_filepath,
         )
+
+        if len(lines) == 0:
+            print('No data was returned from this study')
+            continue
         if lines == ['Error: Problem when identifying a cancer study for the request.']:
             print 'WARNING: case_set_id "%s" not available - probably means that sequencing data from the underlying cancer study is not yet available. Skipping this case set.' % case_set_id
             continue
@@ -599,7 +603,12 @@ def retrieve_extended_mutation_datatxt(case_set_id,
     """
     lines_list = []
     string_to_remove_1 = "# DATA_TYPE\t Mutations"
-    string_to_remove_2 = 'entrez_gene_id\tgene_symbol\tcase_id\tsequencing_center\tmutation_status\tmutation_type\tvalidation_status\tamino_acid_change\tfunctional_impact_score\txvar_link\txvar_link_pdb\txvar_link_msa\tchr\tstart_position\tend_position\treference_allele\tvariant_allele\treference_read_count_tumor\tvariant_read_count_tumor\treference_read_count_normal\tvariant_read_count_normal\tgenetic_profile_id'
+    string_to_remove_2 = 'entrez_gene_id\tgene_symbol\tcase_id\tsequencing_center\tmutation_status\tmutation_type\t' \
+                         'validation_status\tamino_acid_change\tfunctional_impact_score\txvar_link\txvar_link_pdb\t' \
+                         'xvar_link_msa\tchr\tstart_position\tend_position\treference_allele\tvariant_allele\t' \
+                         'reference_read_count_tumor\tvariant_read_count_tumor\treference_read_count_normal\t' \
+                         'variant_read_count_normal\tgenetic_profile_id'
+
     chunks = chunk_generator(gene_ids, 100)
     for chunk in chunks:
         gene_ids_string = '+'.join(chunk)
