@@ -56,6 +56,6 @@ def retrieve_oncotator_mutation_data_as_json(
 def retrieve_oncotator_mutation_data(search_string_query, maxreadlength=100000000):
     base_url = 'http://www.broadinstitute.org/oncotator/mutation/{0}/'
     url_request_string = base_url.format(search_string_query)
-    response = urllib2.urlopen(url_request_string)
+    response = urllib2.urlopen(url_request_string, timeout=None)
     page = response.read(maxreadlength)
     return page
