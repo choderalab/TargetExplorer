@@ -1,4 +1,6 @@
 import urllib2
+import time
+import random
 import re
 import os
 import datetime
@@ -11,7 +13,6 @@ from targetexplorer.core import int_else_none, xml_parser, external_data_dirpath
 from targetexplorer.utils import json_dump_pretty, set_loglevel
 from targetexplorer.oncotator import retrieve_oncotator_mutation_data_as_json, build_oncotator_search_string
 from targetexplorer.flaskapp import models, db
-
 
 external_data_dir = os.path.join(external_data_dirpath, 'cBioPortal')
 external_cbioportal_data_filepath = os.path.join(external_data_dir, 'cbioportal-mutations.xml')
@@ -61,13 +62,13 @@ class GatherCbioportalData(object):
             in models.UniProtEntry.query.filter_by(
                 crawl_number=self.current_crawl_number
             ).values(models.UniProtEntry.ac)
-        ]
+            ]
         self.hgnc_gene_symbols = [
             value_tuple[0] for value_tuple
             in models.HGNCEntry.query.filter_by(
                 crawl_number=self.current_crawl_number
             ).values(models.HGNCEntry.approved_symbol)
-        ]
+            ]
 
     def get_mutation_data_as_xml(self):
         if os.path.exists(external_cbioportal_data_filepath) and self.use_existing_cbioportal_data:
@@ -131,7 +132,8 @@ class GatherCbioportalData(object):
                     in_uniprot_domain=False,
                 )
 
-                if mutation_type == 'Missense_Mutation' and None not in [chromosome_index, chromosome_startpos, chromosome_endpos]:
+                if mutation_type == 'Missense_Mutation' and None not in [chromosome_index, chromosome_startpos,
+                                                                         chromosome_endpos]:
                     oncotator_data = self.get_oncotator_data(
                         chromosome_index,
                         chromosome_startpos,
@@ -161,7 +163,8 @@ class GatherCbioportalData(object):
                             matching_uniprot_domains = matching_ensembl_transcript_row.ensembl_gene.db_entry.uniprot_domains.all()
                             for domain in matching_uniprot_domains:
                                 if aa_pos >= domain.begin and aa_pos <= domain.end:
-                                    if mutation_row.oncotator_reference_aa != mutation_row.cbioportal_aa_change_string[0]:
+                                    if mutation_row.oncotator_reference_aa != mutation_row.cbioportal_aa_change_string[
+                                        0]:
                                         continue
                                     mutation_row.in_uniprot_domain = True
                                     mutation_row.uniprot_domain = domain
@@ -175,7 +178,7 @@ class GatherCbioportalData(object):
             chromosome_endpos,
             reference_allele,
             variant_allele
-            ):
+    ):
         oncotator_search_string = build_oncotator_search_string(
             chromosome_index,
             chromosome_startpos,
@@ -185,10 +188,10 @@ class GatherCbioportalData(object):
         )
 
         if (
-                self.use_existing_oncotator_data and self.existing_oncotator_data
+                        self.use_existing_oncotator_data and self.existing_oncotator_data
                 and oncotator_search_string in self.existing_oncotator_data
-                ):
-                oncotator_data = self.existing_oncotator_data[oncotator_search_string]
+        ):
+            oncotator_data = self.existing_oncotator_data[oncotator_search_string]
         else:
             oncotator_data = retrieve_oncotator_mutation_data_as_json(
                 chromosome_index,
@@ -263,7 +266,8 @@ def get_genetic_profile_ids(cancer_study):
     """
     For a given cancer study, return a list of available genetic_profile_ids (e.g. 'laml_tcga_pub_mutations')
     """
-    genetic_profile_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getGeneticProfiles&cancer_study_id={0}'.format(cancer_study)
+    genetic_profile_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getGeneticProfiles&cancer_study_id={0}'.format(
+        cancer_study)
     response = urllib2.urlopen(genetic_profile_url)
     page = response.read(100000000000)
     lines = page.splitlines()
@@ -292,7 +296,7 @@ def get_profile_data(case_set_id, genetic_profile_id, entrez_gene_ids):
     """
     # TODO probably deprecate this once get_mutations and get_CNAs are ready
 
-    gene_list_string = '+'.join( [ str(gene_id) for gene_id in entrez_gene_ids ] )
+    gene_list_string = '+'.join([str(gene_id) for gene_id in entrez_gene_ids])
     mutation_url = 'http://www.cbioportal.org/public-portal/webservice.do?cmd=getProfileData&case_set_id=%(case_set_id)s&genetic_profile_id=%(genetic_profile_id)s&gene_list=%(gene_list_string)s' % vars()
     response = urllib2.urlopen(mutation_url)
     page = response.read(100000000000)
@@ -346,7 +350,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
         print 'Retrieving ExtendedMutation data from cBioPortal for study %s...' % cancer_study
 
         if write_extended_mutation_txt_files:
-            txt_output_filepath = os.path.join(external_data_dir, cancer_study+'.txt')
+            txt_output_filepath = os.path.join(external_data_dir, cancer_study + '.txt')
         else:
             txt_output_filepath = False
 
@@ -356,12 +360,17 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
             gene_ids,
             write_to_filepath=txt_output_filepath,
         )
+
+        if len(lines) == 0:
+            print('No data was returned from this study')
+            continue
         if lines == ['Error: Problem when identifying a cancer study for the request.']:
             print 'WARNING: case_set_id "%s" not available - probably means that sequencing data from the underlying cancer study is not yet available. Skipping this case set.' % case_set_id
             continue
         if lines[0][0:25] == '# Warning:  Unknown gene:':
             print lines[0]
-            raise Exception
+            # raise Exception
+            continue
         print 'Done retrieving ExtendedMutation data from cBioPortal.'
 
         # These dicts will be used later to assign percent_in_cohort values for a given mutation by matching case_id and aa_change
@@ -375,64 +384,76 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
         # 1956  EGFR    TCGA-16-1048    broad.mit.edu   Somatic Missense_Mutation   NA  F254I   M   [getma.org/...snip]   [getma.org/...snip] [getma.org/...snip] 7   55221716    55221716    T   A   gbm_tcga_mutations
         # EXCEPT for dual mutations of consecutive aas, e.g.:
         # 51231 VRK3    TCGA-AA-A01V    broad.mit.edu   Somatic Missense_Mutation   Unknown 324_325LA>FS    NA  NA  NA  NA  19  50493019    50493020    CC  AA  coadread_tcga_pub_mutations
-        for line in lines[2:]:
-            words = line.split('\t')
-            returned_gene_id = words[1]
-            case_id = words[2]
-            mutation_status = words[4] # 'Somatic', ?'Germline'
-            mutation_type = words[5] # 'Missense_Mutation', ...
-            validation_status = words[6] # 'NA', ???
-            aa_changes = [ words[7] ] # 'F254I', '324_325LA>FS'
-            functional_impact_score = words[8]
-            chromosome_index = words[12]
-            chromosome_startpos = words[13]
-            chromosome_endpos = words[14]
-            reference_allele = words[15]
-            variant_allele = words[16]
-            #returned_cancer_study = words[-1][ 0 : words[-1].rfind('_mutations') ]
 
-            # _______________
-            # Some exceptions
-            # ---------------
+        for line in lines:
+            try:
+                words = line.split('\t')
+                returned_gene_id = words[1]
+                case_id = words[2]
+                mutation_status = words[4]  # 'Somatic', ?'Germline'
+                mutation_type = words[5]  # 'Missense_Mutation', ...
+                validation_status = words[6]  # 'NA', ???
+                aa_changes = [words[7]]  # 'F254I', '324_325LA>FS'
+                functional_impact_score = words[8]
+                chromosome_index = words[12]
+                chromosome_startpos = words[13]
+                chromosome_endpos = words[14]
+                reference_allele = words[15]
+                variant_allele = words[16]
+                # returned_cancer_study = words[-1][ 0 : words[-1].rfind('_mutations') ]
 
-            if aa_changes[0] == 'MUTATED':
-                aa_changes[0] = 'Unknown'
+                # _______________
+                # Some exceptions
+                # ---------------
 
-            # Dual mutations of consecutive aas
-            if mutation_type == 'Missense_Mutation' and match_dual_consecutive_aa_change(aa_changes[0]):
-                aa_changes = split_dual_consecutive_aa_change(aa_changes[0])
+                if aa_changes[0] == 'MUTATED':
+                    aa_changes[0] = 'Unknown'
 
-            if returned_gene_id == 'C9ORF96':
-                returned_gene_id = 'C9orf96'
+                # Dual mutations of consecutive aas
+                if mutation_type == 'Missense_Mutation' and match_dual_consecutive_aa_change(aa_changes[0]):
+                    aa_changes = split_dual_consecutive_aa_change(aa_changes[0])
 
-            # _______________
+                if returned_gene_id == 'C9ORF96':
+                    returned_gene_id = 'C9orf96'
 
-            for aa_change in aa_changes:
-                # Look for a mutant node (corresponding to this study and case_id). This will only exist if a mutation has already been added for this mutant.
-                case_node = gene_nodes_dict[returned_gene_id].find('case[@study="%s"][@case_id="%s"]' % (cancer_study, case_id))
-                # If not found, create it.
-                if case_node == None:
-                    case_node = etree.SubElement(gene_nodes_dict[returned_gene_id], 'case')
-                    case_node.set('source', 'cBioPortal')
-                    case_node.set('study', cancer_study)
-                    case_node.set('case_id', case_id)
-                    mutant_nodes_by_case_id[case_id] = case_node
+                if returned_gene_id =='ADRBK1':
+                    returned_gene_id = 'GRK2'
 
-                # Each mutation gets a mutation_mode
-                mutation_node = etree.SubElement(case_node, 'mutation')
-                mutation_node.set('mutation_origin', mutation_status)
-                mutation_node.set('mutation_type', mutation_type)
-                mutation_node.set('validation_status', validation_status)
-                mutation_node.set('aa_change', aa_change)
-                mutation_node.set('functional_impact_score', functional_impact_score)
-                mutation_node.set('chromosome_index', chromosome_index)
-                mutation_node.set('chromosome_startpos', chromosome_startpos)
-                mutation_node.set('chromosome_endpos', chromosome_endpos)
-                mutation_node.set('reference_allele', reference_allele)
-                mutation_node.set('variant_allele', variant_allele)
+                if returned_gene_id == 'ADRBK2':
+                    returned_gene_id = 'GRK3'
+                # _______________
 
-                # This dict is used later to assign percent_in_cohort values to mutations by matching case_id and aa_change
-                mutation_nodes_by_case_id_and_aa_change[case_id + aa_change] = mutation_node
+                for aa_change in aa_changes:
+                    # Look for a mutant node (corresponding to this study and case_id). This will only exist if a mutation has already been added for this mutant.
+                    case_node = gene_nodes_dict[returned_gene_id].find(
+                        'case[@study="%s"][@case_id="%s"]' % (cancer_study, case_id))
+                    # If not found, create it.
+                    if case_node == None:
+                        case_node = etree.SubElement(gene_nodes_dict[returned_gene_id], 'case')
+                        case_node.set('source', 'cBioPortal')
+                        case_node.set('study', cancer_study)
+                        case_node.set('case_id', case_id)
+                        mutant_nodes_by_case_id[case_id] = case_node
+
+                    # Each mutation gets a mutation_mode
+                    mutation_node = etree.SubElement(case_node, 'mutation')
+                    mutation_node.set('mutation_origin', mutation_status)
+                    mutation_node.set('mutation_type', mutation_type)
+                    mutation_node.set('validation_status', validation_status)
+                    mutation_node.set('aa_change', aa_change)
+                    mutation_node.set('functional_impact_score', functional_impact_score)
+                    mutation_node.set('chromosome_index', chromosome_index)
+                    mutation_node.set('chromosome_startpos', chromosome_startpos)
+                    mutation_node.set('chromosome_endpos', chromosome_endpos)
+                    mutation_node.set('reference_allele', reference_allele)
+                    mutation_node.set('variant_allele', variant_allele)
+
+                    # This dict is used later to assign percent_in_cohort values to mutations by matching case_id and aa_change
+                    mutation_nodes_by_case_id_and_aa_change[case_id + aa_change] = mutation_node
+
+            except IndexError:
+                print('Got an IndexError with the following line: {0}...skipping it'.format(line))
+                continue
 
         # ============
 
@@ -454,43 +475,53 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
         # 1956    EGFR    NaN NaN C620Y ...
         # Multiple mutations for a given case are split by ',', except for dual consecutive mutations which are annotated in the form '324_325LA>FS'
         for line in lines[3:]:
-            words = line.split('\t')
-            returned_gene_id = words[1]
-            aa_change_strings = words[2:]
+            try:
+                words = line.split('\t')
+                returned_gene_id = words[1]
+                aa_change_strings = words[2:]
 
-            if verbose:
-                print returned_gene_id
+                if verbose:
+                    print returned_gene_id
 
-            # Make a flat list of aa changes (with multiple-mutation aa_changes split into separate elements)
-            all_aa_changes_this_cohort = []
-            # Also require a list of case_ids for each individual aa_change
-            case_ids_returned_by_aa_change = []
-            for a, aa_change_string in enumerate(aa_change_strings):
-                aa_changes_split_comma = aa_change_string.split(',') # May result in ['R23K', '56_57EG>AH']
-                aa_changes = []
-                for b in range(len(aa_changes_split_comma)):
-                    if match_dual_consecutive_aa_change(aa_changes_split_comma[b]):
-                        aa_changes += split_dual_consecutive_aa_change(aa_changes_split_comma[b])
-                    else:
-                        aa_changes.append( aa_changes_split_comma[b] )
+                # Make a flat list of aa changes (with multiple-mutation aa_changes split into separate elements)
+                all_aa_changes_this_cohort = []
+                # Also require a list of case_ids for each individual aa_change
+                case_ids_returned_by_aa_change = []
+                for a, aa_change_string in enumerate(aa_change_strings):
+                    aa_changes_split_comma = aa_change_string.split(',')  # May result in ['R23K', '56_57EG>AH']
+                    aa_changes = []
+                    for b in range(len(aa_changes_split_comma)):
+                        if match_dual_consecutive_aa_change(aa_changes_split_comma[b]):
+                            aa_changes += split_dual_consecutive_aa_change(aa_changes_split_comma[b])
+                        else:
+                            aa_changes.append(aa_changes_split_comma[b])
 
-                all_aa_changes_this_cohort += aa_changes
-                case_ids_returned_by_aa_change += ( [case_ids_returned[a]] * len(aa_changes) )
+                    all_aa_changes_this_cohort += aa_changes
+                    case_ids_returned_by_aa_change += ([case_ids_returned[a]] * len(aa_changes))
 
-            # Number of aas with any aa_change for this gene and cancer study
-            num_in_cohort_any_aa_change = sum( [ 1 for x in aa_change_strings if x != 'NaN' ] )
-            percent_in_cohort_any_aa_change = float(num_in_cohort_any_aa_change) / num_in_cohort * 100.
+                # Number of aas with any aa_change for this gene and cancer study
+                num_in_cohort_any_aa_change = sum([1 for x in aa_change_strings if x != 'NaN'])
+                percent_in_cohort_any_aa_change = float(num_in_cohort_any_aa_change) / num_in_cohort * 100.
 
-            for a, aa_change in enumerate(all_aa_changes_this_cohort):
-                if aa_change not in ['NaN', 'MUTATED']:
-                    num_in_cohort_this_aa_change = sum( [ 1 for x in all_aa_changes_this_cohort if x == aa_change ] )
-                    # Calculate percent_in_cohort
-                    percent_in_cohort_this_aa_change = float(num_in_cohort_this_aa_change) / num_in_cohort * 100.
-                    mutation_nodes_by_case_id_and_aa_change[ case_ids_returned_by_aa_change[a] + aa_change ].set('percent_in_cohort_this_aa_change', '%.3f' % percent_in_cohort_this_aa_change)
-                    mutation_nodes_by_case_id_and_aa_change[ case_ids_returned_by_aa_change[a] + aa_change ].getparent().set('percent_in_cohort_any_aa_change', '%.3f' % percent_in_cohort_any_aa_change)
-                    mutation_nodes_by_case_id_and_aa_change[ case_ids_returned_by_aa_change[a] + aa_change ].getparent().set('num_in_cohort', str(num_in_cohort))
-
-        # ============
+                for a, aa_change in enumerate(all_aa_changes_this_cohort):
+                    if aa_change not in ['NaN', 'MUTATED']:
+                        num_in_cohort_this_aa_change = sum([1 for x in all_aa_changes_this_cohort if x == aa_change])
+                        # Calculate percent_in_cohort
+                        percent_in_cohort_this_aa_change = float(num_in_cohort_this_aa_change) / num_in_cohort * 100.
+                        mutation_nodes_by_case_id_and_aa_change[case_ids_returned_by_aa_change[a] + aa_change].set(
+                            'percent_in_cohort_this_aa_change', '%.3f' % percent_in_cohort_this_aa_change)
+                        mutation_nodes_by_case_id_and_aa_change[
+                            case_ids_returned_by_aa_change[a] + aa_change].getparent().set(
+                            'percent_in_cohort_any_aa_change', '%.3f' % percent_in_cohort_any_aa_change)
+                        mutation_nodes_by_case_id_and_aa_change[
+                            case_ids_returned_by_aa_change[a] + aa_change].getparent().set('num_in_cohort',
+                                                                                           str(num_in_cohort))
+            except IndexError:
+                print('Got an IndexError with the following line ({0}) ...skipping it'.format(line))
+                continue
+            except KeyError:
+                continue
+                    # ============
 
     # ===========
     # Write XML to file
@@ -499,7 +530,7 @@ def retrieve_mutants_xml(output_xml_filepath, cancer_studies, gene_ids,
     with open(output_xml_filepath, 'w') as output_xml_file:
         output_xml_file.write(etree.tostring(results_node, pretty_print=True))
 
-    # ===========
+        # ===========
 
 
 def retrieve_mutation_datatxt(case_set_id,
@@ -512,25 +543,45 @@ def retrieve_mutation_datatxt(case_set_id,
     Queries cBioPortal for "Mutation" format data, given a list of cBioPortal cancer studies and a list of HGNC Approved gene Symbols.
     Returns the data file as a list of text lines.
     """
-    gene_ids_string = '+'.join(gene_ids)
-    mutation_url = 'http://www.cbioportal.org/{0}/' \
-                   'webservice.do' \
-                   '?cmd=getProfileData' \
-                   '&case_set_id={1}' \
-                   '&genetic_profile_id={2}' \
-                   '&gene_list={3}'.format(
-                       portal_version,
-                       case_set_id,
-                       genetic_profile_id,
-                       gene_ids_string
-                   )
-    if verbose:
-        set_loglevel('debug')
-        logger.debug(mutation_url)
-    response = urllib2.urlopen(mutation_url)
-    page = response.read(1000000000)
-    lines = page.splitlines()
-    return lines
+    lines_list = []
+    chunks = chunk_generator(gene_ids, 100)
+    index = 1
+    for chunk in chunks:
+        gene_ids_string = '+'.join(chunk)
+        mutation_url = 'http://www.cbioportal.org/{0}/' \
+                       'webservice.do' \
+                       '?cmd=getProfileData' \
+                       '&case_set_id={1}' \
+                       '&genetic_profile_id={2}' \
+                       '&gene_list={3}'.format(
+            portal_version,
+            case_set_id,
+            genetic_profile_id,
+            gene_ids_string
+        )
+
+        if verbose:
+            set_loglevel('debug')
+            logger.debug(mutation_url)
+        response = urllib2.urlopen(mutation_url)
+        page = response.read(1000000000)
+        lines = page.splitlines()
+
+        lines_list.extend(lines)
+        time.sleep(random.uniform(0, 0.1))
+
+    return lines_list
+
+
+def chunk_generator(list_name, n_per_chunk):
+    """
+
+    :param list_name: name of list to chunk over
+    :param n_per_chunk: number of elements per chunk
+    :return: generator with chunked lists of n_per_chunk size. Last chunk may not be evenly sized
+    """
+    for i in xrange(0, len(list_name), n_per_chunk):
+        yield list_name[i:i + n_per_chunk]
 
 
 def retrieve_extended_mutation_datatxt(case_set_id,
@@ -550,25 +601,47 @@ def retrieve_extended_mutation_datatxt(case_set_id,
         'private': use private cBioPortal data
     write_to_filepath: str (or False)
     """
-    gene_ids_string = '+'.join(gene_ids)
-    mutation_url = 'http://www.cbioportal.org/{0}/' \
-                   'webservice.do' \
-                   '?cmd=getMutationData' \
-                   '&case_set_id={1}' \
-                   '&genetic_profile_id={2}' \
-                   '&gene_list={3}'.format(
-                       portal_version,
-                       case_set_id,
-                       genetic_profile_id,
-                       gene_ids_string
-                   )
-    response = urllib2.urlopen(mutation_url)
-    page = response.read(1000000000)
-    if write_to_filepath:
-        with open(write_to_filepath, 'w') as ofile:
-            ofile.write(page)
-    lines = page.splitlines()
-    return lines
+    lines_list = []
+    string_to_remove_1 = "# DATA_TYPE\t Mutations"
+    string_to_remove_2 = 'entrez_gene_id\tgene_symbol\tcase_id\tsequencing_center\tmutation_status\tmutation_type\t' \
+                         'validation_status\tamino_acid_change\tfunctional_impact_score\txvar_link\txvar_link_pdb\t' \
+                         'xvar_link_msa\tchr\tstart_position\tend_position\treference_allele\tvariant_allele\t' \
+                         'reference_read_count_tumor\tvariant_read_count_tumor\treference_read_count_normal\t' \
+                         'variant_read_count_normal\tgenetic_profile_id'
+
+    chunks = chunk_generator(gene_ids, 100)
+    for chunk in chunks:
+        gene_ids_string = '+'.join(chunk)
+        mutation_url = 'http://www.cbioportal.org/{0}/' \
+                       'webservice.do' \
+                       '?cmd=getMutationData' \
+                       '&case_set_id={1}' \
+                       '&genetic_profile_id={2}' \
+                       '&gene_list={3}'.format(
+            portal_version,
+            case_set_id,
+            genetic_profile_id,
+            gene_ids_string
+        )
+        response = urllib2.urlopen(mutation_url)
+        page = response.read(1000000000)
+        if write_to_filepath:
+            with open(write_to_filepath, 'w') as ofile:
+                ofile.write(page)
+        lines = page.splitlines()
+        while string_to_remove_1 in lines:
+            try:
+                lines.remove(string_to_remove_1)
+            except ValueError:
+                print('{0} not in list'.format(string_to_remove_1))
+        while string_to_remove_2 in lines:
+            try:
+                lines.remove(string_to_remove_2)
+            except ValueError:
+                print('{0} not in list'.format(string_to_remove_2))
+        lines_list.extend(lines)
+        time.sleep(random.uniform(0, 0.1))
+    return lines_list
 
 
 def match_dual_consecutive_aa_change(aa_change_string):
@@ -578,13 +651,13 @@ def match_dual_consecutive_aa_change(aa_change_string):
     Checks the aas are consecutive.
     """
     # searches for the 'LA>FS' type pattern - putting the regex in parentheses means that the matched pattern will also be returned in the list
-    match = re.match('^[0-9]+_[0-9]+[A-Z][A-Z]>[A-Z][A-Z]', aa_change_string) # ['324_325', 'LA>FS', '']
+    match = re.match('^[0-9]+_[0-9]+[A-Z][A-Z]>[A-Z][A-Z]', aa_change_string)  # ['324_325', 'LA>FS', '']
 
     if not match:
         return False
 
-    aa_change_string_split = re.split('([A-Z][A-Z]>[A-Z][A-Z])', aa_change_string) # ['324_325', 'LA>FS', '']
-    positions = aa_change_string_split[0].split('_') # ['324', '325']
+    aa_change_string_split = re.split('([A-Z][A-Z]>[A-Z][A-Z])', aa_change_string)  # ['324_325', 'LA>FS', '']
+    positions = aa_change_string_split[0].split('_')  # ['324', '325']
 
     # check positions are consecutive
     if int(positions[1]) == (int(positions[0]) + 1):
@@ -599,9 +672,9 @@ def split_dual_consecutive_aa_change(aa_change_string):
     Splits into two aa_changes, e.g. ['L324F', 'A325S']
     """
     # searches for the 'LA>FS' type pattern - putting the regex in parentheses means that the matched pattern will also be returned in the list
-    aa_change_string_split = re.split('([A-Z][A-Z]>[A-Z][A-Z])', aa_change_string) # ['324_325', 'LA>FS', '']
-    positions = aa_change_string_split[0].split('_') # ['324', '325']
-    resnames = aa_change_string_split[1].split('>') # ['LA', 'FS']
+    aa_change_string_split = re.split('([A-Z][A-Z]>[A-Z][A-Z])', aa_change_string)  # ['324_325', 'LA>FS', '']
+    positions = aa_change_string_split[0].split('_')  # ['324', '325']
+    resnames = aa_change_string_split[1].split('>')  # ['LA', 'FS']
     aa_changes = [resnames[0][0] + positions[0] + resnames[1][0], resnames[0][1] + positions[1] + resnames[1][1]]
     return aa_changes
 
@@ -617,8 +690,9 @@ def percent_cases_with_mutations(gene_node):
     num_in_cohort = 0
     for cancer_study in cancer_studies:
         try:
-            nmutants += len( gene_node.findall('mutants/mutant[@study="%(cancer_study)s"]' % vars()) )
-            num_in_cohort += int( gene_node.find('mutants/mutant[@study="%(cancer_study)s"]' % vars()).get('num_in_cohort') )
+            nmutants += len(gene_node.findall('mutants/mutant[@study="%(cancer_study)s"]' % vars()))
+            num_in_cohort += int(
+                gene_node.find('mutants/mutant[@study="%(cancer_study)s"]' % vars()).get('num_in_cohort'))
         except TypeError:
             continue
 
@@ -664,7 +738,7 @@ class AddCbioportalMAFData(object):
             case_id = maf_row.Tumor_Sample_Barcode
             if case_id not in case_rows:
                 case_rows[case_id] = models.CbioportalCase(
-                     crawl_number=self.current_crawl_number, case_id=case_id, study=study
+                    crawl_number=self.current_crawl_number, case_id=case_id, study=study
                 )
                 db.session.add(case_rows[case_id])
 
