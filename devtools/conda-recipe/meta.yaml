@@ -26,6 +26,7 @@ requirements:
     # - numpy
     - lxml
     - pyyaml
+    - bioservices
 
 about:
   home: https://github.com/choderalab/targetexplorer

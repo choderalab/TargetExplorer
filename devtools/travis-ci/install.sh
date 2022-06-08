@@ -23,6 +23,7 @@ conda update --yes conda
 source activate $python
 conda install --yes conda-build anaconda-client jinja2
 conda config --add channels http://conda.anaconda.org/choderalab
+conda config --add channels https://anaconda.org/bioconda/bioservices
 
 # Restore original directory
 popd
